@@ -1,6 +1,6 @@
 # ember-app-scheduler
 
-This README outlines the details of collaborating on this Ember addon.
+This addon provides a service to schedule work at different phases of app life cycle.
 
 ## Installation
 
@@ -8,6 +8,19 @@ This README outlines the details of collaborating on this Ember addon.
 * `cd ember-app-scheduler`
 * `npm install`
 * `bower install`
+
+## Usage
+
+### Schedule work after the First Route Paint
+
+The `afterRoutePaint` queue can be used to schedule work after the route
+is painted.
+
+```javascript
+this.get('scheduler').scheduleWork('afterRoutePaint', () => {
+  // schedule work
+});
+```
 
 ## Running
 

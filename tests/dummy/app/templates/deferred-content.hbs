@@ -1,0 +1,20 @@
+<div class="content">
+  <div style="width:50%;float:left">
+    <h3>Primary content</h3>
+    <ul>
+    {{#each model.people as |person index|}}
+      <li>Hello, {{person.name}}!</li>
+    {{/each}}
+    </ul>
+  </div>
+  <div style="width:50%;float:left">
+    <h3>Deferred content</h3>
+    {{#defer-render}}
+      <ul>
+      {{#each model.people as |person index|}}
+        <li>Hello, {{person.name}}!</li>
+      {{/each}}
+      </ul>
+    {{/defer-render}}
+  </div>
+</div>
