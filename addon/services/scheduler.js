@@ -23,11 +23,13 @@ class Queue {
   reset() {
     this.tasks = [];
     this.isActive = false;
+    this.afterPaintDeferred = Ember.RSVP.defer();
+    this.afterPaintPromise = this.afterPaintDeferred.promise;
   }
 }
 
 export default Ember.Service.extend({
-  queueNames: ['afterRoutePaint'],
+  queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
   init() {
     this._super(...arguments);
@@ -65,6 +67,10 @@ export default Ember.Service.extend({
         callback();
       }
     }
+    this._afterNextPaint()
+      .then(() => {
+      queue.afterPaintDeferred.resolve();
+    });
   },
 
   _initQueues() {
@@ -115,7 +121,11 @@ export default Ember.Service.extend({
     router.on('didTransition', () => {
       this._afterNextPaint()
         .then(() => {
-          this.flushQueue('afterRoutePaint');
+          this.flushQueue('afterFirstRoutePaint');
+          this._afterNextPaint()
+            .then(() => {
+              this.flushQueue('afterContentPaint');
+            });
         });
     });
   },

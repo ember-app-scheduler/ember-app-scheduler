@@ -1,0 +1,25 @@
+<div class="content">
+  <div style="width:70%;float:left">
+    <h3>Primary content</h3>
+    <ul>
+    {{#each model.people as |person index|}}
+      <li>Hello, {{person.name}}!</li>
+    {{/each}}
+    </ul>
+
+    <h3>Secondary content</h3>
+    {{#defer-render}}
+      <ul>
+      {{#each model.cats as |cat index|}}
+        <li>Hello, {{cat.name}}!</li>
+      {{/each}}
+      </ul>
+    {{/defer-render}}
+  </div>
+
+  <div style="width:30%;float:left">
+    {{#right-rail-ad}}
+      <h3>Sample Ads Content</h3>
+    {{/right-rail-ad}}
+  </div>
+</div>

@@ -7,7 +7,7 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('deferred-content');
+  this.route('demo');
 });
 
 export default Router;

@@ -3,11 +3,11 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   shouldRender: false,
   scheduler: Ember.inject.service(),
-  classNames: ['deferred-container'],
+  classNames: ['ad-container'],
 
   init() {
     this._super();
-    this._token = this.get('scheduler').scheduleWork('afterFirstRoutePaint', () => {
+    this._token = this.get('scheduler').scheduleWork('afterContentPaint', () => {
       Ember.run.join(() => {
         this.set('shouldRender', true);
         this.isRendered = true;
