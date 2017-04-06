@@ -15,8 +15,7 @@ class Token {
 }
 
 class Queue {
-  constructor(queueName) {
-    this.queueName = queueName;
+  constructor() {
     this.reset();
   }
 
@@ -97,17 +96,23 @@ export default Ember.Service.extend({
     }
 
     this._nextAfterPaintPromise = new Ember.RSVP.Promise((resolve) => {
-      this._nextPaintFrame = requestAnimationFrame(() => {
-        this._nextPaintTimeout = Ember.run.later(() => {
-          this._nextAfterPaintPromise = null;
-          this._nextPaintFrame = null;
-          this._nextPaintTimeout = null;
-          resolve();
-        }, 0);
-      });
+      if (typeof requestAnimationFrame === "function") {
+        this._nextPaintFrame = requestAnimationFrame(() => this._rAFCallback(resolve));
+      } else {
+        this._rAFCallback(resolve);
+      }
     });
 
     return this._nextAfterPaintPromise;
+  },
+
+  _rAFCallback(resolve) {
+    this._nextPaintTimeout = Ember.run.later(() => {
+      this._nextAfterPaintPromise = null;
+      this._nextPaintFrame = null;
+      this._nextPaintTimeout = null;
+      resolve();
+    }, 0);
   },
 
   // TODO on destroy this should be disconnected I think

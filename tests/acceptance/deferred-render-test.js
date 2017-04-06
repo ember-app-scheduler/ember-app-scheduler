@@ -9,28 +9,48 @@ moduleForAcceptance('Acceptance | deferred render', {
 });
 
 test('visiting /demo', function(assert) {
-  assert.expect(5);
+  assert.expect(3);
+  let done = assert.async();
 
   this.router.on('didTransition', () => {
     this.scheduler.queues['afterFirstRoutePaint'].afterPaintPromise.then(() => {
       const deferredElement = find('.deferred-container ul');
       assert.ok(deferredElement.is(':visible'), 'Deferred content should be visible.');
       const adElement = find('.ad-container h3');
-      assert.notOk(adElement.is(':visible'), 'Overlay should not be visible.');
+      assert.notOk(adElement.is(':visible'), 'Ad should not be visible.');
     });
 
     this.scheduler.queues['afterContentPaint'].afterPaintPromise.then(() => {
-      const deferredElement = find('.deferred-container ul');
-      assert.ok(deferredElement.is(':visible'), 'Deferred content should be visible.');
       const adElement = find('.ad-container h3');
-      assert.ok(adElement.is(':visible'), 'Overlay should be visible.');
+      assert.ok(adElement.is(':visible'), 'Ad should be visible.');
+      done();
     });
   });
 
   visit('/demo');
+});
 
-  andThen(function() {
-    const adElement = find('.ad-container h3');
-    assert.ok(adElement.is(':visible'), 'Overlay should be visible.');
+test('visiting /demo when requestAnimationFrame is not present', function(assert) {
+  let rAF = window.requestAnimationFrame;
+  window.requestAnimationFrame = undefined;
+  assert.expect(3);
+  let done = assert.async();
+
+  this.router.on('didTransition', () => {
+    this.scheduler.queues['afterFirstRoutePaint'].afterPaintPromise.then(() => {
+      const deferredElement = find('.deferred-container ul');
+      assert.ok(deferredElement.is(':visible'), 'Deferred content should be visible.');
+      const adElement = find('.ad-container h3');
+      assert.notOk(adElement.is(':visible'), 'Ad should not be visible.');
+    });
+
+    this.scheduler.queues['afterContentPaint'].afterPaintPromise.then(() => {
+      const adElement = find('.ad-container h3');
+      assert.ok(adElement.is(':visible'), 'Ad should be visible.');
+      window.requestAnimationFrame = rAF;
+      done();
+    });
   });
+
+  visit('/demo');
 });
