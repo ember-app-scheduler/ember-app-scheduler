@@ -21,7 +21,7 @@ class Queue {
 
   reset() {
     this.tasks = [];
-    this.isActive = false;
+    this.isActive = true;
     this.afterPaintDeferred = Ember.RSVP.defer();
     this.afterPaintPromise = this.afterPaintDeferred.promise;
   }
@@ -41,7 +41,7 @@ export default Ember.Service.extend({
 
   scheduleWork(queueName, callback) {
     const queue = this.queues[queueName];
-    if (!queue.isActive) {
+    if (queue.isActive) {
       const token = new Token();
       queue.tasks.push(callback);
       queue.tasks.push(token);
