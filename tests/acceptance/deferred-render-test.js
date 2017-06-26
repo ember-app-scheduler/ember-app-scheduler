@@ -31,8 +31,7 @@ test('visiting /demo', function(assert) {
 });
 
 test('visiting /demo when requestAnimationFrame is not present', function(assert) {
-  let rAF = window.requestAnimationFrame;
-  window.requestAnimationFrame = undefined;
+  this.scheduler._useRAF = false;
   assert.expect(3);
   let done = assert.async();
 
@@ -47,7 +46,7 @@ test('visiting /demo when requestAnimationFrame is not present', function(assert
     this.scheduler.queues['afterContentPaint'].afterPaintPromise.then(() => {
       const adElement = find('.ad-container h3');
       assert.ok(adElement.is(':visible'), 'Ad should be visible.');
-      window.requestAnimationFrame = rAF;
+      this.scheduler._useRAF = true;
       done();
     });
   });
