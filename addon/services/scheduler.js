@@ -1,5 +1,11 @@
 import Ember from 'ember';
 
+const {
+  run,
+  RSVP,
+  Service,
+} = Ember;
+
 class Token {
   constructor() {
     this._cancelled = false;
@@ -22,33 +28,38 @@ class Queue {
   reset() {
     this.tasks = [];
     this.isActive = true;
-    this.afterPaintDeferred = Ember.RSVP.defer();
+    this.afterPaintDeferred = RSVP.defer();
     this.afterPaintPromise = this.afterPaintDeferred.promise;
   }
 }
 
-export default Ember.Service.extend({
+export default Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
   init() {
-    this._super(...arguments);
+    this._super();
     this._nextPaintFrame = null;
     this._nextPaintTimeout = null;
     this._nextAfterPaintPromise = null;
+    this._routerWillTransitionHandler = null;
+    this._routerDidTransitionHandler = null;
     this._initQueues();
     this._connectToRouter();
+    this._useRAF = typeof requestAnimationFrame === "function";
   },
 
   scheduleWork(queueName, callback) {
     const queue = this.queues[queueName];
+    const token = new Token();
+
     if (queue.isActive) {
-      const token = new Token();
       queue.tasks.push(callback);
       queue.tasks.push(token);
-      return token;
     } else {
       callback();
     }
+
+    return token;
   },
 
   cancelWork(token) {
@@ -58,6 +69,7 @@ export default Ember.Service.extend({
   flushQueue(queueName) {
     const queue = this.queues[queueName];
     queue.isActive = false;
+
     for (let i = 0; i < queue.tasks.length; i += 2) {
       const callback = queue.tasks[i];
       const token = queue.tasks[i+1];
@@ -66,10 +78,11 @@ export default Ember.Service.extend({
         callback();
       }
     }
+
     this._afterNextPaint()
       .then(() => {
-      queue.afterPaintDeferred.resolve();
-    });
+        queue.afterPaintDeferred.resolve();
+      });
   },
 
   _initQueues() {
@@ -95,8 +108,8 @@ export default Ember.Service.extend({
       return this._nextAfterPaintPromise;
     }
 
-    this._nextAfterPaintPromise = new Ember.RSVP.Promise((resolve) => {
-      if (typeof requestAnimationFrame === "function") {
+    this._nextAfterPaintPromise = new RSVP.Promise((resolve) => {
+      if (this._useRAF) {
         this._nextPaintFrame = requestAnimationFrame(() => this._rAFCallback(resolve));
       } else {
         this._rAFCallback(resolve);
@@ -107,7 +120,7 @@ export default Ember.Service.extend({
   },
 
   _rAFCallback(resolve) {
-    this._nextPaintTimeout = Ember.run.later(() => {
+    this._nextPaintTimeout = run.later(() => {
       this._nextAfterPaintPromise = null;
       this._nextPaintFrame = null;
       this._nextPaintTimeout = null;
@@ -115,15 +128,14 @@ export default Ember.Service.extend({
     }, 0);
   },
 
-  // TODO on destroy this should be disconnected I think
   _connectToRouter() {
     const router = this.get('router');
 
-    router.on('willTransition', () => {
+    this._routerWillTransitionHandler = () => {
       this._resetQueues();
-    });
+    };
 
-    router.on('didTransition', () => {
+    this._routerDidTransitionHandler = () => {
       this._afterNextPaint()
         .then(() => {
           this.flushQueue('afterFirstRoutePaint');
@@ -132,6 +144,23 @@ export default Ember.Service.extend({
               this.flushQueue('afterContentPaint');
             });
         });
-    });
+    };
+
+    router.on('willTransition', this._routerWillTransitionHandler);
+    router.on('didTransition', this._routerDidTransitionHandler);
   },
+
+  willDestroy() {
+    this._super();
+    const router = this.get('router');
+    this.queues = null; // don't hold any references to uncompleted items
+
+    router.off('willTransition', this._routerWillTransitionHandler);
+    router.off('didTransition', this._routerDidTransitionHandler);
+
+    if (this._useRAF) {
+      cancelAnimationFrame(this._nextPaintFrame);
+    }
+    run.cancel(this._nextPaintTimeout);
+  }
 });
