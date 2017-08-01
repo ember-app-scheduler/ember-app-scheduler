@@ -49,6 +49,9 @@ export default Service.extend({
   },
 
   scheduleWork(queueName, callback) {
+    if (!this.queues) {
+      return;
+    }
     const queue = this.queues[queueName];
     const token = new Token();
 
@@ -67,6 +70,9 @@ export default Service.extend({
   },
 
   flushQueue(queueName) {
+    if (!this.queues) {
+      return;
+    }
     const queue = this.queues[queueName];
     queue.isActive = false;
 
