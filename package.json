@@ -11,7 +11,10 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "https://github.com/sreedhar7/ember-app-scheduler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sreedhar7/ember-app-scheduler.git",
+  },
   "scripts": {
     "build": "ember build",
     "start": "ember server",
