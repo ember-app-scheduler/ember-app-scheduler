@@ -9,7 +9,6 @@ This addon provides a service to schedule work in different paint phases of rend
 * `git clone <repository-url>` this repository
 * `cd ember-app-scheduler`
 * `npm install`
-* `bower install`
 
 ## Usage
 
