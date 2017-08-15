@@ -13,6 +13,11 @@ import Ember from 'ember';
  */
 export default function isQueueDrained(app, queueName) {
   const schedulerService = app.__container__.lookup('service:scheduler');
-  const queue = schedulerService.queues[queueName];
+  const queues = schedulerService.queues;
+  if (!queues) {
+    return true;
+  }
+
+  const queue = queues[queueName];
   return queue.tasks.length === 0;
 }
