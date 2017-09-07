@@ -34,7 +34,7 @@ class Queue {
   }
 }
 
-var Scheduler = Service.extend({
+const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
   init() {
