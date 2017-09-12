@@ -178,7 +178,7 @@ if (DEBUG) {
           }
           const lastQueueName = this.queueNames[this.queueNames.length - 1];
           const lastQueue = this.queues[lastQueueName];
-          return lastQueue.tasks.length === 0;
+          return !lastQueue.isActive;
         };
         Ember.Test.registerWaiter(this._waiter);
       }
