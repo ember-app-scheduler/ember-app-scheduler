@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { DEBUG } from '@glimmer/env';
 
 const {
   run,
@@ -33,7 +34,7 @@ class Queue {
   }
 }
 
-export default Service.extend({
+const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
   init() {
@@ -164,3 +165,34 @@ export default Service.extend({
     run.cancel(this._nextPaintTimeout);
   }
 });
+
+if (DEBUG) {
+  Scheduler.reopen({
+    init() {
+      this._super(...arguments);
+
+      if (Ember.testing) {
+        this._waiter = () => {
+          if (!this.queues) {
+            return;
+          }
+          const lastQueueName = this.queueNames[this.queueNames.length - 1];
+          const lastQueue = this.queues[lastQueueName];
+          return !lastQueue.isActive;
+        };
+        Ember.Test.registerWaiter(this._waiter);
+      }
+    },
+
+    willDestroy() {
+      if (this._waiter) {
+        Ember.Test.unregisterWaiter(this._waiter);
+        this._waiter = null;
+      }
+
+      this._super(...arguments);
+    }
+  });
+}
+
+export default Scheduler;
