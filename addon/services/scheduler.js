@@ -174,7 +174,7 @@ if (DEBUG) {
       if (Ember.testing) {
         this._waiter = () => {
           if (!this.queues) {
-            return;
+            return true;
           }
           const lastQueueName = this.queueNames[this.queueNames.length - 1];
           const lastQueue = this.queues[lastQueueName];
