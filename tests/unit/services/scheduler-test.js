@@ -25,9 +25,11 @@ test('it should have an active queue after scheduling work', function(assert) {
 
   let myWork = () => true;
 
-  this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+  const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
 
   assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
+
+  this.scheduler.cancelWork(workToken);
 });
 
 test('it should not have an active queue after flushing that queue', function(assert) {
@@ -35,7 +37,7 @@ test('it should not have an active queue after flushing that queue', function(as
 
   let myWork = () => true;
 
-  this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+  const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
 
   assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
@@ -44,6 +46,8 @@ test('it should not have an active queue after flushing that queue', function(as
   });
 
   assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
+
+  this.scheduler.cancelWork(workToken);
 });
 
 test('it should have no active queues after the router\'s willTransition event', function(assert) {
@@ -51,7 +55,7 @@ test('it should have no active queues after the router\'s willTransition event',
 
   let myWork = () => true;
 
-  this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+  const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
 
   assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
@@ -60,4 +64,20 @@ test('it should have no active queues after the router\'s willTransition event',
   });
 
   assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
+
+  this.scheduler.cancelWork(workToken);
+});
+
+test('it should cancel work when given a token', function(assert) {
+  assert.expect(2);
+
+  let myWork = () => true;
+
+  const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+
+  assert.notOk(workToken.cancelled, 'token is not cancelled');
+
+  this.scheduler.cancelWork(workToken);
+
+  assert.ok(workToken.cancelled, 'token is cancelled');
 });

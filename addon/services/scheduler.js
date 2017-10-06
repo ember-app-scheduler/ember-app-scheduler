@@ -186,10 +186,7 @@ if (DEBUG) {
         return true;
       }
 
-      /** @type {String} */
       const lastQueueName = this.queueNames[this.queueNames.length - 1];
-
-      /** @type {Queue} */
       const lastQueue = this.queues[lastQueueName];
 
       const hasActiveQueue = lastQueue && lastQueue.isActive;
