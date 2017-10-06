@@ -172,16 +172,27 @@ if (DEBUG) {
       this._super(...arguments);
 
       if (Ember.testing) {
-        this._waiter = () => {
-          if (!this.queues) {
-            return;
-          }
-          const lastQueueName = this.queueNames[this.queueNames.length - 1];
-          const lastQueue = this.queues[lastQueueName];
-          return !lastQueue.isActive;
-        };
+        this._waiter = () => !this.hasActiveQueue();
         Ember.Test.registerWaiter(this._waiter);
       }
+    },
+
+    /**
+     * Method to detect if there is still an active queue
+     * @return {Boolean}
+     */
+    hasActiveQueue() {
+      if (!this.queues) {
+        return true;
+      }
+
+      const lastQueueName = this.queueNames[this.queueNames.length - 1];
+      const lastQueue = this.queues[lastQueueName];
+
+      const hasActiveQueue = lastQueue && lastQueue.isActive;
+      const hasTasks = lastQueue.tasks.length > 0;
+
+      return hasActiveQueue && hasTasks;
     },
 
     willDestroy() {
