@@ -121,10 +121,13 @@ const Scheduler = Service.extend({
   },
 
   _rAFCallback(resolve) {
+    if (this._nextPaintTimeout) {
+      run.cancel(this._nextPaintTimeout);
+    }
+
     this._nextPaintTimeout = run.later(() => {
       this._nextAfterPaintPromise = null;
       this._nextPaintFrame = null;
-      this._nextPaintTimeout = null;
       resolve();
     }, 0);
   },
