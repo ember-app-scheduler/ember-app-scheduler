@@ -37,6 +37,10 @@ class Queue {
 const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
+  router: Ember.computed(function() {
+    return Ember.getOwner(this).lookup('router:main');
+  }),
+
   init() {
     this._super();
     this._nextPaintFrame = null;
@@ -111,6 +115,7 @@ const Scheduler = Service.extend({
 
     this._nextAfterPaintPromise = new RSVP.Promise((resolve) => {
       if (this._useRAF) {
+        cancelAnimationFrame(this._nextPaintFrame);
         this._nextPaintFrame = requestAnimationFrame(() => this._rAFCallback(resolve));
       } else {
         this._rAFCallback(resolve);
@@ -121,9 +126,11 @@ const Scheduler = Service.extend({
   },
 
   _rAFCallback(resolve) {
-    if (this._nextPaintTimeout) {
-      run.cancel(this._nextPaintTimeout);
+    if (this.isDestroying) {
+      return;
     }
+
+    run.cancel(this._nextPaintTimeout);
 
     this._nextPaintTimeout = run.later(() => {
       this._nextAfterPaintPromise = null;
@@ -155,17 +162,18 @@ const Scheduler = Service.extend({
   },
 
   willDestroy() {
-    this._super();
-    const router = this.get('router');
-    this.queues = null; // don't hold any references to uncompleted items
-
-    router.off('willTransition', this._routerWillTransitionHandler);
-    router.off('didTransition', this._routerDidTransitionHandler);
-
     if (this._useRAF) {
       cancelAnimationFrame(this._nextPaintFrame);
     }
     run.cancel(this._nextPaintTimeout);
+
+    this.queues = null; // don't hold any references to uncompleted items
+
+    const router = this.get('router');
+    router.off('willTransition', this._routerWillTransitionHandler);
+    router.off('didTransition', this._routerDidTransitionHandler);
+
+    this._super();
   }
 });
 
@@ -175,7 +183,7 @@ if (DEBUG) {
       this._super(...arguments);
 
       if (Ember.testing) {
-        this._waiter = () => !this.hasActiveQueue();
+        this._waiter = () => !(this.hasActiveQueue() || this._nextPaintFrame || this._nextPaintTimeout);
         Ember.Test.registerWaiter(this._waiter);
       }
     },
@@ -186,7 +194,7 @@ if (DEBUG) {
      */
     hasActiveQueue() {
       if (!this.queues) {
-        return true;
+        return false;
       }
 
       const lastQueueName = this.queueNames[this.queueNames.length - 1];
