@@ -122,7 +122,7 @@ const Scheduler = Service.extend({
   },
 
   _rAFCallback(resolve) {
-    if (this.isDestroying) {
+    if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
@@ -180,7 +180,8 @@ if (DEBUG) {
       this._super(...arguments);
 
       if (Ember.testing) {
-        this._waiter = () => !(this.hasActiveQueue() || this.hasPendingTimers());
+        const shouldWaitOnTimers = this.hasActiveQueue() || this.hasPendingTimers();
+        this._waiter = () => shouldWaitOnTimers;
         Ember.Test.registerWaiter(this._waiter);
       }
     },
