@@ -199,9 +199,9 @@ if (DEBUG) {
       const lastQueue = this.queues[lastQueueName];
 
       const hasActiveQueue = lastQueue && lastQueue.isActive;
-      const hasTasks = lastQueue.tasks.length > 0;
+      const hasTasks = lastQueue && lastQueue.tasks.length > 0;
 
-      return hasActiveQueue && hasTasks;
+      return hasActiveQueue || hasTasks;
     },
 
     /**
