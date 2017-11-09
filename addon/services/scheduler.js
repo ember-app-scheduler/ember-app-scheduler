@@ -37,10 +37,6 @@ class Queue {
 const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
-  router: Ember.computed(function() {
-    return Ember.getOwner(this).lookup('router:main');
-  }),
-
   init() {
     this._super();
     this._nextPaintFrame = null;
@@ -183,7 +179,7 @@ if (DEBUG) {
       this._super(...arguments);
 
       if (Ember.testing) {
-        this._waiter = () => !(this.hasActiveQueue() || this._nextPaintFrame || this._nextPaintTimeout);
+        this._waiter = () => !(this.hasActiveQueue() || this.hasPendingTimers());
         Ember.Test.registerWaiter(this._waiter);
       }
     },
@@ -204,6 +200,14 @@ if (DEBUG) {
       const hasTasks = lastQueue.tasks.length > 0;
 
       return hasActiveQueue && hasTasks;
+    },
+
+    /**
+     * Method to detect if there are still active timers
+     * @return {Boolean}
+     */
+    hasPendingTimers() {
+      return this._nextPaintFrame || this._nextPaintTimeout;
     },
 
     willDestroy() {
