@@ -131,6 +131,7 @@ const Scheduler = Service.extend({
     this._nextPaintTimeout = run.later(() => {
       this._nextAfterPaintPromise = null;
       this._nextPaintFrame = null;
+      this._nextPaintTimeout = null;
       resolve();
     }, 0);
   },
