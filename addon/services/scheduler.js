@@ -45,7 +45,7 @@ const Scheduler = Service.extend({
     const queue = this.queues[queueName];
     queue.isActive = false;
 
-    while (queue.tasks.length) {
+    while (queue.size() > 0) {
       const task = queue.dequeue();
 
       if (!task.token.cancelled) {
