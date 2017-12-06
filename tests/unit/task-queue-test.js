@@ -1,13 +1,12 @@
 import { module, test } from 'qunit';
 import TaskQueue from 'ember-app-scheduler/task-queue';
-import Token from 'ember-app-scheduler/token';
 
 module(`Unit | ember-app-scheduler | Queue`, {
   beforeEach() {
     this.taskQueue = new TaskQueue();
 
     this.createTask = () => {
-      return { token: new Token(), callback: () => {} };
+      return () => {};
     }
   }
 });

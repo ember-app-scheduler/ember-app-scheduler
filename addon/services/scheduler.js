@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import { DEBUG } from '@glimmer/env';
-import Token from '../token';
 import TaskQueue from '../task-queue';
 
 const {
@@ -26,19 +25,20 @@ const Scheduler = Service.extend({
 
   scheduleWork(queueName, callback) {
     const queue = this.queues[queueName];
-    const token = new Token();
 
     if (queue.isActive) {
-      queue.enqueue({token, callback});
+      queue.enqueue(callback);
     } else {
       callback();
     }
 
-    return token;
+    return callback;
   },
 
-  cancelWork(token) {
-    token.cancel();
+  cancelWork(queueName, token) {
+    const queue = this.queues[queueName];
+
+    queue.cancel(token);
   },
 
   flushQueue(queueName) {

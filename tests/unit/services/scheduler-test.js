@@ -29,7 +29,7 @@ test('it should have an active queue after scheduling work', function(assert) {
 
   assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
-  this.scheduler.cancelWork(workToken);
+  this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
 });
 
 test('it should not have an active queue after flushing that queue', function(assert) {
@@ -47,7 +47,7 @@ test('it should not have an active queue after flushing that queue', function(as
 
   assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
 
-  this.scheduler.cancelWork(workToken);
+  this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
 });
 
 test('it should have no active queues after the router\'s willTransition event', function(assert) {
@@ -65,19 +65,17 @@ test('it should have no active queues after the router\'s willTransition event',
 
   assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
 
-  this.scheduler.cancelWork(workToken);
+  this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
 });
 
 test('it should cancel work when given a token', function(assert) {
-  assert.expect(2);
+  assert.expect(1);
 
   let myWork = () => true;
 
   const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
 
-  assert.notOk(workToken.cancelled, 'token is not cancelled');
+  this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
 
-  this.scheduler.cancelWork(workToken);
-
-  assert.ok(workToken.cancelled, 'token is cancelled');
+  assert.equal(this.scheduler.queues[AFTER_CONTENT_PAINT].tasks.indexOf(workToken), -1, 'token is cancelled');
 });
