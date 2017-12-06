@@ -1,14 +1,16 @@
-import Ember from 'ember';
+import { join } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   shouldRender: false,
-  scheduler: Ember.inject.service(),
+  scheduler: service(),
   classNames: ['deferred-container'],
 
   init() {
     this._super();
     this._token = this.get('scheduler').scheduleWork('afterFirstRoutePaint', () => {
-      Ember.run.join(() => {
+      join(() => {
         this.set('shouldRender', true);
         this.isRendered = true;
       });

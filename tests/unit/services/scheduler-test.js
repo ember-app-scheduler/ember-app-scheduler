@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run, Evented, Service } = Ember;
 const AFTER_CONTENT_PAINT = 'afterContentPaint';
 
 moduleFor('service:scheduler', 'Unit | Service | scheduler', {
