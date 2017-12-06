@@ -46,9 +46,7 @@ const Scheduler = Service.extend({
     queue.flush();
 
     this._afterNextPaint()
-      .then(() => {
-        queue.afterPaintDeferred.resolve();
-      });
+      .then(queue.afterPaintDeferred.resolve);
   },
 
   _initQueues() {

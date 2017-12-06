@@ -16,22 +16,22 @@ export default class TaskQueue {
       this.tasks.splice(index, 1);
     }
   }
-
-  size() {
-    return this.tasks.length;
-  }
-
+  
   flush() {
     this.isActive = false;
-
+    
     for (let i = 0; i < this.tasks.length; i++) {
       this.tasks[i]();
     }
-
+    
     this.tasks = [];
     this.isActive = true;
   }
-
+  
+  size() {
+    return this.tasks.length;
+  }
+  
   reset() {
     this.tasks = [];
     this.isActive = true;
