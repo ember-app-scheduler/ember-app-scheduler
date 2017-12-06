@@ -43,15 +43,7 @@ const Scheduler = Service.extend({
 
   flushQueue(queueName) {
     const queue = this.queues[queueName];
-    queue.isActive = false;
-
-    while (queue.size() > 0) {
-      const task = queue.dequeue();
-
-      if (!task.token.cancelled) {
-        task.callback();
-      }
-    }
+    queue.flush();
 
     this._afterNextPaint()
       .then(() => {

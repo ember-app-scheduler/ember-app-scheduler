@@ -9,12 +9,19 @@ export default class TaskQueue {
     this.tasks.push(task);
   }
 
-  dequeue() {
-    return this.tasks.shift();
-  }
-
   size() {
     return this.tasks.length;
+  }
+
+  flush() {
+    this.isActive = false;
+
+    for (let i = 0; i < this.tasks.length; i++) {
+      this.tasks[i].callback();
+    }
+
+    this.tasks = [];
+    this.isActive = true;
   }
 
   reset() {

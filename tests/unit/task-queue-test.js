@@ -36,33 +36,7 @@ test('task is enqueued', function(assert) {
   assert.equal(task, this.taskQueue.tasks[0], 'task is correctly enqueued');
 });
 
-test('task is dequeued', function(assert) {
-  assert.expect(1);
-
-  const task = this.createTask();
-
-  this.taskQueue.enqueue(task);
-  
-  const expectedTask = this.taskQueue.dequeue();
-
-  assert.equal(task, expectedTask, 'task is correctly dequeued');
-});
-
-test('task is dequeued in the correct order', function(assert) {
-  assert.expect(1);
-
-  const firstTask = this.createTask();
-  const secondTask = this.createTask();
-
-  this.taskQueue.enqueue(firstTask);
-  this.taskQueue.enqueue(secondTask);
-  
-  const expectedTask = this.taskQueue.dequeue();
-
-  assert.equal(firstTask, expectedTask, 'task is correctly dequeued');
-});
-
-test('queue is reset correctly', function(assert) {
+test('queue flushes correctly', function(assert) {
   assert.expect(2);
 
   const firstTask = this.createTask();
@@ -71,8 +45,8 @@ test('queue is reset correctly', function(assert) {
   this.taskQueue.enqueue(firstTask);
   this.taskQueue.enqueue(secondTask);
   
-  this.taskQueue.reset();
+  this.taskQueue.flush();
 
   assert.equal(this.taskQueue.size(), 0, 'size is 0');
-  assert.ok(this.taskQueue.isActive, 'size is 0');
+  assert.ok(this.taskQueue.isActive, 'queue is active');
 });
