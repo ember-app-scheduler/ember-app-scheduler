@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   willDestroyElement() {
     this._super(...arguments);
     if (this._token) {
-      this.get('scheduler').cancelWork(this._token);
+      this.get('scheduler').cancelWork('afterContentPaint', this._token);
     }
   }
 });

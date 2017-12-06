@@ -1,38 +1,12 @@
 import Ember from 'ember';
 import { DEBUG } from '@glimmer/env';
+import TaskQueue from '../task-queue';
 
 const {
   run,
   RSVP,
   Service,
 } = Ember;
-
-class Token {
-  constructor() {
-    this._cancelled = false;
-  }
-
-  get cancelled() {
-    return this._cancelled;
-  }
-
-  cancel() {
-    this._cancelled = true;
-  }
-}
-
-class Queue {
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.tasks = [];
-    this.isActive = true;
-    this.afterPaintDeferred = RSVP.defer();
-    this.afterPaintPromise = this.afterPaintDeferred.promise;
-  }
-}
 
 const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
@@ -51,39 +25,28 @@ const Scheduler = Service.extend({
 
   scheduleWork(queueName, callback) {
     const queue = this.queues[queueName];
-    const token = new Token();
 
     if (queue.isActive) {
-      queue.tasks.push(callback);
-      queue.tasks.push(token);
+      queue.enqueue(callback);
     } else {
       callback();
     }
 
-    return token;
+    return callback;
   },
 
-  cancelWork(token) {
-    token.cancel();
+  cancelWork(queueName, token) {
+    const queue = this.queues[queueName];
+
+    queue.cancel(token);
   },
 
   flushQueue(queueName) {
     const queue = this.queues[queueName];
-    queue.isActive = false;
-
-    for (let i = 0; i < queue.tasks.length; i += 2) {
-      const callback = queue.tasks[i];
-      const token = queue.tasks[i+1];
-
-      if (!token.cancelled) {
-        callback();
-      }
-    }
+    queue.flush();
 
     this._afterNextPaint()
-      .then(() => {
-        queue.afterPaintDeferred.resolve();
-      });
+      .then(queue.afterPaintDeferred.resolve);
   },
 
   _initQueues() {
@@ -91,7 +54,7 @@ const Scheduler = Service.extend({
     const queueNames = this.queueNames;
 
     for (let i = 0; i < queueNames.length; i++) {
-      queues[queueNames[i]] = new Queue();
+      queues[queueNames[i]] = new TaskQueue();
     }
   },
 
