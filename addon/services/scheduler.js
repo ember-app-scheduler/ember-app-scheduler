@@ -7,10 +7,10 @@ import { DEBUG } from '@glimmer/env';
 import TaskQueue from '../task-queue';
 
 const Scheduler = Service.extend({
-  queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
 
   init() {
     this._super();
+    this.queueNames = ['afterFirstRoutePaint', 'afterContentPaint'];
     this._nextPaintFrame = null;
     this._nextPaintTimeout = null;
     this._nextAfterPaintPromise = null;
