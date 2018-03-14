@@ -1,12 +1,10 @@
+import { registerWaiter, unregisterWaiter } from '@ember/test';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
+import Service from '@ember/service';
 import Ember from 'ember';
 import { DEBUG } from '@glimmer/env';
 import TaskQueue from '../task-queue';
-
-const {
-  run,
-  RSVP,
-  Service,
-} = Ember;
 
 const Scheduler = Service.extend({
   queueNames: ['afterFirstRoutePaint', 'afterContentPaint'],
@@ -136,7 +134,7 @@ if (DEBUG) {
 
       if (Ember.testing) {
         this._waiter = () => !this.hasActiveQueue();
-        Ember.Test.registerWaiter(this._waiter);
+        registerWaiter(this._waiter);
       }
     },
 
@@ -160,7 +158,7 @@ if (DEBUG) {
 
     willDestroy() {
       if (this._waiter) {
-        Ember.Test.unregisterWaiter(this._waiter);
+        unregisterWaiter(this._waiter);
         this._waiter = null;
       }
 

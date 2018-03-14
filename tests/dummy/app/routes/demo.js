@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
     let people = [];
     for (let i = 1; i <= 10; i++) {
@@ -16,7 +17,7 @@ export default Ember.Route.extend({
       });
     }
 
-    return Ember.RSVP.hash({
+    return hash({
       people: people,
       cats: cats
     });
