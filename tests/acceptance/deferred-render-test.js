@@ -1,17 +1,6 @@
-import QUnit, { module, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, find } from '@ember/test-helpers';
-
-QUnit.extend(QUnit.assert, {
-  isVisible: function(el, message) {
-    let result = el !== null && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-    this.pushResult({ result, actual: result, expected: true, message });
-  },
-  isNotVisible: function(el, message) {
-    let result = el === null || !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-    this.pushResult({ result, actual: result, expected: true, message });
-  }
-});
 
 module('Acceptance | deferred render', function(hooks) {
   setupApplicationTest(hooks);
