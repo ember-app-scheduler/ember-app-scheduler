@@ -7,7 +7,7 @@ module(`Unit | ember-app-scheduler | Queue`, function(hooks) {
 
     this.createTask = () => {
       return () => {};
-    }
+    };
   });
 
   test('queue size is 0 when instantiated', function(assert) {
@@ -42,7 +42,7 @@ module(`Unit | ember-app-scheduler | Queue`, function(hooks) {
 
     this.taskQueue.enqueue(firstTask);
     this.taskQueue.enqueue(secondTask);
-    
+
     this.taskQueue.flush();
 
     assert.equal(this.taskQueue.size(), 0, 'size is 0');

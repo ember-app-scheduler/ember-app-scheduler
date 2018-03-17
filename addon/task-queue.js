@@ -2,7 +2,7 @@ import RSVP from 'rsvp';
 
 export default class TaskQueue {
   constructor() {
-    this.reset();    
+    this.reset();
   }
 
   enqueue(task) {
@@ -11,27 +11,27 @@ export default class TaskQueue {
 
   cancel(token) {
     let index = this.tasks.indexOf(token);
-    
+
     if (index > -1) {
       this.tasks.splice(index, 1);
     }
   }
-  
+
   flush() {
     this.isActive = false;
-    
+
     for (let i = 0; i < this.tasks.length; i++) {
       this.tasks[i]();
     }
-    
+
     this.tasks = [];
     this.isActive = true;
   }
-  
+
   size() {
     return this.tasks.length;
   }
-  
+
   reset() {
     this.tasks = [];
     this.isActive = true;

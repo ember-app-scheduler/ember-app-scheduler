@@ -3,7 +3,7 @@
 
 module.exports = function(environment) {
   let ENV = {
-    APP: {}
+    APP: {},
   };
 
   if (environment === 'test') {
