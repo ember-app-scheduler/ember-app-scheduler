@@ -1,6 +1,17 @@
-import { module, test } from 'qunit';
+import QUnit, { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit } from '@ember/test-helpers';
+import { visit, find } from '@ember/test-helpers';
+
+QUnit.extend(QUnit.assert, {
+  isVisible: function(el, message) {
+    let result = el !== null && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+    this.pushResult({ result, actual: result, expected: true, message });
+  },
+  isNotVisible: function(el, message) {
+    let result = el === null || !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+    this.pushResult({ result, actual: result, expected: true, message });
+  }
+});
 
 module('Acceptance | deferred render', function(hooks) {
   setupApplicationTest(hooks);
@@ -17,14 +28,14 @@ module('Acceptance | deferred render', function(hooks) {
     this.router.on('didTransition', () => {
       this.scheduler.queues['afterFirstRoutePaint'].afterPaintPromise.then(() => {
         const deferredElement = find('.deferred-container ul');
-        assert.ok(deferredElement.is(':visible'), 'Deferred content should be visible.');
+        assert.isVisible(deferredElement, 'Deferred content should be visible.');
         const adElement = find('.ad-container h3');
-        assert.notOk(adElement.is(':visible'), 'Ad should not be visible.');
+        assert.isNotVisible(adElement, 'Ad should not be visible.');
       });
 
       this.scheduler.queues['afterContentPaint'].afterPaintPromise.then(() => {
         const adElement = find('.ad-container h3');
-        assert.ok(adElement.is(':visible'), 'Ad should be visible.');
+        assert.isVisible(adElement, 'Ad should be visible.');
         done();
       });
     });
@@ -40,14 +51,14 @@ module('Acceptance | deferred render', function(hooks) {
     this.router.on('didTransition', () => {
       this.scheduler.queues['afterFirstRoutePaint'].afterPaintPromise.then(() => {
         const deferredElement = find('.deferred-container ul');
-        assert.ok(deferredElement.is(':visible'), 'Deferred content should be visible.');
+        assert.isVisible(deferredElement, 'Deferred content should be visible.');
         const adElement = find('.ad-container h3');
-        assert.notOk(adElement.is(':visible'), 'Ad should not be visible.');
+        assert.isNotVisible(adElement, 'Ad should not be visible.');
       });
 
       this.scheduler.queues['afterContentPaint'].afterPaintPromise.then(() => {
         const adElement = find('.ad-container h3');
-        assert.ok(adElement.is(':visible'), 'Ad should be visible.');
+        assert.isVisible(adElement, 'Ad should be visible.');
         this.scheduler._useRAF = true;
         done();
       });
