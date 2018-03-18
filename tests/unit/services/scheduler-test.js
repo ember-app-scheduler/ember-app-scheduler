@@ -57,7 +57,7 @@ module('Unit | Service | scheduler', function(hooks) {
     this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
   });
 
-  test('it should have no active queues after the router\'s willTransition event', function(assert) {
+  test("it should have no active queues after the router's willTransition event", function(assert) {
     assert.expect(2);
 
     let myWork = () => true;
@@ -84,6 +84,10 @@ module('Unit | Service | scheduler', function(hooks) {
 
     this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
 
-    assert.equal(this.scheduler.queues[AFTER_CONTENT_PAINT].tasks.indexOf(workToken), -1, 'token is cancelled');
+    assert.equal(
+      this.scheduler.queues[AFTER_CONTENT_PAINT].tasks.indexOf(workToken),
+      -1,
+      'token is cancelled'
+    );
   });
 });

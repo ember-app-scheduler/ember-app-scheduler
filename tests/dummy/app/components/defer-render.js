@@ -9,12 +9,15 @@ export default Component.extend({
 
   init() {
     this._super();
-    this._token = this.get('scheduler').scheduleWork('afterFirstRoutePaint', () => {
-      join(() => {
-        this.set('shouldRender', true);
-        this.isRendered = true;
-      });
-    });
+    this._token = this.get('scheduler').scheduleWork(
+      'afterFirstRoutePaint',
+      () => {
+        join(() => {
+          this.set('shouldRender', true);
+          this.isRendered = true;
+        });
+      }
+    );
   },
 
   willDestroyElement() {
@@ -22,5 +25,5 @@ export default Component.extend({
     if (this._token) {
       this.get('scheduler').cancelWork('afterFirstRoutePaint', this._token);
     }
-  }
+  },
 });

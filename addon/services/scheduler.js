@@ -18,7 +18,7 @@ const Scheduler = Service.extend({
     this._routerDidTransitionHandler = null;
     this._initQueues();
     this._connectToRouter();
-    this._useRAF = typeof requestAnimationFrame === "function";
+    this._useRAF = typeof requestAnimationFrame === 'function';
   },
 
   scheduleWork(queueName, callback) {
@@ -43,12 +43,11 @@ const Scheduler = Service.extend({
     const queue = this.queues[queueName];
     queue.flush();
 
-    this._afterNextPaint()
-      .then(queue.afterPaintDeferred.resolve);
+    this._afterNextPaint().then(queue.afterPaintDeferred.resolve);
   },
 
   _initQueues() {
-    const queues = this.queues = Object.create(null);
+    const queues = (this.queues = Object.create(null));
     const queueNames = this.queueNames;
 
     for (let i = 0; i < queueNames.length; i++) {
@@ -70,9 +69,11 @@ const Scheduler = Service.extend({
       return this._nextAfterPaintPromise;
     }
 
-    this._nextAfterPaintPromise = new RSVP.Promise((resolve) => {
+    this._nextAfterPaintPromise = new RSVP.Promise(resolve => {
       if (this._useRAF) {
-        this._nextPaintFrame = requestAnimationFrame(() => this._rAFCallback(resolve));
+        this._nextPaintFrame = requestAnimationFrame(() =>
+          this._rAFCallback(resolve)
+        );
       } else {
         this._rAFCallback(resolve);
       }
@@ -98,14 +99,12 @@ const Scheduler = Service.extend({
     };
 
     this._routerDidTransitionHandler = () => {
-      this._afterNextPaint()
-        .then(() => {
-          this.flushQueue('afterFirstRoutePaint');
-          this._afterNextPaint()
-            .then(() => {
-              this.flushQueue('afterContentPaint');
-            });
+      this._afterNextPaint().then(() => {
+        this.flushQueue('afterFirstRoutePaint');
+        this._afterNextPaint().then(() => {
+          this.flushQueue('afterContentPaint');
         });
+      });
     };
 
     router.on('willTransition', this._routerWillTransitionHandler);
@@ -124,7 +123,7 @@ const Scheduler = Service.extend({
       cancelAnimationFrame(this._nextPaintFrame);
     }
     run.cancel(this._nextPaintTimeout);
-  }
+  },
 });
 
 if (DEBUG) {
@@ -163,7 +162,7 @@ if (DEBUG) {
       }
 
       this._super(...arguments);
-    }
+    },
   });
 }
 
