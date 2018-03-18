@@ -27,9 +27,7 @@ module('Unit | Service | scheduler', function(hooks) {
     assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
   });
 
-  test('it should have an active queue after scheduling work', function(
-    assert
-  ) {
+  test('it should have an active queue after scheduling work', function(assert) {
     assert.expect(1);
 
     let myWork = () => true;
@@ -41,9 +39,7 @@ module('Unit | Service | scheduler', function(hooks) {
     this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
   });
 
-  test('it should not have an active queue after flushing that queue', function(
-    assert
-  ) {
+  test('it should not have an active queue after flushing that queue', function(assert) {
     assert.expect(2);
 
     let myWork = () => true;
@@ -61,9 +57,7 @@ module('Unit | Service | scheduler', function(hooks) {
     this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
   });
 
-  test("it should have no active queues after the router's willTransition event", function(
-    assert
-  ) {
+  test("it should have no active queues after the router's willTransition event", function(assert) {
     assert.expect(2);
 
     let myWork = () => true;
