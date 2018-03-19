@@ -32,11 +32,11 @@ module('Unit | Service | scheduler', function(hooks) {
 
     let myWork = () => true;
 
-    const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+    const workToken = this.scheduler.on(AFTER_CONTENT_PAINT, myWork);
 
     assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
-    this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
+    this.scheduler.off(AFTER_CONTENT_PAINT, workToken);
   });
 
   test('it should not have an active queue after flushing that queue', function(assert) {
@@ -44,7 +44,7 @@ module('Unit | Service | scheduler', function(hooks) {
 
     let myWork = () => true;
 
-    const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+    const workToken = this.scheduler.on(AFTER_CONTENT_PAINT, myWork);
 
     assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
@@ -54,7 +54,7 @@ module('Unit | Service | scheduler', function(hooks) {
 
     assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
 
-    this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
+    this.scheduler.off(AFTER_CONTENT_PAINT, workToken);
   });
 
   test("it should have no active queues after the router's willTransition event", function(assert) {
@@ -62,7 +62,7 @@ module('Unit | Service | scheduler', function(hooks) {
 
     let myWork = () => true;
 
-    const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+    const workToken = this.scheduler.on(AFTER_CONTENT_PAINT, myWork);
 
     assert.ok(this.scheduler.hasActiveQueue(), 'has active queues');
 
@@ -72,7 +72,7 @@ module('Unit | Service | scheduler', function(hooks) {
 
     assert.notOk(this.scheduler.hasActiveQueue(), 'has no active queues');
 
-    this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
+    this.scheduler.off(AFTER_CONTENT_PAINT, workToken);
   });
 
   test('it should cancel work when given a token', function(assert) {
@@ -80,9 +80,9 @@ module('Unit | Service | scheduler', function(hooks) {
 
     let myWork = () => true;
 
-    const workToken = this.scheduler.scheduleWork(AFTER_CONTENT_PAINT, myWork);
+    const workToken = this.scheduler.on(AFTER_CONTENT_PAINT, myWork);
 
-    this.scheduler.cancelWork(AFTER_CONTENT_PAINT, workToken);
+    this.scheduler.off(AFTER_CONTENT_PAINT, workToken);
 
     assert.equal(
       this.scheduler.queues[AFTER_CONTENT_PAINT].tasks.indexOf(workToken),

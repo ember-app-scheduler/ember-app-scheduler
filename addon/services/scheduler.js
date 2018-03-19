@@ -1,8 +1,8 @@
+import Ember from 'ember';
+import RSVP from 'rsvp';
 import { registerWaiter, unregisterWaiter } from '@ember/test';
 import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
 import Service from '@ember/service';
-import Ember from 'ember';
 import { DEBUG } from '@glimmer/env';
 import TaskQueue from '../task-queue';
 
@@ -21,7 +21,7 @@ const Scheduler = Service.extend({
     this._useRAF = typeof requestAnimationFrame === 'function';
   },
 
-  scheduleWork(queueName, callback) {
+  on(queueName, callback) {
     const queue = this.queues[queueName];
 
     if (queue.isActive) {
@@ -33,7 +33,7 @@ const Scheduler = Service.extend({
     return callback;
   },
 
-  cancelWork(queueName, token) {
+  off(queueName, token) {
     const queue = this.queues[queueName];
 
     queue.cancel(token);

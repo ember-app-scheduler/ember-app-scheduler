@@ -9,21 +9,18 @@ export default Component.extend({
 
   init() {
     this._super();
-    this._token = this.get('scheduler').scheduleWork(
-      'afterContentPaint',
-      () => {
-        join(() => {
-          this.set('shouldRender', true);
-          this.isRendered = true;
-        });
-      }
-    );
+    this._token = this.get('scheduler').on('afterContentPaint', () => {
+      join(() => {
+        this.set('shouldRender', true);
+        this.isRendered = true;
+      });
+    });
   },
 
   willDestroyElement() {
     this._super(...arguments);
     if (this._token) {
-      this.get('scheduler').cancelWork('afterContentPaint', this._token);
+      this.get('scheduler').off('afterContentPaint', this._token);
     }
   },
 });
