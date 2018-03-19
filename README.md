@@ -38,7 +38,7 @@ this.get('scheduler').on('afterContentPaint', () => {
 
 * `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
 * `ember test`
-* `ember test --server`
+* `ember test --serve`
 
 ## Building
 
