@@ -17,7 +17,7 @@ This addon provides a service to schedule work in different paint phases of rend
 The `afterFirstRoutePaint` queue can be used to schedule work after the route is first painted. This is useful for scenarios like rendering content outside viewport, rendering non critical content etc.
 
 ```javascript
-this.get('scheduler').on('afterFirstRoutePaint', () => {
+this.get('scheduler').scheduleWork('afterFirstRoutePaint', () => {
   // schedule work
 });
 ```
@@ -25,7 +25,7 @@ this.get('scheduler').on('afterFirstRoutePaint', () => {
 The `afterContentPaint` queue can be used to schedule work after all the important content of the page has been painted. This is useful for scenarios like rendering ads, scheduling tracking work, rendering of popup overlays etc.
 
 ```javascript
-this.get('scheduler').on('afterContentPaint', () => {
+this.get('scheduler').scheduleWork('afterContentPaint', () => {
   // schedule work
 });
 ```

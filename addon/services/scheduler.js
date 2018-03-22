@@ -4,6 +4,7 @@ import { registerWaiter, unregisterWaiter } from '@ember/test';
 import { run } from '@ember/runloop';
 import Service from '@ember/service';
 import { DEBUG } from '@glimmer/env';
+import { getOwner } from '@ember/application';
 import TaskQueue from '../task-queue';
 
 const Scheduler = Service.extend({
@@ -11,17 +12,20 @@ const Scheduler = Service.extend({
 
   init() {
     this._super();
+
     this._nextPaintFrame = null;
     this._nextPaintTimeout = null;
     this._nextAfterPaintPromise = null;
     this._routerWillTransitionHandler = null;
     this._routerDidTransitionHandler = null;
+    this.router = getOwner(this).lookup('router:main');
+    this._useRAF = typeof requestAnimationFrame === 'function';
+
     this._initQueues();
     this._connectToRouter();
-    this._useRAF = typeof requestAnimationFrame === 'function';
   },
 
-  on(queueName, callback) {
+  scheduleWork(queueName, callback) {
     const queue = this.queues[queueName];
 
     if (queue.isActive) {
@@ -33,7 +37,7 @@ const Scheduler = Service.extend({
     return callback;
   },
 
-  off(queueName, token) {
+  cancelWork(queueName, token) {
     const queue = this.queues[queueName];
 
     queue.cancel(token);
