@@ -15,15 +15,13 @@ export const TRANSITION_INTERUPTED = 'TRANSITION INTERUPTED';
 export function beginTransition() {
   _checkForPriorTransition();
 
-  _didTransition = RSVP.defer();
-  _didTransition.isResolved = false;
-  _afterFirstRoutePaint = _didTransition.promise.then(() => afterNextPaint());
-  _afterContentPaint = _afterFirstRoutePaint.then(() => afterNextPaint());
+  _didTransition = _defer();
+  _afterFirstRoutePaint = _didTransition.promise.then(() => _afterNextPaint());
+  _afterContentPaint = _afterFirstRoutePaint.then(() => _afterNextPaint());
 }
 
 export function endTransition() {
   _didTransition.resolve();
-  _didTransition.isResolved = true;
 }
 
 export function setupRouter(router) {
@@ -32,11 +30,10 @@ export function setupRouter(router) {
 }
 
 export function reset() {
-  _didTransition = RSVP.defer();
+  _didTransition = _defer();
   _afterFirstRoutePaint = _didTransition.promise.then(() => {});
   _afterContentPaint = _afterFirstRoutePaint.then(() => {});
   _didTransition.resolve();
-  _didTransition.isResolved = true;
   _activeRAFs = 0;
 }
 
@@ -72,7 +69,7 @@ function _checkForPriorTransition() {
 }
 
 let _activeRAFs = 0;
-function afterNextPaint() {
+function _afterNextPaint() {
   let promise = new RSVP.Promise(resolve => {
     if (DEBUG) {
       _activeRAFs++;
@@ -99,4 +96,19 @@ function afterNextPaint() {
 if (DEBUG) {
   // wait until no active rafs
   registerWaiter(() => _activeRAFs === 0);
+}
+
+function _defer(label) {
+  let deferred = { resolve: undefined, reject: undefined };
+
+  deferred.isResolved = false;
+  deferred.promise = new RSVP.Promise((resolve, reject) => {
+    deferred.resolve = () => {
+      deferred.isResolved = true;
+      return resolve();
+    };
+    deferred.reject = reject;
+  }, label);
+
+  return deferred;
 }
