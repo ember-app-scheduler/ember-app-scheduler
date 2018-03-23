@@ -6,4 +6,5 @@ export {
   didTransition,
   afterFirstRoutePaint,
   afterContentPaint,
+  TRANSITION_INTERUPTED,
 } from './scheduler';

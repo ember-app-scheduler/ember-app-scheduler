@@ -10,6 +10,8 @@ let _afterContentPaint;
 
 reset();
 
+export const TRANSITION_INTERUPTED = 'TRANSITION INTERUPTED';
+
 export function beginTransition() {
   _checkForPriorTransition();
 
@@ -65,7 +67,7 @@ export function afterContentPaint() {
 
 function _checkForPriorTransition() {
   if (!_didTransition.isResolved) {
-    _didTransition.reject('fuck off');
+    _didTransition.reject(TRANSITION_INTERUPTED);
   }
 }
 
