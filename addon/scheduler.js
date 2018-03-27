@@ -5,8 +5,8 @@ import { registerWaiter } from '@ember/test';
 
 const USE_RAF = typeof requestAnimationFrame === 'function';
 let _didTransition;
-let _afterFirstRoutePaint;
-let _afterContentPaint;
+let _whenRoutePainted;
+let _whenRouteIdle;
 
 reset();
 
@@ -16,8 +16,8 @@ export function beginTransition() {
   _checkForPriorTransition();
 
   _didTransition = _defer();
-  _afterFirstRoutePaint = _didTransition.promise.then(() => _afterNextPaint());
-  _afterContentPaint = _afterFirstRoutePaint.then(() => _afterNextPaint());
+  _whenRoutePainted = _didTransition.promise.then(() => _afterNextPaint());
+  _whenRouteIdle = _whenRoutePainted.then(() => _afterNextPaint());
 }
 
 export function endTransition() {
@@ -31,8 +31,8 @@ export function setupRouter(router) {
 
 export function reset() {
   _didTransition = _defer();
-  _afterFirstRoutePaint = _didTransition.promise.then(() => {});
-  _afterContentPaint = _afterFirstRoutePaint.then(() => {});
+  _whenRoutePainted = _didTransition.promise.then(() => {});
+  _whenRouteIdle = _whenRoutePainted.then(() => {});
   _didTransition.resolve();
   _activeRAFs = 0;
 }
@@ -51,15 +51,15 @@ export function didTransition() {
  * This can be used to schedule work to occur that is lower priority than initial
  * work (content outside of the viewport, rendering non-critical content).
  */
-export function afterFirstRoutePaint() {
-  return _afterFirstRoutePaint;
+export function whenRoutePainted() {
+  return _whenRoutePainted;
 }
 
 /**
  * This promise, when resolved, approximates after content is painted.
  */
-export function afterContentPaint() {
-  return _afterContentPaint;
+export function whenRouteIdle() {
+  return _whenRouteIdle;
 }
 
 function _checkForPriorTransition() {

@@ -4,7 +4,7 @@ export {
   beginTransition,
   endTransition,
   didTransition,
-  afterFirstRoutePaint,
-  afterContentPaint,
+  whenRoutePainted,
+  whenRouteIdle,
   TRANSITION_INTERUPTED,
 } from './scheduler';

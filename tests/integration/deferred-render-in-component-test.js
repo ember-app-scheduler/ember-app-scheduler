@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, waitFor } from '@ember/test-helpers';
 import { beginTransition, endTransition } from 'ember-app-scheduler/scheduler';
-import { afterFirstRoutePaint, afterContentPaint } from 'ember-app-scheduler';
+import { whenRoutePainted, whenRouteIdle } from 'ember-app-scheduler';
 
 module('deferred render in component', function(hooks) {
   setupRenderingTest(hooks);
@@ -28,11 +28,11 @@ module('deferred render in component', function(hooks) {
         },
 
         didInsertElement() {
-          afterFirstRoutePaint().then(() => {
+          whenRoutePainted().then(() => {
             this.set('showFoo', true);
           });
 
-          afterContentPaint().then(() => {
+          whenRouteIdle().then(() => {
             this.set('showBar', true);
           });
         },
@@ -44,7 +44,7 @@ module('deferred render in component', function(hooks) {
       : this.owner._lookupFactory(name);
   });
 
-  test('deferred element is visible following afterFirstRoutePaint', async function(assert) {
+  test('deferred element is visible following whenRoutePainted', async function(assert) {
     let foo;
 
     this.owner.register(
@@ -67,7 +67,7 @@ module('deferred render in component', function(hooks) {
     assert.isVisible(foo);
   });
 
-  test('deferred element is visible following afterContentPaint', async function(assert) {
+  test('deferred element is visible following whenRouteIdle', async function(assert) {
     let foo;
 
     this.owner.register(
