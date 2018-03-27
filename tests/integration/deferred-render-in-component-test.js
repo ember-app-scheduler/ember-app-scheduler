@@ -89,4 +89,8 @@ module('deferred render in component', function(hooks) {
 
     assert.isVisible(foo);
   });
+
+  test('existing transition signals correctly if transition is aborted before completion', async function(assert) {
+    assert.expect(0);
+  });
 });
