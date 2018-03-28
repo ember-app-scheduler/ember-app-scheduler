@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, currentRouteName } from '@ember/test-helpers';
-import { setupRouter, reset } from 'ember-app-scheduler';
+import { setupRouter, reset, routeSettled } from 'ember-app-scheduler';
 
-module('Acceptance | deferred render', function(hooks) {
+module('Acceptance | when rendered tests', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
@@ -23,6 +23,8 @@ module('Acceptance | deferred render', function(hooks) {
 
     assert.equal(currentRouteName(), 'first-paint');
     assert.dom('.only-when-route-painted').exists();
+
+    await routeSettled();
   });
 
   test('visiting route renders deferred content via whenRouteIdle', async function(assert) {
@@ -32,6 +34,8 @@ module('Acceptance | deferred render', function(hooks) {
 
     assert.equal(currentRouteName(), 'content-paint');
     assert.dom('.only-when-route-idle').exists();
+
+    await routeSettled();
   });
 
   test('visiting a route and immediately transitioning correctly aborts current transition', async function(assert) {
@@ -41,5 +45,7 @@ module('Acceptance | deferred render', function(hooks) {
 
     assert.equal(currentRouteName(), 'first-paint');
     assert.dom('.only-when-route-painted').exists();
+
+    await routeSettled();
   });
 });

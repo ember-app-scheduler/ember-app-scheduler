@@ -62,9 +62,19 @@ export function whenRouteIdle() {
   return _whenRouteIdle;
 }
 
+/**
+ * Used for testing
+ */
+export function routeSettled() {
+  return _whenRouteIdle;
+}
+
 function _checkForPriorTransition() {
   if (!_didTransition.isResolved) {
-    _didTransition.reject(TRANSITION_INTERUPTED);
+    let error = new Error(TRANSITION_INTERUPTED);
+    error.code = TRANSITION_INTERUPTED;
+
+    _didTransition.reject(error);
   }
 }
 

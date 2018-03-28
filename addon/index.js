@@ -4,6 +4,7 @@ export {
   beginTransition,
   endTransition,
   didTransition,
+  routeSettled,
   whenRoutePainted,
   whenRouteIdle,
   TRANSITION_INTERUPTED,

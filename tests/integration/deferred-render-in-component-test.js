@@ -3,10 +3,15 @@ import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, waitFor } from '@ember/test-helpers';
-import { beginTransition, endTransition } from 'ember-app-scheduler/scheduler';
-import { whenRoutePainted, whenRouteIdle } from 'ember-app-scheduler';
+import {
+  beginTransition,
+  endTransition,
+  whenRoutePainted,
+  whenRouteIdle,
+  routeSettled,
+} from 'ember-app-scheduler';
 
-module('deferred render in component', function(hooks) {
+module('Integration | Component | when rendered in component', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
@@ -45,6 +50,8 @@ module('deferred render in component', function(hooks) {
   });
 
   test('deferred element is visible following whenRoutePainted', async function(assert) {
+    assert.expect(2);
+
     let foo;
 
     this.owner.register(
@@ -65,9 +72,13 @@ module('deferred render in component', function(hooks) {
     foo = await waitFor('.foo');
 
     assert.isVisible(foo);
+
+    await routeSettled();
   });
 
   test('deferred element is visible following whenRouteIdle', async function(assert) {
+    assert.expect(2);
+
     let foo;
 
     this.owner.register(
@@ -88,9 +99,7 @@ module('deferred render in component', function(hooks) {
     foo = await waitFor('.bar');
 
     assert.isVisible(foo);
-  });
 
-  test('existing transition signals correctly if transition is aborted before completion', async function(assert) {
-    assert.expect(0);
+    await routeSettled();
   });
 });
