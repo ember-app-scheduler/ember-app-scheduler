@@ -1,10 +1,10 @@
 export {
-  setupRouter,
-  reset,
   beginTransition,
   endTransition,
-  didTransition,
   routeSettled,
+  setupRouter,
+  reset,
+  didTransition,
   whenRoutePainted,
   whenRouteIdle,
   TRANSITION_INTERUPTED,

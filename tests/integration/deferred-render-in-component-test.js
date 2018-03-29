@@ -2,13 +2,12 @@ import { module, test } from 'qunit';
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, waitFor } from '@ember/test-helpers';
+import { render, find, waitFor, settled } from '@ember/test-helpers';
 import {
   beginTransition,
   endTransition,
   whenRoutePainted,
   whenRouteIdle,
-  routeSettled,
 } from 'ember-app-scheduler';
 
 module('Integration | Component | when rendered in component', function(hooks) {
@@ -73,7 +72,7 @@ module('Integration | Component | when rendered in component', function(hooks) {
 
     assert.isVisible(foo);
 
-    await routeSettled();
+    await settled();
   });
 
   test('deferred element is visible following whenRouteIdle', async function(assert) {
@@ -100,6 +99,6 @@ module('Integration | Component | when rendered in component', function(hooks) {
 
     assert.isVisible(foo);
 
-    await routeSettled();
+    await settled();
   });
 });
