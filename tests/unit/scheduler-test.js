@@ -7,13 +7,49 @@ import {
   endTransition,
   TRANSITION_INTERUPTED,
 } from 'ember-app-scheduler';
+import { useRAF } from 'ember-app-scheduler/scheduler';
 
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
     reset();
   });
 
-  test('whenRoutePainted with transition interuped', async function(assert) {
+  test('whenRouteIdle resolves when transition ended', async function(assert) {
+    assert.expect(1);
+
+    beginTransition();
+
+    let routeIdle = whenRouteIdle();
+
+    endTransition();
+
+    await routeIdle.then(() => {
+      assert.ok(true);
+    });
+
+    await routeSettled();
+  });
+
+  test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
+    assert.expect(1);
+
+    useRAF(false);
+    beginTransition();
+
+    let routeIdle = whenRouteIdle();
+
+    endTransition();
+
+    await routeIdle.then(() => {
+      assert.ok(true);
+    });
+
+    await routeSettled();
+
+    useRAF(null);
+  });
+
+  test('whenRouteIdle with transition interuped', async function(assert) {
     assert.expect(1);
 
     beginTransition();

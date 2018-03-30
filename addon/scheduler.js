@@ -3,7 +3,6 @@ import { run } from '@ember/runloop';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
 
-const USE_RAF = typeof requestAnimationFrame === 'function';
 let _didTransition;
 let _whenRoutePainted;
 let _whenRouteIdle;
@@ -16,8 +15,8 @@ export function beginTransition() {
   _checkForPriorTransition();
 
   _didTransition = _defer();
-  _whenRoutePainted = _didTransition.promise.then(() => _afterNextPaint());
-  _whenRouteIdle = _whenRoutePainted.then(() => _afterNextPaint());
+  _whenRoutePainted = _didTransition.promise.then(_afterNextPaint);
+  _whenRouteIdle = _whenRoutePainted.then(_afterNextPaint);
 }
 
 export function endTransition() {
@@ -31,8 +30,8 @@ export function setupRouter(router) {
 
 export function reset() {
   _didTransition = _defer();
-  _whenRoutePainted = _didTransition.promise.then(() => {});
-  _whenRouteIdle = _whenRoutePainted.then(() => {});
+  _whenRoutePainted = _didTransition.promise.then();
+  _whenRouteIdle = _whenRoutePainted.then();
   _didTransition.resolve();
   _activeRAFs = 0;
 }
@@ -41,6 +40,8 @@ export function reset() {
  * Top level promise that represents the entry point for deferred work.
  * Subsequent promises are chained off this promise, successively composing
  * them together to approximate when painting has occurred.
+ *
+ * @public
  */
 export function didTransition() {
   return _didTransition.promise;
@@ -50,6 +51,8 @@ export function didTransition() {
  * This promise, when resolved, approximates after the route is first painted.
  * This can be used to schedule work to occur that is lower priority than initial
  * work (content outside of the viewport, rendering non-critical content).
+ *
+ * @public
  */
 export function whenRoutePainted() {
   return _whenRoutePainted;
@@ -57,6 +60,8 @@ export function whenRoutePainted() {
 
 /**
  * This promise, when resolved, approximates after content is painted.
+ *
+ * @public
  */
 export function whenRouteIdle() {
   return _whenRouteIdle;
@@ -67,6 +72,16 @@ export function whenRouteIdle() {
  */
 export function routeSettled() {
   return _whenRouteIdle;
+}
+
+export function useRAF(rAFEnabled) {
+  let useRAF = typeof requestAnimationFrame === 'function';
+
+  if (DEBUG) {
+    useRAF = rAFEnabled ? rAFEnabled : useRAF;
+  }
+
+  return useRAF;
 }
 
 function _checkForPriorTransition() {
@@ -85,7 +100,7 @@ function _afterNextPaint() {
       _activeRAFs++;
     }
 
-    if (USE_RAF) {
+    if (useRAF()) {
       requestAnimationFrame(() => {
         run.later(resolve, 0);
       });
