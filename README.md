@@ -26,11 +26,56 @@ Using npm:
 npm install ember-app-scheduler --save
 ```
 
+The `ember-app-scheduler` addon connects its functionality via the application's router. By connecting to the router's `willTransition` and `didTransition` hooks, it ensures that the timing of its API is in sync with the application's timings.
+
+To connect to your router, import `setupRouter` and `reset` from `ember-app-scheduler` and invoke them:
+
+```javascript
+import EmberRouter from '@ember/routing/router';
+import config from './config/environment';
+import { setupRouter, reset } from 'ember-app-scheduler';
+
+const Router = EmberRouter.extend({
+  location: config.locationType,
+  rootURL: config.rootURL,
+
+  init() {
+    this._super(...arguments);
+
+    setupRouter(this);
+  },
+
+  destroy() {
+    reset();
+
+    this._super(...arguments);
+  }
+});
+
+Router.map(function() {
+  ...
+});
+
+export default Router;
+```
+
+## Concept
+
+Because there isn't a concrete mechanism that allows us to determine when the page is meaningfully painted, it's necessary for us to approximate this. We do so by utilizing a combination of `requestAnimationFrame` calls, which we know have a fairly consistent point of execution (prior to styling, layout, and painting), and scheduling of a macro task using `setTimeout`. Since we know that scheduling a macro task will cause that macro task to be run in the JavaScript event loop _after_ the preceding `requestAnimationFrame` and subsequent paint phase, we can have some fairly dependable guarantees for when work can occur _following a paint_.
+
+To simply visualize what this looks like in relation to `ember-app-scheduler`'s APIs, this is how we accomplish what's described above:
+
+`requestAnimationFrame` -> Schedule macro task (run.later(fn, 0)) -> browser paint -> macro task runs -> `whenRoutePainted` promise resolves
+
+`requestAnimationFrame` -> Schedule macro task (run.later(fn, 0)) -> browser paint -> macro task runs -> `whenRouteIdle` promise resolves
+
+Each of the above are chained together to ensure ordering.
+
 ## Usage
 
 ### `whenRouteIdle`
 
-By deferring work until the route is idle, we delay rendering non-critical content of the page or fetching non-critical data. To do this, you can import and use the `whenRouteIdle` function. This is useful for scenarios like rendering ads, scheduling tracking work, rendering of popup overlays etc.
+By deferring work until the route is idle, we delay non-critical work. To do this, you can import and use the `whenRouteIdle` function. This is useful for scenarios like rendering ads, scheduling tracking work, rendering of popup overlays etc.
 
 In most cases, the `whenRouteIdle` function is all you need to defer work, though `ember-app-scheduler` does expose other functions as described below.
 
@@ -39,7 +84,7 @@ import Route from '@ember/routing/route';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default Route.extend({
-  init() {
+  activate() {
     this._super(...arguments);
 
     whenRouteIdle().then(() => {
@@ -58,7 +103,7 @@ import Route from '@ember/routing/route';
 import { whenRoutePainted } from 'ember-app-scheduler';
 
 export default Route.extend({
-  init() {
+  activate() {
     this._super(...arguments);
 
     whenRoutePainted().then(() => {
@@ -75,7 +120,7 @@ Correctly testing async behavior is crucial to ensure your tests are stable. Asy
 
 The sections below describe the recommended steps to ensure your tests will be stable. It includes some test helpers that are custom to `ember-app-scheduler`, in addition to some that are within ember's test-helpers themselves.
 
-`ember-app-scheduler`, when in test mode, will register a test waiter that will detect whether there's any active async behavior within it. In most cases, you can use the `settled` function within `@ember/test-helpers` to determine if all async behavior has completed, which will wait for all registered waiters to return `true` before continuing test execution.
+`ember-app-scheduler`, when in test mode, will register a test waiter that will pause your tests while any `willRouteIdle` or `willRoutePending` promises are unresolved. In most cases, you can use the `settled` function within `@ember/test-helpers` as you normally would.
 
 ### Integration tests
 
@@ -83,7 +128,7 @@ Integration tests with `ember-app-scheduler` are quite straightforward. But ther
 
 ## Testing Showing hidden content
 
-Because, in test mode, we create a test waiter that ensures we wait for `ember-app-scheduler`'s promises to resolve, we don't have to do anything special to wait for things like hidden content. We can simply employ the `settled` function from `@ember/test-helpers` to ensure our async is completed before our test is done.
+Because, in test mode, we create a test waiter that ensures we wait for `ember-app-scheduler`'s promises to resolve, we don't have to do anything special to wait for things like hidden content. We can simply employ the `settled` function from `@ember/test-helpers` to ensure our async is completed before our test can continue.
 
 ```javascript
 // component-with-deferred-stuff.js
@@ -117,6 +162,8 @@ module('Integration | Component | component-with-deferred-stuff', function(hooks
   setupRenderingTest(hooks);
 
   test('hidden content is rendered when route idle', async function(assert) {
+    assert.expect(1);
+
     await render(hbs`
       {{#component-with-deferred-stuff}}
         <div class="hidden-content">Hidden</div>
@@ -143,7 +190,7 @@ import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default Component.extend({
   didInsertElement() {
-    fetchDeferredData();
+    loadLowPriority();
   },
 
   loadLowPriority() {
@@ -165,7 +212,7 @@ export default Component.extend({
 ```handlebars
 {{! component-with-less-important-content.hbs }}
 {{#if showLessImportant}}
-    {{lessImportant}}
+  {{yield lessImportant}}
 {{/if}}
 ```
 
@@ -180,15 +227,85 @@ module('Integration | Component | component-with-less-important-content', functi
   setupRenderingTest(hooks);
 
   test('hidden content is rendered when route idle', async function(assert) {
+    assert.expect(1);
+
     await render(hbs`
-      {{component-with-less-important-content}}
+      {{#component-with-less-important-content as |data|}}
+        <div class="less-important">{{data.length}}</div>
+      {{/component-with-less-important-content}}
     `);
 
-    await this.loadLowPriority()
+    this.loadLowPriority()
       .then(() => {
-        assert.ok(this.get('lowPriority'), 'low priority content is fetched');
-        assert.ok(this.get('showLowPriority'), 'should show low priority');
+        assert.ok(find('.less-important'), 'less important is present');
       });
+  });
+});
+```
+
+## Testing the intermediate states of your promise chain
+
+For more advanced use cases, you may want to test the intermediate states of your promises. While this case is less common, `ember-app-scheduler` does provide mechanisms that allow you to do this.
+
+To see an example of this, you can look at `ember-app-scheduler`'s [own tests](https://github.com/ember-app-scheduler/ember-app-scheduler/blob/af688825af2591ffa97d9c0fa1e1d78d8a30731d/tests/integration/deferred-render-in-component-test.js#L1) which employ this mechanism.
+
+
+### Acceptance Tests
+
+Due to the fact that we register our own test waiter, acceptance tests with `ember-app-scheduler` are unchanged from your normal workflow.
+
+For example, given a component that renders only when the route is idle (aptly named when-route-idle), the application code and tests look like this:
+
+```javascript
+// when-route-idle.js
+import Ember from 'ember';
+import layout from '../templates/components/when-route-idle';
+import { whenRoutePainted } from 'ember-app-scheduler';
+
+export default Ember.Component.extend({
+  layout,
+  whenRouteIdle: false,
+
+  init() {
+    this._super(...arguments);
+
+    whenRoutePainted().then(() => {
+      this.set('whenRouteIdle', true);
+    });
+  },
+});
+```
+
+```handlebars
+{{! when-route-idle.hbs }}
+{{#if whenRouteIdle}}
+  {{yield}}
+{{/if}}
+```
+
+```handlebars
+{{! my-route.hbs }}
+{{#when-route-idle}}
+  <span class="only-when-route-idle">When Route Idle</span>
+{{/when-route-idle}}
+```
+
+```javascript
+// deferred-render-test.js
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import { visit, currentRouteName } from '@ember/test-helpers';
+import { setupRouter, reset } from 'ember-app-scheduler';
+
+module('Acceptance | when rendered tests', function(hooks) {
+  setupApplicationTest(hooks);
+
+  test('visiting route renders deferred content via whenRouteIdle', async function(assert) {
+    assert.expect(1);
+
+    await visit('/my-route');
+
+    assert.ok(find('.only-when-route-idle'), 'only-when-route-idle element exists');
   });
 });
 ```

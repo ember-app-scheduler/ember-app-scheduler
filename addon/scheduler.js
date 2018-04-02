@@ -110,7 +110,7 @@ function _afterNextPaint() {
   });
 
   if (DEBUG) {
-    promise.finally(() => {
+    promise = promise.finally(() => {
       _activeRAFs--;
     });
   }
