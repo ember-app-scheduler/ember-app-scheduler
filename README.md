@@ -1,5 +1,7 @@
 # ember-app-scheduler
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ember-app-scheduler/ember-app-scheduler.svg)](https://greenkeeper.io/)
+
 Ember batches DOM updates and paints them after every run loop to prevent layout thrashing. This prevents a faster First Meaningful Paint (FMP) because all the content of the page is painted at once. For a large scale application though, some work done on the page like ads, analytics tracking, rendering non critical content, rendering content outside viewport etc. can be deferred to achieve a faster First Meaningful Paint (FMP). This work can be scheduled to run after the First Meaningful Paint and achieve incremental rendering of the page.
 
 This addon provides a service to schedule work in different paint phases of rendering process to get a faster First Meaningful Paint (FMP). It also helps to prioritize and coordinate when the paint happens for different parts of the page.
