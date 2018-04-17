@@ -7,7 +7,9 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('demo');
+  this.route('first-paint');
+  this.route('content-paint');
+  this.route('aborted-paint');
 });
 
 export default Router;

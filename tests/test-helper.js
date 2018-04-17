@@ -24,4 +24,6 @@ QUnit.extend(QUnit.assert, {
 });
 
 setApplication(Application.create(config.APP));
-start();
+start({
+  setupTestIsolationValidation: true,
+});
