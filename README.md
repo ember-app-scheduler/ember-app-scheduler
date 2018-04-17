@@ -126,7 +126,7 @@ The sections below describe the recommended steps to ensure your tests will be s
 
 Integration tests with `ember-app-scheduler` are quite straightforward. But there are a few scenarios that we may wish to test for. Some of those are covered below. The examples show usages of `ember-app-scheduler` in components.
 
-## Testing Showing hidden content
+#### Testing Showing hidden content
 
 Because, in test mode, we create a test waiter that ensures we wait for `ember-app-scheduler`'s promises to resolve, we don't have to do anything special to wait for things like hidden content. We can simply employ the `settled` function from `@ember/test-helpers` to ensure our async is completed before our test can continue.
 
@@ -179,71 +179,7 @@ module('Integration | Component | component-with-deferred-stuff', function(hooks
 });
 ```
 
-## Testing the results of a chained promise
-
-When we are wanting to test the results of a promise that is chained off one of `ember-app-scheduler`'s, the best way to do this is to expose the promise from the component itself.
-
-```javascript
-// component-with-less-important-content.js
-import Component from '@ember/component';
-import { whenRouteIdle } from 'ember-app-scheduler';
-
-export default Component.extend({
-  didInsertElement() {
-    loadLowPriority();
-  },
-
-  loadLowPriority() {
-    return whenRouteIdle().then(this.fetchDeferredData());
-  },
-
-  fetchDeferredData() {
-    return this.get('store').queryRecord('less-important')
-      .then(lessImportant => {
-        this.setProperties({
-          'lessImportant', lessImportant
-          'showLessImportant', true
-        });
-      });
-  }
-});
-```
-
-```handlebars
-{{! component-with-less-important-content.hbs }}
-{{#if showLessImportant}}
-  {{yield lessImportant}}
-{{/if}}
-```
-
-```javascript
-// component-with-less-important-content-test.js
-import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
-import { render, find, settled } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
-
-module('Integration | Component | component-with-less-important-content', function(hooks) {
-  setupRenderingTest(hooks);
-
-  test('hidden content is rendered when route idle', async function(assert) {
-    assert.expect(1);
-
-    await render(hbs`
-      {{#component-with-less-important-content as |data|}}
-        <div class="less-important">{{data.length}}</div>
-      {{/component-with-less-important-content}}
-    `);
-
-    this.loadLowPriority()
-      .then(() => {
-        assert.ok(find('.less-important'), 'less important is present');
-      });
-  });
-});
-```
-
-## Testing the intermediate states of your promise chain
+#### Testing the intermediate states of your promise chain
 
 For more advanced use cases, you may want to test the intermediate states of your promises. While this case is less common, `ember-app-scheduler` does provide mechanisms that allow you to do this.
 
