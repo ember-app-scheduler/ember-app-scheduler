@@ -4,5 +4,5 @@ export function initialize(application) {
 
 export default {
   name: 'app-scheduler',
-  initialize
+  initialize,
 };
