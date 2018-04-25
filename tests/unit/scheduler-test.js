@@ -9,9 +9,13 @@ import {
 } from 'ember-app-scheduler';
 import { useRAF } from 'ember-app-scheduler/scheduler';
 
+const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
+
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
     reset();
+    useRAF();
+    window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
   });
 
   test('whenRouteIdle resolves when transition ended', async function(assert) {
@@ -34,6 +38,8 @@ module('Unit | Scheduler', function(hooks) {
     assert.expect(1);
 
     useRAF(false);
+    window.requestAnimationFrame = () =>
+      assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
 
     let routeIdle = whenRouteIdle();
@@ -45,8 +51,6 @@ module('Unit | Scheduler', function(hooks) {
     });
 
     await routeSettled();
-
-    useRAF(null);
   });
 
   test('whenRouteIdle with transition interuped', async function(assert) {
