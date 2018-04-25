@@ -74,15 +74,14 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-export function useRAF(rAFEnabled) {
-  let useRAF = typeof requestAnimationFrame === 'function';
-
-  if (DEBUG) {
-    useRAF = rAFEnabled ? rAFEnabled : useRAF;
-  }
-
-  return useRAF;
+let _rAFEnabled = useRAF();
+export function useRAF(
+  rAFEnabled = typeof requestAnimationFrame === 'function'
+) {
+  _rAFEnabled = rAFEnabled;
 }
+
+export function useRequestIdleCallback() {}
 
 function _checkForPriorTransition() {
   if (!_didTransition.isResolved) {
@@ -100,7 +99,7 @@ function _afterNextPaint() {
       _activeRAFs++;
     }
 
-    if (useRAF()) {
+    if (_rAFEnabled) {
       requestAnimationFrame(() => {
         run.later(resolve, 0);
       });
