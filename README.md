@@ -1,5 +1,9 @@
 # ember-app-scheduler
 
+[![Build Status](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler.svg?branch=master)](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler)
+[![Ember Observer Score](https://emberobserver.com/badges/ember-app-scheduler.svg)](https://emberobserver.com/addons/ember-app-scheduler)
+[![npm version](https://badge.fury.io/js/ember-app-scheduler.svg)](https://badge.fury.io/js/ember-app-scheduler)
+
 Ember batches DOM updates and paints them after every run loop to prevent [layout thrashing](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing). Layout thrashing can prevent a faster [First Meaningful Paint](https://docs.google.com/document/d/1BR94tJdZLsin5poeet0XoTW60M0SjvOJQttKT-JK8HI/view) (FMP) because all the content of the page is painted at once.
 
 As a way to mitigate the need to render all content at once regardless of its visual priority, some work done on the page like ads, analytics tracking, rendering non critical content, rendering content outside viewport etc. can be deferred to achieve a faster FMP. This work can be delayed to run after the FMP and achieve incremental rendering of the page.
