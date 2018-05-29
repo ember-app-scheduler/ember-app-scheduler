@@ -5,7 +5,6 @@ import {
   routeSettled,
   beginTransition,
   endTransition,
-  TRANSITION_INTERUPTED,
 } from 'ember-app-scheduler';
 import { useRAF } from 'ember-app-scheduler/scheduler';
 
@@ -53,21 +52,25 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
   });
 
-  test('whenRouteIdle with transition interuped', async function(assert) {
-    assert.expect(1);
+  test('whenRouteIdle with transition interupted', async function(assert) {
+    assert.expect(3);
 
     beginTransition();
 
-    try {
-      let routeIdle = whenRouteIdle();
-      beginTransition();
-      await routeIdle;
-    } catch (reason) {
-      assert.equal(reason.code, TRANSITION_INTERUPTED);
-    }
+    whenRouteIdle().then(() => {
+      assert.step('first whenRouteIdle');
+    });
+
+    beginTransition();
+
+    whenRouteIdle().then(() => {
+      assert.step('second whenRouteIdle');
+    });
 
     endTransition();
 
     await routeSettled();
+
+    assert.verifySteps(['first whenRouteIdle', 'second whenRouteIdle']);
   });
 });
