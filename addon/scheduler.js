@@ -9,14 +9,12 @@ let _whenRouteIdle;
 
 reset();
 
-export const TRANSITION_INTERUPTED = 'TRANSITION INTERUPTED';
-
 export function beginTransition() {
-  _checkForPriorTransition();
-
-  _didTransition = _defer();
-  _whenRoutePainted = _didTransition.promise.then(_afterNextPaint);
-  _whenRouteIdle = _whenRoutePainted.then(_afterNextPaint);
+  if (_didTransition.isResolved) {
+    _didTransition = _defer();
+    _whenRoutePainted = _didTransition.promise.then(_afterNextPaint);
+    _whenRouteIdle = _whenRoutePainted.then(_afterNextPaint);
+  }
 }
 
 export function endTransition() {
@@ -82,15 +80,6 @@ export function useRAF(
 }
 
 export function useRequestIdleCallback() {}
-
-function _checkForPriorTransition() {
-  if (!_didTransition.isResolved) {
-    let error = new Error(TRANSITION_INTERUPTED);
-    error.code = TRANSITION_INTERUPTED;
-
-    _didTransition.reject(error);
-  }
-}
 
 let _activeRAFs = 0;
 function _afterNextPaint() {
