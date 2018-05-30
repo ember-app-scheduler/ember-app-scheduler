@@ -1,1 +1,4 @@
-export { default, initialize } from 'ember-app-scheduler/initializers/app-scheduler';
+export {
+  default,
+  initialize,
+} from 'ember-app-scheduler/initializers/app-scheduler';
