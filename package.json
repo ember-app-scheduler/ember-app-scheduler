@@ -49,6 +49,7 @@
     "ember-qunit": "^3.4.0",
     "ember-resolver": "^4.0.0",
     "ember-source": "2.18.0",
+    "ember-try": "^0.2.23",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.5.0",
     "husky": "^0.14.3",
