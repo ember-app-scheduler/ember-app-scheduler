@@ -81,6 +81,10 @@ const Scheduler = Service.extend({
   },
 
   flushQueue(queueName) {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     const queue = this.queues[queueName];
     queue.isActive = false;
 
@@ -135,6 +139,10 @@ const Scheduler = Service.extend({
   },
 
   _rAFCallback(resolve) {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     this._nextPaintTimeout = run.later(() => {
       this._nextAfterPaintPromise = null;
       this._nextPaintFrame = null;
