@@ -3,6 +3,7 @@ import { run } from '@ember/runloop';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
 
+const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
 let _didTransition;
 let _whenRoutePainted;
 let _whenRouteIdle;
@@ -22,6 +23,11 @@ export function endTransition() {
 }
 
 export function setupRouter(router) {
+  if (router[APP_SCHEDULER_HAS_SETUP]) {
+    return;
+  }
+
+  router[APP_SCHEDULER_HAS_SETUP] = true;
   router.on('willTransition', beginTransition);
   router.on('didTransition', endTransition);
 }
