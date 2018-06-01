@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler.svg?branch=master)](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-app-scheduler.svg)](https://emberobserver.com/addons/ember-app-scheduler)
 [![npm version](https://badge.fury.io/js/ember-app-scheduler.svg)](https://badge.fury.io/js/ember-app-scheduler)
+[![Monthly Downloads from NPM](https://img.shields.io/npm/dm/ember-app-scheduler.svg?style=flat-square)](https://www.npmjs.com/package/ember-app-scheduler)
+[![Code Style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](#badge)
 
 Ember batches DOM updates and paints them after every run loop to prevent [layout thrashing](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing). Layout thrashing can prevent a faster [First Meaningful Paint](https://docs.google.com/document/d/1BR94tJdZLsin5poeet0XoTW60M0SjvOJQttKT-JK8HI/view) (FMP) because all the content of the page is painted at once.
 
