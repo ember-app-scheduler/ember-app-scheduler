@@ -6,6 +6,8 @@ import { registerWaiter } from '@ember/test';
 let _didTransition;
 let _whenRoutePainted;
 let _whenRouteIdle;
+let _rAFEnabled;
+let _activeRAFs = 0;
 
 reset();
 
@@ -72,7 +74,7 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-let _rAFEnabled = useRAF();
+_rAFEnabled = useRAF();
 export function useRAF(
   rAFEnabled = typeof requestAnimationFrame === 'function'
 ) {
@@ -81,7 +83,6 @@ export function useRAF(
 
 export function useRequestIdleCallback() {}
 
-let _activeRAFs = 0;
 function _afterNextPaint() {
   let promise = new RSVP.Promise(resolve => {
     if (DEBUG) {
