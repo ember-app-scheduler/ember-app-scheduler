@@ -10,10 +10,7 @@ let _whenRouteIdle;
 let _requestAnimationFrameEnabled;
 let _requestIdleCallbackEnabled;
 let _activeScheduledTasks = 0;
-export const SCHEDULE_TYPE = {
-  RAF: 'requestAnimationFrame',
-  RIC: 'requestIdleCallback',
-};
+export const REQUEST_IDLE_CALLBACK = 'requestIdleCallback';
 export const SIMPLE_CALLBACK = callback => callback();
 
 reset();
@@ -25,7 +22,7 @@ export function beginTransition() {
       _afterNextPaint(getScheduleFn())
     );
     _whenRouteIdle = _whenRoutePainted.then(() =>
-      _afterNextPaint(getScheduleFn(SCHEDULE_TYPE.RIC))
+      _afterNextPaint(getScheduleFn(REQUEST_IDLE_CALLBACK))
     );
   }
 }
@@ -130,7 +127,7 @@ if (DEBUG) {
 }
 
 export function getScheduleFn(scheduleType) {
-  if (scheduleType == SCHEDULE_TYPE.RIC && _requestIdleCallbackEnabled) {
+  if (scheduleType == REQUEST_IDLE_CALLBACK && _requestIdleCallbackEnabled) {
     return requestIdleCallback;
   } else if (_requestAnimationFrameEnabled) {
     return requestAnimationFrame;

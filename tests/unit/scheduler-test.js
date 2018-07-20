@@ -10,7 +10,7 @@ import {
   useRequestAnimationFrame,
   useRequestIdleCallback,
   getScheduleFn,
-  SCHEDULE_TYPE,
+  REQUEST_IDLE_CALLBACK,
   SIMPLE_CALLBACK,
 } from 'ember-app-scheduler/scheduler';
 
@@ -82,13 +82,13 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('getScheduleFn returns correct scheduleFn for requestIdleCallback', function(assert) {
-    assert.equal(getScheduleFn(SCHEDULE_TYPE.RIC), requestIdleCallback);
+    assert.equal(getScheduleFn(REQUEST_IDLE_CALLBACK), requestIdleCallback);
   });
 
   test('getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
     useRequestIdleCallback(false);
 
-    assert.equal(getScheduleFn(SCHEDULE_TYPE.RIC), requestAnimationFrame);
+    assert.equal(getScheduleFn(REQUEST_IDLE_CALLBACK), requestAnimationFrame);
   });
 
   test('getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
