@@ -7,16 +7,26 @@ const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
 let _didTransition;
 let _whenRoutePainted;
 let _whenRouteIdle;
-let _rAFEnabled;
-let _activeRAFs = 0;
+let _requestAnimationFrameEnabled;
+let _requestIdleCallbackEnabled;
+let _activeScheduledTasks = 0;
+export const SCHEDULE_TYPE = {
+  RAF: 'requestAnimationFrame',
+  RIC: 'requestIdleCallback',
+};
+export const SIMPLE_CALLBACK = callback => callback();
 
 reset();
 
 export function beginTransition() {
   if (_didTransition.isResolved) {
     _didTransition = _defer();
-    _whenRoutePainted = _didTransition.promise.then(_afterNextPaint);
-    _whenRouteIdle = _whenRoutePainted.then(_afterNextPaint);
+    _whenRoutePainted = _didTransition.promise.then(() =>
+      _afterNextPaint(getScheduleFn())
+    );
+    _whenRouteIdle = _whenRoutePainted.then(() =>
+      _afterNextPaint(getScheduleFn(SCHEDULE_TYPE.RIC))
+    );
   }
 }
 
@@ -39,7 +49,7 @@ export function reset() {
   _whenRoutePainted = _didTransition.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
   _didTransition.resolve();
-  _activeRAFs = 0;
+  _activeScheduledTasks = 0;
 }
 
 /**
@@ -80,33 +90,34 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-useRAF();
-export function useRAF(
+useRequestAnimationFrame();
+export function useRequestAnimationFrame(
   rAFEnabled = typeof requestAnimationFrame === 'function'
 ) {
-  _rAFEnabled = rAFEnabled;
+  _requestAnimationFrameEnabled = rAFEnabled;
 }
 
-export function useRequestIdleCallback() {}
+_requestIdleCallbackEnabled = useRequestIdleCallback();
+export function useRequestIdleCallback(
+  rICEnabled = typeof requestIdleCallback === 'function'
+) {
+  _requestIdleCallbackEnabled = rICEnabled;
+}
 
-function _afterNextPaint() {
+function _afterNextPaint(scheduleFn) {
   let promise = new RSVP.Promise(resolve => {
     if (DEBUG) {
-      _activeRAFs++;
+      _activeScheduledTasks++;
     }
 
-    if (_rAFEnabled) {
-      requestAnimationFrame(() => {
-        run.later(resolve, 0);
-      });
-    } else {
+    scheduleFn(() => {
       run.later(resolve, 0);
-    }
+    });
   });
 
   if (DEBUG) {
     promise = promise.finally(() => {
-      _activeRAFs--;
+      _activeScheduledTasks--;
     });
   }
 
@@ -115,7 +126,17 @@ function _afterNextPaint() {
 
 if (DEBUG) {
   // wait until no active rafs
-  registerWaiter(() => _activeRAFs === 0);
+  registerWaiter(() => _activeScheduledTasks === 0);
+}
+
+export function getScheduleFn(scheduleType) {
+  if (scheduleType == SCHEDULE_TYPE.RIC && _requestIdleCallbackEnabled) {
+    return requestIdleCallback;
+  } else if (_requestAnimationFrameEnabled) {
+    return requestAnimationFrame;
+  } else {
+    return SIMPLE_CALLBACK;
+  }
 }
 
 function _defer(label) {

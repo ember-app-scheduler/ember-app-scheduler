@@ -6,14 +6,21 @@ import {
   beginTransition,
   endTransition,
 } from 'ember-app-scheduler';
-import { useRAF } from 'ember-app-scheduler/scheduler';
+import {
+  useRequestAnimationFrame,
+  useRequestIdleCallback,
+  getScheduleFn,
+  SCHEDULE_TYPE,
+  SIMPLE_CALLBACK,
+} from 'ember-app-scheduler/scheduler';
 
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
 
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
     reset();
-    useRAF();
+    useRequestAnimationFrame();
+    useRequestIdleCallback();
     window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
   });
 
@@ -36,7 +43,7 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
     assert.expect(1);
 
-    useRAF(false);
+    useRequestAnimationFrame(false);
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
@@ -72,5 +79,22 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
 
     assert.verifySteps(['first whenRouteIdle', 'second whenRouteIdle']);
+  });
+
+  test('getScheduleFn returns correct scheduleFn for requestIdleCallback', function(assert) {
+    assert.equal(getScheduleFn(SCHEDULE_TYPE.RIC), requestIdleCallback);
+  });
+
+  test('getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
+    useRequestIdleCallback(false);
+
+    assert.equal(getScheduleFn(SCHEDULE_TYPE.RIC), requestAnimationFrame);
+  });
+
+  test('getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
+    useRequestIdleCallback(false);
+    useRequestAnimationFrame(false);
+
+    assert.equal(getScheduleFn(), SIMPLE_CALLBACK);
   });
 });
