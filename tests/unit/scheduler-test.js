@@ -7,9 +7,9 @@ import {
   endTransition,
 } from 'ember-app-scheduler';
 import {
-  useRequestAnimationFrame,
-  useRequestIdleCallback,
-  getScheduleFn,
+  _useRequestAnimationFrame,
+  _useRequestIdleCallback,
+  _getScheduleFn,
   REQUEST_IDLE_CALLBACK,
   SIMPLE_CALLBACK,
 } from 'ember-app-scheduler/scheduler';
@@ -19,8 +19,8 @@ const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
     reset();
-    useRequestAnimationFrame();
-    useRequestIdleCallback();
+    _useRequestAnimationFrame();
+    _useRequestIdleCallback();
     window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
   });
 
@@ -43,7 +43,7 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
     assert.expect(1);
 
-    useRequestAnimationFrame(false);
+    _useRequestAnimationFrame(false);
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
@@ -81,20 +81,20 @@ module('Unit | Scheduler', function(hooks) {
     assert.verifySteps(['first whenRouteIdle', 'second whenRouteIdle']);
   });
 
-  test('getScheduleFn returns correct scheduleFn for requestIdleCallback', function(assert) {
-    assert.equal(getScheduleFn(REQUEST_IDLE_CALLBACK), requestIdleCallback);
+  test('_getScheduleFn returns correct scheduleFn for requestIdleCallback', function(assert) {
+    assert.equal(_getScheduleFn(REQUEST_IDLE_CALLBACK), requestIdleCallback);
   });
 
-  test('getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
-    useRequestIdleCallback(false);
+  test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
+    _useRequestIdleCallback(false);
 
-    assert.equal(getScheduleFn(REQUEST_IDLE_CALLBACK), requestAnimationFrame);
+    assert.equal(_getScheduleFn(REQUEST_IDLE_CALLBACK), requestAnimationFrame);
   });
 
-  test('getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
-    useRequestIdleCallback(false);
-    useRequestAnimationFrame(false);
+  test('_getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
+    _useRequestIdleCallback(false);
+    _useRequestAnimationFrame(false);
 
-    assert.equal(getScheduleFn(), SIMPLE_CALLBACK);
+    assert.equal(_getScheduleFn(), SIMPLE_CALLBACK);
   });
 });

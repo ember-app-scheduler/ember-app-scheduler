@@ -6,10 +6,13 @@ import { registerWaiter } from '@ember/test';
 const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
 let _didTransition;
 let _whenRoutePainted;
+let _whenRoutePaintedScheduleFn;
 let _whenRouteIdle;
+let _whenRouteIdleScheduleFn;
 let _requestAnimationFrameEnabled;
 let _requestIdleCallbackEnabled;
 let _activeScheduledTasks = 0;
+
 export const REQUEST_IDLE_CALLBACK = 'requestIdleCallback';
 export const SIMPLE_CALLBACK = callback => callback();
 
@@ -19,10 +22,10 @@ export function beginTransition() {
   if (_didTransition.isResolved) {
     _didTransition = _defer();
     _whenRoutePainted = _didTransition.promise.then(() =>
-      _afterNextPaint(getScheduleFn())
+      _afterNextPaint(_whenRoutePaintedScheduleFn)
     );
     _whenRouteIdle = _whenRoutePainted.then(() =>
-      _afterNextPaint(getScheduleFn(REQUEST_IDLE_CALLBACK))
+      _afterNextPaint(_whenRouteIdleScheduleFn)
     );
   }
 }
@@ -87,18 +90,30 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-useRequestAnimationFrame();
-export function useRequestAnimationFrame(
+_useRequestAnimationFrame();
+export function _useRequestAnimationFrame(
   rAFEnabled = typeof requestAnimationFrame === 'function'
 ) {
   _requestAnimationFrameEnabled = rAFEnabled;
 }
 
-_requestIdleCallbackEnabled = useRequestIdleCallback();
-export function useRequestIdleCallback(
+_useRequestIdleCallback();
+export function _useRequestIdleCallback(
   rICEnabled = typeof requestIdleCallback === 'function'
 ) {
   _requestIdleCallbackEnabled = rICEnabled;
+}
+
+_whenRoutePaintedScheduleFn = _getScheduleFn();
+_whenRouteIdleScheduleFn = _getScheduleFn(REQUEST_IDLE_CALLBACK);
+export function _getScheduleFn(scheduleType) {
+  if (scheduleType === REQUEST_IDLE_CALLBACK && _requestIdleCallbackEnabled) {
+    return requestIdleCallback;
+  } else if (_requestAnimationFrameEnabled) {
+    return requestAnimationFrame;
+  } else {
+    return SIMPLE_CALLBACK;
+  }
 }
 
 function _afterNextPaint(scheduleFn) {
@@ -124,16 +139,6 @@ function _afterNextPaint(scheduleFn) {
 if (DEBUG) {
   // wait until no active rafs
   registerWaiter(() => _activeScheduledTasks === 0);
-}
-
-export function getScheduleFn(scheduleType) {
-  if (scheduleType == REQUEST_IDLE_CALLBACK && _requestIdleCallbackEnabled) {
-    return requestIdleCallback;
-  } else if (_requestAnimationFrameEnabled) {
-    return requestAnimationFrame;
-  } else {
-    return SIMPLE_CALLBACK;
-  }
 }
 
 function _defer(label) {
