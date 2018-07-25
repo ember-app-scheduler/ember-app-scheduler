@@ -90,20 +90,20 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-_useRequestAnimationFrame();
 export function _useRequestAnimationFrame(
   rAFEnabled = typeof requestAnimationFrame === 'function'
 ) {
   _requestAnimationFrameEnabled = rAFEnabled;
 }
 
-_useRequestIdleCallback();
 export function _useRequestIdleCallback(
   rICEnabled = typeof requestIdleCallback === 'function'
 ) {
   _requestIdleCallbackEnabled = rICEnabled;
 }
 
+_useRequestAnimationFrame();
+_useRequestIdleCallback();
 _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(REQUEST_IDLE_CALLBACK);
 export function _getScheduleFn(scheduleType) {
