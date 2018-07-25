@@ -13,7 +13,7 @@ let _requestAnimationFrameEnabled;
 let _requestIdleCallbackEnabled;
 let _activeScheduledTasks = 0;
 
-export const REQUEST_IDLE_CALLBACK = 'requestIdleCallback';
+export const USE_REQUEST_IDLE_CALLBACK = true;
 export const SIMPLE_CALLBACK = callback => callback();
 
 reset();
@@ -102,12 +102,8 @@ export function _useRequestIdleCallback(
   _requestIdleCallbackEnabled = rICEnabled;
 }
 
-_useRequestAnimationFrame();
-_useRequestIdleCallback();
-_whenRoutePaintedScheduleFn = _getScheduleFn();
-_whenRouteIdleScheduleFn = _getScheduleFn(REQUEST_IDLE_CALLBACK);
-export function _getScheduleFn(scheduleType) {
-  if (scheduleType === REQUEST_IDLE_CALLBACK && _requestIdleCallbackEnabled) {
+export function _getScheduleFn(useRequestIdleCallback = false) {
+  if (useRequestIdleCallback && _requestIdleCallbackEnabled) {
     return requestIdleCallback;
   } else if (_requestAnimationFrameEnabled) {
     return requestAnimationFrame;
@@ -115,6 +111,11 @@ export function _getScheduleFn(scheduleType) {
     return SIMPLE_CALLBACK;
   }
 }
+
+_useRequestAnimationFrame();
+_useRequestIdleCallback();
+_whenRoutePaintedScheduleFn = _getScheduleFn();
+_whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
 function _afterNextPaint(scheduleFn) {
   let promise = new RSVP.Promise(resolve => {
