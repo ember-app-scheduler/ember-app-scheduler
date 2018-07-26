@@ -80,7 +80,7 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-_rAFEnabled = useRAF();
+useRAF();
 export function useRAF(
   rAFEnabled = typeof requestAnimationFrame === 'function'
 ) {
