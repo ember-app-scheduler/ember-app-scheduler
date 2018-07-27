@@ -19,8 +19,14 @@ module('Unit | Capabilities', function(hooks) {
   test('capabilities can be overridden correctly', function(assert) {
     assert.expect(2);
 
-    CAPABILITIES.overrideCapability('requestAnimationFrame', true);
-    CAPABILITIES.overrideCapability('requestIdleCallback', true);
+    CAPABILITIES.overrideCapability(
+      'requestAnimationFrame',
+      CAPABILITIES.DISABLED
+    );
+    CAPABILITIES.overrideCapability(
+      'requestIdleCallback',
+      CAPABILITIES.DISABLED
+    );
 
     assert.equal(CAPABILITIES.requestAnimationFrameEnabled, false);
     assert.equal(CAPABILITIES.requestIdleCallbackEnabled, false);

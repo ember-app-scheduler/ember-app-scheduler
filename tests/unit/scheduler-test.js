@@ -42,7 +42,10 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
     assert.expect(1);
 
-    CAPABILITIES.overrideCapability('requestAnimationFrame', true);
+    CAPABILITIES.overrideCapability(
+      'requestAnimationFrame',
+      CAPABILITIES.DISABLED
+    );
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
@@ -61,7 +64,10 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallback not available', async function(assert) {
     assert.expect(1);
     debugger;
-    CAPABILITIES.overrideCapability('requestIdleCallback', true);
+    CAPABILITIES.overrideCapability(
+      'requestIdleCallback',
+      CAPABILITIES.DISABLED
+    );
     window.requestAnimationFrame = () =>
       assert.ok(true, 'requestAnimationFrame was used');
     beginTransition();
@@ -107,7 +113,10 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
-    CAPABILITIES.overrideCapability('requestIdleCallback', true);
+    CAPABILITIES.overrideCapability(
+      'requestIdleCallback',
+      CAPABILITIES.DISABLED
+    );
 
     assert.equal(
       _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
@@ -116,8 +125,14 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('_getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
-    CAPABILITIES.overrideCapability('requestAnimationFrame', true);
-    CAPABILITIES.overrideCapability('requestIdleCallback', true);
+    CAPABILITIES.overrideCapability(
+      'requestAnimationFrame',
+      CAPABILITIES.DISABLED
+    );
+    CAPABILITIES.overrideCapability(
+      'requestIdleCallback',
+      CAPABILITIES.DISABLED
+    );
 
     assert.equal(_getScheduleFn(), SIMPLE_CALLBACK);
   });
