@@ -2,15 +2,16 @@ import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
+import Capabilities from './capabilities';
 
+const CAPABILITIES = Capabilities.instance;
 const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
+
 let _didTransition;
 let _whenRoutePainted;
 let _whenRoutePaintedScheduleFn;
 let _whenRouteIdle;
 let _whenRouteIdleScheduleFn;
-let _requestAnimationFrameEnabled;
-let _requestIdleCallbackEnabled;
 let _activeScheduledTasks = 0;
 
 export const USE_REQUEST_IDLE_CALLBACK = true;
@@ -90,30 +91,16 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-export function _useRequestAnimationFrame(
-  rAFEnabled = typeof requestAnimationFrame === 'function'
-) {
-  _requestAnimationFrameEnabled = rAFEnabled;
-}
-
-export function _useRequestIdleCallback(
-  rICEnabled = typeof requestIdleCallback === 'function'
-) {
-  _requestIdleCallbackEnabled = rICEnabled;
-}
-
 export function _getScheduleFn(useRequestIdleCallback = false) {
-  if (useRequestIdleCallback && _requestIdleCallbackEnabled) {
+  if (useRequestIdleCallback && CAPABILITIES.requestIdleCallbackEnabled) {
     return requestIdleCallback;
-  } else if (_requestAnimationFrameEnabled) {
+  } else if (CAPABILITIES.requestAnimationFrameEnabled) {
     return requestAnimationFrame;
   } else {
     return SIMPLE_CALLBACK;
   }
 }
 
-_useRequestAnimationFrame();
-_useRequestIdleCallback();
 _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
