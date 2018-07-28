@@ -11,7 +11,7 @@ import {
   USE_REQUEST_IDLE_CALLBACK,
   SIMPLE_CALLBACK,
 } from 'ember-app-scheduler/scheduler';
-import Capabilities from 'ember-app-scheduler/capabilities';
+import Capabilities, { DISABLED } from 'ember-app-scheduler/capabilities';
 
 const CAPABILITIES = Capabilities.instance;
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
@@ -42,10 +42,7 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
     assert.expect(1);
 
-    CAPABILITIES.overrideCapability(
-      'requestAnimationFrame',
-      CAPABILITIES.DISABLED
-    );
+    CAPABILITIES.overrideCapability('requestAnimationFrame', DISABLED);
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
@@ -63,11 +60,8 @@ module('Unit | Scheduler', function(hooks) {
 
   test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallback not available', async function(assert) {
     assert.expect(1);
-    debugger;
-    CAPABILITIES.overrideCapability(
-      'requestIdleCallback',
-      CAPABILITIES.DISABLED
-    );
+
+    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
     window.requestAnimationFrame = () =>
       assert.ok(true, 'requestAnimationFrame was used');
     beginTransition();
@@ -113,10 +107,7 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
-    CAPABILITIES.overrideCapability(
-      'requestIdleCallback',
-      CAPABILITIES.DISABLED
-    );
+    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
 
     assert.equal(
       _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
@@ -125,14 +116,8 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('_getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
-    CAPABILITIES.overrideCapability(
-      'requestAnimationFrame',
-      CAPABILITIES.DISABLED
-    );
-    CAPABILITIES.overrideCapability(
-      'requestIdleCallback',
-      CAPABILITIES.DISABLED
-    );
+    CAPABILITIES.overrideCapability('requestAnimationFrame', DISABLED);
+    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
 
     assert.equal(_getScheduleFn(), SIMPLE_CALLBACK);
   });

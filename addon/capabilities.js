@@ -3,6 +3,8 @@ const CAPABILITIES = {
   requestIdleCallback: requestIdleCallback,
 };
 
+export const DISABLED = true;
+
 /**
  * @type {Capabilities}
  */
@@ -15,7 +17,6 @@ class Capabilities {
     }
 
     this.reset();
-    this.DISABLED = true;
   }
 
   static get instance() {
