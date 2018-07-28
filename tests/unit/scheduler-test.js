@@ -7,19 +7,18 @@ import {
   endTransition,
 } from 'ember-app-scheduler';
 import {
+  _setCapabilities,
   _getScheduleFn,
   USE_REQUEST_IDLE_CALLBACK,
   SIMPLE_CALLBACK,
 } from 'ember-app-scheduler/scheduler';
-import Capabilities, { DISABLED } from 'ember-app-scheduler/capabilities';
 
-const CAPABILITIES = Capabilities.instance;
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
 
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
     reset();
-    CAPABILITIES.reset();
+    _setCapabilities();
     window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
   });
 
@@ -42,7 +41,10 @@ module('Unit | Scheduler', function(hooks) {
   test('whenRouteIdle resolves when transition ended when requestAnimationFrame not available', async function(assert) {
     assert.expect(1);
 
-    CAPABILITIES.overrideCapability('requestAnimationFrame', DISABLED);
+    _setCapabilities({
+      requestAnimationFrameEnabled: false,
+      requestIdleCallbackEnabled: false,
+    });
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
     beginTransition();
@@ -58,10 +60,13 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
   });
 
-  test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallback not available', async function(assert) {
+  test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallbackEnabled: not available', async function(assert) {
     assert.expect(1);
 
-    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
+    _setCapabilities({
+      requestAnimationFrameEnabled: true,
+      requestIdleCallbackEnabled: false,
+    });
     window.requestAnimationFrame = () =>
       assert.ok(true, 'requestAnimationFrame was used');
     beginTransition();
@@ -99,16 +104,22 @@ module('Unit | Scheduler', function(hooks) {
     assert.verifySteps(['first whenRouteIdle', 'second whenRouteIdle']);
   });
 
-  test('_getScheduleFn returns correct scheduleFn for requestIdleCallback', function(assert) {
+  test('_getScheduleFn returns correct scheduleFn for requestIdleCallbackEnabled:', function(assert) {
+    assert.expect(1);
+
     assert.equal(
       _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
       requestIdleCallback
     );
   });
 
-  test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallback not available', function(assert) {
-    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
+  test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallbackEnabled: not available', function(assert) {
+    assert.expect(1);
 
+    _setCapabilities({
+      requestAnimationFrameEnabled: true,
+      requestIdleCallbackEnabled: false,
+    });
     assert.equal(
       _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
       requestAnimationFrame
@@ -116,8 +127,12 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('_getScheduleFn returns simple callback if requestAnimationFrame not available', function(assert) {
-    CAPABILITIES.overrideCapability('requestAnimationFrame', DISABLED);
-    CAPABILITIES.overrideCapability('requestIdleCallback', DISABLED);
+    assert.expect(1);
+
+    _setCapabilities({
+      requestAnimationFrameEnabled: false,
+      requestIdleCallbackEnabled: false,
+    });
 
     assert.equal(_getScheduleFn(), SIMPLE_CALLBACK);
   });

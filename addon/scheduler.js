@@ -2,9 +2,7 @@ import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
-import Capabilities from './capabilities';
 
-const CAPABILITIES = Capabilities.instance;
 const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
 
 let _didTransition;
@@ -13,6 +11,11 @@ let _whenRoutePaintedScheduleFn;
 let _whenRouteIdle;
 let _whenRouteIdleScheduleFn;
 let _activeScheduledTasks = 0;
+const CAPABILITIES = {
+  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
+  requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
+};
+let _capabilities = CAPABILITIES;
 
 export const USE_REQUEST_IDLE_CALLBACK = true;
 export const SIMPLE_CALLBACK = callback => callback();
@@ -92,13 +95,17 @@ export function routeSettled() {
 }
 
 export function _getScheduleFn(useRequestIdleCallback = false) {
-  if (useRequestIdleCallback && CAPABILITIES.requestIdleCallbackEnabled) {
+  if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
     return requestIdleCallback;
-  } else if (CAPABILITIES.requestAnimationFrameEnabled) {
+  } else if (_capabilities.requestAnimationFrameEnabled) {
     return requestAnimationFrame;
   } else {
     return SIMPLE_CALLBACK;
   }
+}
+
+export function _setCapabilities(newCapabilities = CAPABILITIES) {
+  _capabilities = newCapabilities;
 }
 
 _whenRoutePaintedScheduleFn = _getScheduleFn();
