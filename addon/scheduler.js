@@ -4,19 +4,33 @@ import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
 
 const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
+
 let _didTransition;
 let _whenRoutePainted;
+let _whenRoutePaintedScheduleFn;
 let _whenRouteIdle;
-let _rAFEnabled;
-let _activeRAFs = 0;
+let _whenRouteIdleScheduleFn;
+let _activeScheduledTasks = 0;
+const CAPABILITIES = {
+  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
+  requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
+};
+let _capabilities = CAPABILITIES;
+
+export const USE_REQUEST_IDLE_CALLBACK = true;
+export const SIMPLE_CALLBACK = callback => callback();
 
 reset();
 
 export function beginTransition() {
   if (_didTransition.isResolved) {
     _didTransition = _defer();
-    _whenRoutePainted = _didTransition.promise.then(_afterNextPaint);
-    _whenRouteIdle = _whenRoutePainted.then(_afterNextPaint);
+    _whenRoutePainted = _didTransition.promise.then(() =>
+      _afterNextPaint(_whenRoutePaintedScheduleFn)
+    );
+    _whenRouteIdle = _whenRoutePainted.then(() =>
+      _afterNextPaint(_whenRouteIdleScheduleFn)
+    );
   }
 }
 
@@ -39,7 +53,7 @@ export function reset() {
   _whenRoutePainted = _didTransition.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
   _didTransition.resolve();
-  _activeRAFs = 0;
+  _activeScheduledTasks = 0;
 }
 
 /**
@@ -80,33 +94,37 @@ export function routeSettled() {
   return _whenRouteIdle;
 }
 
-useRAF();
-export function useRAF(
-  rAFEnabled = typeof requestAnimationFrame === 'function'
-) {
-  _rAFEnabled = rAFEnabled;
+export function _getScheduleFn(useRequestIdleCallback = false) {
+  if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
+    return requestIdleCallback;
+  } else if (_capabilities.requestAnimationFrameEnabled) {
+    return requestAnimationFrame;
+  } else {
+    return SIMPLE_CALLBACK;
+  }
 }
 
-export function useRequestIdleCallback() {}
+export function _setCapabilities(newCapabilities = CAPABILITIES) {
+  _capabilities = newCapabilities;
+}
 
-function _afterNextPaint() {
+_whenRoutePaintedScheduleFn = _getScheduleFn();
+_whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
+
+function _afterNextPaint(scheduleFn) {
   let promise = new RSVP.Promise(resolve => {
     if (DEBUG) {
-      _activeRAFs++;
+      _activeScheduledTasks++;
     }
 
-    if (_rAFEnabled) {
-      requestAnimationFrame(() => {
-        run.later(resolve, 0);
-      });
-    } else {
+    scheduleFn(() => {
       run.later(resolve, 0);
-    }
+    });
   });
 
   if (DEBUG) {
     promise = promise.finally(() => {
-      _activeRAFs--;
+      _activeScheduledTasks--;
     });
   }
 
@@ -115,7 +133,7 @@ function _afterNextPaint() {
 
 if (DEBUG) {
   // wait until no active rafs
-  registerWaiter(() => _activeRAFs === 0);
+  registerWaiter(() => _activeScheduledTasks === 0);
 }
 
 function _defer(label) {
