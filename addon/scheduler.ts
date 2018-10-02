@@ -1,30 +1,44 @@
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
+import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
 
-const APP_SCHEDULER_HAS_SETUP = '__APP_SCHEDULER_HAS_SETUP__';
+interface IDeferred {
+  isResolved: boolean;
+  promise: RSVP.Promise<any>;
+  resolve: Function;
+  reject: Function;
+}
 
-let _didTransition;
-let _whenRoutePainted;
-let _whenRoutePaintedScheduleFn;
-let _whenRouteIdle;
-let _whenRouteIdleScheduleFn;
-let _activeScheduledTasks = 0;
-const CAPABILITIES = {
+interface Capabilities {
+  requestAnimationFrameEnabled: boolean;
+  requestIdleCallbackEnabled: boolean;
+}
+
+const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
+const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
+
+let _didTransition: IDeferred;
+let _whenRoutePainted: Promise<any>;
+let _whenRoutePaintedScheduleFn: Function;
+let _whenRouteIdle: Promise<any>;
+let _whenRouteIdleScheduleFn: Function;
+let _activeScheduledTasks: number = 0;
+const CAPABILITIES: Capabilities = {
   requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
   requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
 };
 let _capabilities = CAPABILITIES;
 
-export const USE_REQUEST_IDLE_CALLBACK = true;
-export const SIMPLE_CALLBACK = callback => callback();
+export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
+export const SIMPLE_CALLBACK = (callback: Function) => callback();
 
 reset();
 
 export function beginTransition() {
   if (_didTransition.isResolved) {
-    _didTransition = _defer();
+    _didTransition = _defer(APP_SCHEDULER_LABEL);
     _whenRoutePainted = _didTransition.promise.then(() =>
       _afterNextPaint(_whenRoutePaintedScheduleFn)
     );
@@ -38,18 +52,18 @@ export function endTransition() {
   _didTransition.resolve();
 }
 
-export function setupRouter(router) {
-  if (router[APP_SCHEDULER_HAS_SETUP]) {
+export function setupRouter(router: Router) {
+  if ((router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
-  router[APP_SCHEDULER_HAS_SETUP] = true;
+  (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
   router.on('willTransition', beginTransition);
   router.on('didTransition', endTransition);
 }
 
 export function reset() {
-  _didTransition = _defer();
+  _didTransition = _defer(APP_SCHEDULER_LABEL);
   _whenRoutePainted = _didTransition.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
   _didTransition.resolve();
@@ -63,7 +77,7 @@ export function reset() {
  *
  * @public
  */
-export function didTransition() {
+export function didTransition(): Promise<any>  {
   return _didTransition.promise;
 }
 
@@ -74,7 +88,7 @@ export function didTransition() {
  *
  * @public
  */
-export function whenRoutePainted() {
+export function whenRoutePainted(): Promise<any> {
   return _whenRoutePainted;
 }
 
@@ -83,14 +97,14 @@ export function whenRoutePainted() {
  *
  * @public
  */
-export function whenRouteIdle() {
+export function whenRouteIdle(): Promise<any>  {
   return _whenRouteIdle;
 }
 
 /**
  * Used for testing
  */
-export function routeSettled() {
+export function routeSettled(): Promise<any>  {
   return _whenRouteIdle;
 }
 
@@ -111,7 +125,7 @@ export function _setCapabilities(newCapabilities = CAPABILITIES) {
 _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
-function _afterNextPaint(scheduleFn) {
+function _afterNextPaint(scheduleFn: Function) {
   let promise = new RSVP.Promise(resolve => {
     if (DEBUG) {
       _activeScheduledTasks++;
@@ -136,17 +150,20 @@ if (DEBUG) {
   registerWaiter(() => _activeScheduledTasks === 0);
 }
 
-function _defer(label) {
-  let deferred = { resolve: undefined, reject: undefined };
+function _defer(label: string): IDeferred {
+  let _isResolved = false;
+  let _resolve!: (value?: any) => void;
+  let _reject!: (reason?: any) => void;
 
-  deferred.isResolved = false;
-  deferred.promise = new RSVP.Promise((resolve, reject) => {
-    deferred.resolve = () => {
-      deferred.isResolved = true;
+  const promise = new RSVP.Promise((resolve, reject) => {
+    _resolve = () => {
+      _isResolved = true;
       return resolve();
     };
-    deferred.reject = reject;
+    _reject = reject;
   }, label);
 
-  return deferred;
+  return {promise, resolve: _resolve, reject: _reject, get isResolved() {
+    return _isResolved;
+  }};
 }
