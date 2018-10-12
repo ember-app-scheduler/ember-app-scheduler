@@ -7,5 +7,4 @@ export {
   didTransition,
   whenRoutePainted,
   whenRouteIdle,
-  TRANSITION_INTERUPTED,
-} from './scheduler';
+} from 'ember-app-scheduler/scheduler';

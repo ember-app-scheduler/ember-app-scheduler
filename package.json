@@ -19,7 +19,8 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "precommit": "lint-staged"
+    "prepublishOnly": "ember ts:precompile",
+    "postpublish": "ember ts:clean"
   },
   "lint-staged": {
     "package.json,{app,addon,config,tests}/**/*.{js,json}": [
@@ -28,9 +29,15 @@
     ]
   },
   "dependencies": {
-    "ember-cli-babel": "^6.3.0"
+    "ember-cli-babel": "^6.3.0",
+    "@types/ember": "^3.0.23",
+    "@types/rsvp": "^4.0.2"
   },
   "devDependencies": {
+    "@glimmer/env": "^0.1.7",
+    "@types/ember-test-helpers": "^1.0.3",
+    "@types/ember-testing-helpers": "^0.0.3",
+    "@types/ember__test-helpers": "^0.7.5",
     "broccoli-asset-rev": "^3.0.0",
     "ember-ajax": "^3.0.0",
     "ember-cli": "~3.4.2",
@@ -40,6 +47,7 @@
     "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
+    "ember-cli-typescript": "^1.4.3",
     "ember-cli-uglify": "^2.1.0",
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
@@ -55,12 +63,18 @@
     "lint-staged": "^7.2.0",
     "loader.js": "^4.2.3",
     "prettier": "^1.10.2",
-    "qunit-dom": "^0.8.0"
+    "qunit-dom": "^0.8.0",
+    "typescript": "^3.1.1"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
