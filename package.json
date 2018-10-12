@@ -29,15 +29,15 @@
     ]
   },
   "dependencies": {
-    "ember-cli-babel": "^6.3.0"
+    "ember-cli-babel": "^6.3.0",
+    "@types/ember": "^3.0.23",
+    "@types/rsvp": "^4.0.2"
   },
   "devDependencies": {
     "@glimmer/env": "^0.1.7",
-    "@types/ember": "^3.0.23",
     "@types/ember-test-helpers": "^1.0.3",
     "@types/ember-testing-helpers": "^0.0.3",
     "@types/ember__test-helpers": "^0.7.5",
-    "@types/rsvp": "^4.0.2",
     "broccoli-asset-rev": "^3.0.0",
     "ember-ajax": "^3.0.0",
     "ember-cli": "~3.4.2",

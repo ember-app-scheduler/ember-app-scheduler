@@ -1,4 +1,4 @@
-import RSVP from 'rsvp';
+import { Promise } from 'rsvp';
 import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
@@ -6,7 +6,7 @@ import { registerWaiter } from '@ember/test';
 
 interface IDeferred {
   isResolved: boolean;
-  promise: RSVP.Promise<any>;
+  promise: Promise<any>;
   resolve: Function;
   reject: Function;
 }
@@ -126,7 +126,7 @@ _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
 function _afterNextPaint(scheduleFn: Function) {
-  let promise = new RSVP.Promise(resolve => {
+  let promise = new Promise(resolve => {
     if (DEBUG) {
       _activeScheduledTasks++;
     }
@@ -152,18 +152,24 @@ if (DEBUG) {
 
 function _defer(label: string): IDeferred {
   let _isResolved = false;
-  let _resolve!: (value?: any) => void;
-  let _reject!: (reason?: any) => void;
+  let _resolve!: () => void;
+  let _reject!: () => void;
 
-  const promise = new RSVP.Promise((resolve, reject) => {
+  const promise = new Promise((resolve, reject) => {
     _resolve = () => {
       _isResolved = true;
-      return resolve();
+
+      resolve();
     };
     _reject = reject;
   }, label);
 
-  return {promise, resolve: _resolve, reject: _reject, get isResolved() {
-    return _isResolved;
-  }};
+  return {
+    promise,
+    resolve: _resolve,
+    reject: _reject,
+    get isResolved() {
+      return _isResolved;
+    }
+  };
 }
