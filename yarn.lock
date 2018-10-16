@@ -36,8 +36,8 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
 "@types/ember-test-helpers@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/ember-test-helpers/-/ember-test-helpers-1.0.3.tgz#1cdad7b204b028fb3518c6764d588c8e1fdeb2e1"
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/ember-test-helpers/-/ember-test-helpers-1.0.4.tgz#db08190659339cd6018ff8f842c6df6f24d7679a"
   dependencies:
     "@types/ember" "*"
     "@types/htmlbars-inline-precompile" "*"
