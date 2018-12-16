@@ -3,6 +3,7 @@ import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
+import { gte } from 'ember-compatibility-helpers';
 
 interface IDeferred {
   isResolved: boolean;
@@ -19,7 +20,15 @@ interface Capabilities {
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
-let _didTransition: IDeferred;
+let BEGIN_TRANSITION = 'willTransition';
+let END_TRANSITION = 'didTransition';
+
+if (gte('3.6.0')) {
+  BEGIN_TRANSITION = 'routeWillChange';
+  END_TRANSITION = 'routeDidChange';
+}
+
+let _whenRouteDidChange: IDeferred;
 let _whenRoutePainted: Promise<any>;
 let _whenRoutePaintedScheduleFn: Function;
 let _whenRouteIdle: Promise<any>;
@@ -37,9 +46,9 @@ export const SIMPLE_CALLBACK = (callback: Function) => callback();
 reset();
 
 export function beginTransition() {
-  if (_didTransition.isResolved) {
-    _didTransition = _defer(APP_SCHEDULER_LABEL);
-    _whenRoutePainted = _didTransition.promise.then(() =>
+  if (_whenRouteDidChange.isResolved) {
+    _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+    _whenRoutePainted = _whenRouteDidChange.promise.then(() =>
       _afterNextPaint(_whenRoutePaintedScheduleFn)
     );
     _whenRouteIdle = _whenRoutePainted.then(() =>
@@ -49,7 +58,7 @@ export function beginTransition() {
 }
 
 export function endTransition() {
-  _didTransition.resolve();
+  _whenRouteDidChange.resolve();
 }
 
 export function setupRouter(router: Router) {
@@ -58,15 +67,15 @@ export function setupRouter(router: Router) {
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
-  router.on('willTransition', beginTransition);
-  router.on('didTransition', endTransition);
+  router.on(BEGIN_TRANSITION, beginTransition);
+  router.on(END_TRANSITION, endTransition);
 }
 
 export function reset() {
-  _didTransition = _defer(APP_SCHEDULER_LABEL);
-  _whenRoutePainted = _didTransition.promise.then();
+  _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+  _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
-  _didTransition.resolve();
+  _whenRouteDidChange.resolve();
   _activeScheduledTasks = 0;
 }
 
@@ -77,8 +86,8 @@ export function reset() {
  *
  * @public
  */
-export function didTransition(): Promise<any>  {
-  return _didTransition.promise;
+export function didTransition(): Promise<any> {
+  return _whenRouteDidChange.promise;
 }
 
 /**
@@ -97,14 +106,14 @@ export function whenRoutePainted(): Promise<any> {
  *
  * @public
  */
-export function whenRouteIdle(): Promise<any>  {
+export function whenRouteIdle(): Promise<any> {
   return _whenRouteIdle;
 }
 
 /**
  * Used for testing
  */
-export function routeSettled(): Promise<any>  {
+export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
 }
 
@@ -170,6 +179,6 @@ function _defer(label: string): IDeferred {
     reject: _reject,
     get isResolved() {
       return _isResolved;
-    }
+    },
   };
 }
