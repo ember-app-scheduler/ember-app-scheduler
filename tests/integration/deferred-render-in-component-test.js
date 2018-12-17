@@ -51,26 +51,22 @@ module('Integration | Component | when rendered in component', function(hooks) {
   test('deferred element is visible following whenRoutePainted', async function(assert) {
     assert.expect(2);
 
-    let foo;
-
     this.owner.register(
       'template:components/deferred-render',
-      hbs`{{#if showFoo}}<span class="foo"></span>{{/if}}`
+      hbs`{{#if showFoo}}<span class="foo">I can haz visibility</span>{{/if}}`
     );
 
     beginTransition();
 
     await render(hbs`{{deferred-render}}`);
 
-    foo = find('.foo');
-
-    assert.isNotVisible(foo);
+    assert.dom('.foo').isNotVisible();
 
     endTransition();
 
-    foo = await waitFor('.foo');
+    await waitFor('.foo');
 
-    assert.isVisible(foo);
+    assert.dom('.foo').isVisible();
 
     await settled();
   });
@@ -78,26 +74,22 @@ module('Integration | Component | when rendered in component', function(hooks) {
   test('deferred element is visible following whenRouteIdle', async function(assert) {
     assert.expect(2);
 
-    let foo;
-
     this.owner.register(
       'template:components/deferred-render',
-      hbs`{{#if showBar}}<span class="bar"></span>{{/if}}`
+      hbs`{{#if showBar}}<span class="bar">I can haz visibility</span>{{/if}}`
     );
 
     beginTransition();
 
     await render(hbs`{{deferred-render}}`);
 
-    foo = find('.bar');
-
-    assert.isNotVisible(foo);
+    assert.dom('.bar').isNotVisible();
 
     endTransition();
 
-    foo = await waitFor('.bar');
+    await waitFor('.bar');
 
-    assert.isVisible(foo);
+    assert.dom('.bar').isVisible();
 
     await settled();
   });
