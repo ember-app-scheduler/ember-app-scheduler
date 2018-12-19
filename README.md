@@ -32,7 +32,7 @@ Using npm:
 npm install ember-app-scheduler --save
 ```
 
-The `ember-app-scheduler` addon connects its functionality via the application's router. By connecting to the router's `willTransition` and `didTransition` hooks, it ensures that the timing of its API is in sync with the application's timings.
+The `ember-app-scheduler` addon connects its functionality via the application's router. By connecting to the router's `routeWillChange`/`routeDidChange` hooks (`willTransition`/`didTransition` in Ember < 3.6), it ensures that the timing of its API is in sync with the application's timings.
 
 To connect to your router, import `setupRouter` and `reset` from `ember-app-scheduler` and invoke them:
 
@@ -96,7 +96,7 @@ export default Route.extend({
     whenRouteIdle().then(() => {
       // do non-critical work
     });
-  }
+  },
 });
 ```
 
@@ -116,7 +116,7 @@ export default Route.extend({
       // do work that needs to occur between the route being painted
       // and `whenRouteIdle`
     });
-  }
+  },
 });
 ```
 
@@ -146,7 +146,7 @@ export default Component.extend({
     whenRouteIdle().then(() => {
       this.set('showHiddenContent', true);
     });
-  }
+  },
 });
 ```
 
@@ -164,7 +164,9 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | component-with-deferred-stuff', function(hooks) {
+module('Integration | Component | component-with-deferred-stuff', function(
+  hooks
+) {
   setupRenderingTest(hooks);
 
   test('hidden content is rendered when route idle', async function(assert) {
@@ -190,7 +192,6 @@ module('Integration | Component | component-with-deferred-stuff', function(hooks
 For more advanced use cases, you may want to test the intermediate states of your promises. While this case is less common, `ember-app-scheduler` does provide mechanisms that allow you to do this.
 
 To see an example of this, you can look at `ember-app-scheduler`'s [own tests](https://github.com/ember-app-scheduler/ember-app-scheduler/blob/af688825af2591ffa97d9c0fa1e1d78d8a30731d/tests/integration/deferred-render-in-component-test.js#L1) which employ this mechanism.
-
 
 ### Acceptance Tests
 
@@ -247,24 +248,27 @@ module('Acceptance | when rendered tests', function(hooks) {
 
     await visit('/my-route');
 
-    assert.ok(find('.only-when-route-idle'), 'only-when-route-idle element exists');
+    assert.ok(
+      find('.only-when-route-idle'),
+      'only-when-route-idle element exists'
+    );
   });
 });
 ```
 
 ## Running
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+- `ember serve`
+- Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ## Running Tests
 
-* `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+- `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
+- `ember test`
+- `ember test --server`
 
 ## Building
 
-* `ember build`
+- `ember build`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).

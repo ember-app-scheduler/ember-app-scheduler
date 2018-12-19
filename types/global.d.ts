@@ -8,8 +8,10 @@ type RequestIdleCallbackDeadline = {
 };
 
 declare function requestIdleCallback(
-      callback: ((deadline: RequestIdleCallbackDeadline) => void),
-      opts?: RequestIdleCallbackOptions,
-    ): RequestIdleCallbackHandle;
+  callback: ((deadline: RequestIdleCallbackDeadline) => void),
+  opts?: RequestIdleCallbackOptions
+): RequestIdleCallbackHandle;
 
 declare function cancelIdleCallback(handle: RequestIdleCallbackHandle): void;
+
+declare module 'ember-compatibility-helpers';
