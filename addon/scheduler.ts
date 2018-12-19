@@ -20,14 +20,6 @@ interface Capabilities {
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
-let BEGIN_TRANSITION = 'willTransition';
-let END_TRANSITION = 'didTransition';
-
-if (gte('3.6.0')) {
-  BEGIN_TRANSITION = 'routeWillChange';
-  END_TRANSITION = 'routeDidChange';
-}
-
 let _whenRouteDidChange: IDeferred;
 let _whenRoutePainted: Promise<any>;
 let _whenRoutePaintedScheduleFn: Function;
@@ -67,8 +59,14 @@ export function setupRouter(router: Router) {
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
-  router.on(BEGIN_TRANSITION, beginTransition);
-  router.on(END_TRANSITION, endTransition);
+
+  if (gte('3.6.0')) {
+    router.on('routeWillChange', beginTransition);
+    router.on('routeDidChange', endTransition);
+  } else {
+    router.on('willTransition', beginTransition);
+    router.on('didTransition', endTransition);
+  }
 }
 
 export function reset() {
