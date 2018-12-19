@@ -1,5 +1,6 @@
 import { Promise } from 'rsvp';
 import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
@@ -58,8 +59,15 @@ export function setupRouter(router: Router) {
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
-  router.on('willTransition', beginTransition);
-  router.on('didTransition', endTransition);
+  let owner = getOwner(router);
+  let service = owner.lookup('service:router');
+  if (service) {
+    service.on('routeWillChange', beginTransition);
+    service.on('routeDidChange', endTransition);
+  } else {
+    router.on('willTransition', beginTransition);
+    router.on('didTransition', endTransition);
+  }
 }
 
 export function reset() {
