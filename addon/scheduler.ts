@@ -5,7 +5,7 @@ import { DEBUG } from '@glimmer/env';
 import { registerWaiter } from '@ember/test';
 import { gte } from 'ember-compatibility-helpers';
 
-interface IDeferred {
+interface Deferred {
   isResolved: boolean;
   promise: Promise<any>;
   resolve: Function;
@@ -20,7 +20,7 @@ interface Capabilities {
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
-let _whenRouteDidChange: IDeferred;
+let _whenRouteDidChange: Deferred;
 let _whenRoutePainted: Promise<any>;
 let _whenRoutePaintedScheduleFn: Function;
 let _whenRouteIdle: Promise<any>;
@@ -37,7 +37,7 @@ export const SIMPLE_CALLBACK = (callback: Function) => callback();
 
 reset();
 
-export function beginTransition() {
+export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
     _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
     _whenRoutePainted = _whenRouteDidChange.promise.then(() =>
@@ -49,11 +49,11 @@ export function beginTransition() {
   }
 }
 
-export function endTransition() {
+export function endTransition(): void {
   _whenRouteDidChange.resolve();
 }
 
-export function setupRouter(router: Router) {
+export function setupRouter(router: Router): void {
   if ((router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
@@ -69,7 +69,7 @@ export function setupRouter(router: Router) {
   }
 }
 
-export function reset() {
+export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
@@ -115,7 +115,9 @@ export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
 }
 
-export function _getScheduleFn(useRequestIdleCallback = false) {
+export function _getScheduleFn(
+  useRequestIdleCallback = false
+): (callback: any) => number {
   if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
     return requestIdleCallback;
   } else if (_capabilities.requestAnimationFrameEnabled) {
@@ -125,14 +127,14 @@ export function _getScheduleFn(useRequestIdleCallback = false) {
   }
 }
 
-export function _setCapabilities(newCapabilities = CAPABILITIES) {
+export function _setCapabilities(newCapabilities = CAPABILITIES): void {
   _capabilities = newCapabilities;
 }
 
 _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
-function _afterNextPaint(scheduleFn: Function) {
+function _afterNextPaint(scheduleFn: Function): Promise<any> {
   let promise = new Promise(resolve => {
     if (DEBUG) {
       _activeScheduledTasks++;
@@ -157,7 +159,7 @@ if (DEBUG) {
   registerWaiter(() => _activeScheduledTasks === 0);
 }
 
-function _defer(label: string): IDeferred {
+function _defer(label: string): Deferred {
   let _isResolved = false;
   let _resolve!: () => void;
   let _reject!: () => void;
