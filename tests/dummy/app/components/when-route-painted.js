@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../templates/components/when-route-painted';
 import { whenRoutePainted } from 'ember-app-scheduler';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   whenRoutePainted: false,
 
