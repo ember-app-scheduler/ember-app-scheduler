@@ -14,6 +14,11 @@ This addon provides a way to defer work into different paint phases of the rende
 
 The [documentation website](https://ember-app-scheduler.github.io/ember-app-scheduler/) contains more examples and API information.
 
+## Compatibility
+
+- Ember.js v2.18 or above
+- Ember CLI v2.13 or above
+
 ## Installation
 
     ember install ember-app-scheduler
