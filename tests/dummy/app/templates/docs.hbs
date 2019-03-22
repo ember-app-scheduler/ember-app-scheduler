@@ -1,0 +1,18 @@
+{{docs-header}}
+
+{{#docs-viewer as |viewer|}}
+  {{#viewer.nav as |nav|}}
+    {{nav.section "Usage"}}
+    {{#nav.subnav as |nav|}}
+      {{nav.item "Quickstart" "docs.index"}}
+      {{nav.item "How it works" "docs.how-it-works"}}
+      {{nav.item "whenRoutePainted" "docs.when-route-painted"}}
+      {{nav.item "whenRouteIdle" "docs.when-route-idle"}}
+      {{nav.item "Testing" "docs.testing"}}
+    {{/nav.subnav}}
+  {{/viewer.nav}}
+
+  {{#viewer.main}}
+    {{outlet}}
+  {{/viewer.main}}
+{{/docs-viewer}}

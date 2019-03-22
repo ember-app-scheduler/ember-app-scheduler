@@ -1,16 +1,18 @@
-import Ember from 'ember';
+// BEGIN-SNIPPET when-route-idle.js
+import Component from '@ember/component';
 import layout from '../templates/components/when-route-idle';
-import { whenRoutePainted } from 'ember-app-scheduler';
+import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   whenRouteIdle: false,
 
   init() {
     this._super(...arguments);
 
-    whenRoutePainted().then(() => {
+    whenRouteIdle().then(() => {
       this.set('whenRouteIdle', true);
     });
   },
 });
+// END-SNIPPET
