@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, waitFor, settled } from '@ember/test-helpers';
+import { render, waitFor, settled } from '@ember/test-helpers';
 import {
   beginTransition,
   endTransition,
