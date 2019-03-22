@@ -11,15 +11,16 @@
 </div>
 {{#docs-demo class="docs-m-20" as |demo|}}
   {{#demo.example name="my-demo.hbs"}}
-    <p class="docs-mb-8">This addon provides a way to defer work into different paint phases of the rendering process to
-      get a faster FMP. It also helps to prioritize and coordinate when the paint happens for different parts of the
-      page.
+    <p class="docs-mb-8">
+      This addon provides a way to defer work into different paint phases of the rendering process to
+      get a faster FMP. It also helps to prioritize and coordinate when the paint happens for different
+      parts of the page.
     </p>
-    <p class="docs-mb-8">The `ember-app-scheduler` addon provides APIs to hook into the router to determine when to
-      execute its defered
-      work. It also provides two promise-based functions, `whenRoutePainted` and `whenRouteIdle`, to allow you to
-      control when specific
-      work will execute. An example of `whenRouteIdle` can be seen below.
+    <p class="docs-mb-8">
+      The `ember-app-scheduler` addon provides APIs to hook into the router to determine when to
+      execute its defered work. It also provides two promise-based functions, `whenRoutePainted`
+      and `whenRouteIdle`, to allow you to control when specific work will execute. An example of
+      `whenRouteIdle` can be seen below.
     </p>
     {{demo.snippet "when-route-idle.js"}}
   {{/demo.example}}
