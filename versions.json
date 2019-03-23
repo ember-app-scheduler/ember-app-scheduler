@@ -10,5 +10,11 @@
     "name": "Latest",
     "sha": "548348156ddfcc869aa95082bd153355e7fe2223",
     "tag": "v1.0.8"
+  },
+  "master": {
+    "path": "versions/master",
+    "name": "master",
+    "sha": "59fed89433274dbbf32fa327b4e1bc9fd1b34414",
+    "tag": null
   }
 }
