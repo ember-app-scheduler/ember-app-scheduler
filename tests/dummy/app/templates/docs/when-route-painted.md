@@ -1,4 +1,4 @@
-### `whenRoutePainted`
+# `whenRoutePainted`
 
 In some cases, you may want to defer work until after the route is painted but _before_ the route is idle. In this scenario you'll want to use the `whenRoutePainted` function. This is useful for scenarios like rendering content outside viewport, rendering non critical content etc.
 

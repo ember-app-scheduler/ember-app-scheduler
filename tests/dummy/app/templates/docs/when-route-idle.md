@@ -1,4 +1,4 @@
-### `whenRouteIdle`
+# `whenRouteIdle`
 
 By deferring work until the route is idle, we delay non-critical work. To do this, you can import and use the `whenRouteIdle` function. This is useful for scenarios like rendering ads, scheduling tracking work, rendering of popup overlays etc.
 
