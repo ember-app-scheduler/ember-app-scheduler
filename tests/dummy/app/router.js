@@ -3,8 +3,7 @@ import RouterScroll from 'ember-router-scroll';
 import config from './config/environment';
 
 const Router = AddonDocsRouter.extend(RouterScroll, {
-  locationType: 'router-scroll',
-  historySupportMiddleware: true,
+  location: config.locationType,
   rootURL: config.rootURL,
 });
 
