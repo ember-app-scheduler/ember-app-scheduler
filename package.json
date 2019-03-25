@@ -39,7 +39,7 @@
     "ember-compatibility-helpers": "^1.1.2"
   },
   "devDependencies": {
-    "@ember/optional-features": "^0.6.3",
+    "@ember/optional-features": "^0.7.0",
     "@glimmer/env": "^0.1.7",
     "@types/ember-test-helpers": "^1.0.3",
     "@types/ember-testing-helpers": "^0.0.3",
