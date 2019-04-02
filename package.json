@@ -27,7 +27,7 @@
   },
   "lint-staged": {
     "package.json,{app,addon,config,tests}/**/*.{js,json}": [
-      "prettier --single-quote --trailing-comma es5 --write",
+      "prettier --write",
       "git add"
     ]
   },
