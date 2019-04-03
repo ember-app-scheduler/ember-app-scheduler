@@ -1,10 +1,10 @@
 export {
   beginTransition,
+  didTransition,
   endTransition,
+  reset,
   routeSettled,
   setupRouter,
-  reset,
-  didTransition,
-  whenRoutePainted,
   whenRouteIdle,
+  whenRoutePainted,
 } from 'ember-app-scheduler/scheduler';

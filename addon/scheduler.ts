@@ -1,9 +1,10 @@
-import { Promise } from 'rsvp';
-import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
-import { DEBUG } from '@glimmer/env';
+import { run } from '@ember/runloop';
 import { registerWaiter } from '@ember/test';
+import { DEBUG } from '@glimmer/env';
+import Ember from 'ember';
 import { gte } from 'ember-compatibility-helpers';
+import { Promise } from 'rsvp';
 
 interface Deferred {
   isResolved: boolean;
@@ -26,18 +27,29 @@ let _whenRoutePaintedScheduleFn: Function;
 let _whenRouteIdle: Promise<any>;
 let _whenRouteIdleScheduleFn: Function;
 let _activeScheduledTasks: number = 0;
-const CAPABILITIES: Capabilities = {
-  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
-  requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
-};
-let _capabilities = CAPABILITIES;
+let _capabilities: Capabilities | undefined;
 
 export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 
 reset();
 
+function getDefaultCapabilities(): Capabilities {
+  return {
+    requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
+    requestIdleCallbackEnabled: Ember.testing
+      ? false
+      : typeof requestIdleCallback === 'function',
+  };
+}
+
+function getCapabilities(): Capabilities {
+  return _capabilities || getDefaultCapabilities();
+}
+
 export function beginTransition(): void {
+  _initScheduleFns();
+
   if (_whenRouteDidChange.isResolved) {
     _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
     _whenRoutePainted = _whenRouteDidChange.promise.then(() =>
@@ -118,21 +130,39 @@ export function routeSettled(): Promise<any> {
 export function _getScheduleFn(
   useRequestIdleCallback = false
 ): (callback: any) => number {
-  if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
+  const {
+    requestIdleCallbackEnabled,
+    requestAnimationFrameEnabled,
+  } = getCapabilities();
+
+  if (useRequestIdleCallback && requestIdleCallbackEnabled) {
     return requestIdleCallback;
-  } else if (_capabilities.requestAnimationFrameEnabled) {
+  } else if (requestAnimationFrameEnabled) {
     return requestAnimationFrame;
   } else {
     return SIMPLE_CALLBACK;
   }
 }
 
-export function _setCapabilities(newCapabilities = CAPABILITIES): void {
+export function _setCapabilities(
+  newCapabilities = getDefaultCapabilities()
+): void {
   _capabilities = newCapabilities;
+  _initScheduleFns();
 }
 
-_whenRoutePaintedScheduleFn = _getScheduleFn();
-_whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
+export function _getWhenRoutePaintedScheduleFn(): Function {
+  return _whenRoutePaintedScheduleFn;
+}
+
+export function _getWhenRouteIdleScheduleFn(): Function {
+  return _whenRouteIdleScheduleFn;
+}
+
+function _initScheduleFns(): void {
+  _whenRoutePaintedScheduleFn = _getScheduleFn();
+  _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
+}
 
 function _afterNextPaint(scheduleFn: Function): Promise<any> {
   let promise = new Promise(resolve => {

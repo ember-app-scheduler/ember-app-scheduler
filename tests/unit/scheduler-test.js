@@ -1,21 +1,28 @@
-import { module, test } from 'qunit';
 import {
-  reset,
-  whenRouteIdle,
-  routeSettled,
   beginTransition,
   endTransition,
+  reset,
+  routeSettled,
+  whenRouteIdle,
 } from 'ember-app-scheduler';
 import {
-  _setCapabilities,
-  _getScheduleFn,
-  USE_REQUEST_IDLE_CALLBACK,
   SIMPLE_CALLBACK,
+  USE_REQUEST_IDLE_CALLBACK,
+  _getScheduleFn,
+  _setCapabilities,
 } from 'ember-app-scheduler/scheduler';
+import { module, test } from 'qunit';
 
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
 
 module('Unit | Scheduler', function(hooks) {
+  hooks.beforeEach(function() {
+    _setCapabilities({
+      requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
+      requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
+    });
+  });
+
   hooks.afterEach(function() {
     reset();
     _setCapabilities();
@@ -45,8 +52,10 @@ module('Unit | Scheduler', function(hooks) {
       requestAnimationFrameEnabled: false,
       requestIdleCallbackEnabled: false,
     });
+
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
+
     beginTransition();
 
     let routeIdle = whenRouteIdle();
@@ -61,14 +70,18 @@ module('Unit | Scheduler', function(hooks) {
   });
 
   test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallbackEnabled: not available', async function(assert) {
-    assert.expect(1);
+    assert.expect(3);
 
     _setCapabilities({
       requestAnimationFrameEnabled: true,
       requestIdleCallbackEnabled: false,
     });
-    window.requestAnimationFrame = () =>
+
+    window.requestAnimationFrame = cb => {
       assert.ok(true, 'requestAnimationFrame was used');
+      cb();
+    };
+
     beginTransition();
 
     let routeIdle = whenRouteIdle();
