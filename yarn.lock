@@ -1111,7 +1111,7 @@
     "@types/jquery" "*"
     "@types/rsvp" "*"
 
-"@types/ember@*", "@types/ember@^3.0.23", "@types/ember@^3.1.0":
+"@types/ember@*", "@types/ember@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@types/ember/-/ember-3.1.0.tgz#3c44b846c41a1340bc823910f9222746585b3314"
   integrity sha512-RHP/N7k81XIS16DLF/yTfnWEKdFFftRAUgjWO1oKNJ5ho3+iTH3vVq8u11PrhaHd+FHXNB1XKV20d5o1KEOnUQ==
@@ -4738,14 +4738,12 @@ elliptic@^6.0.0:
     minimalistic-crypto-utils "^1.0.0"
 
 ember-app-scheduler@^1.0.5:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/ember-app-scheduler/-/ember-app-scheduler-1.0.6.tgz#b7972c5ae51643d41769dba40ef96e0cc188f553"
-  integrity sha512-wKmf/Tu9A70txzVkqbXo5/o6qVT+tL+ydRCayyKKT8z4s4xhzwgL37FPHkd3WEkGAxanxPML/MOpkACK08KuCw==
-  dependencies:
-    "@types/ember" "^3.0.23"
-    "@types/rsvp" "^4.0.2"
-    ember-cli-babel "^7.1.3"
-    ember-compatibility-helpers "^1.1.2"
+  version "0.0.0"
+  uid ""
+
+"ember-app-scheduler@link:./":
+  version "0.0.0"
+  uid ""
 
 ember-assign-polyfill@^2.5.0, ember-assign-polyfill@^2.6.0:
   version "2.6.0"
