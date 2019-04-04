@@ -9,6 +9,8 @@ import {
   SIMPLE_CALLBACK,
   USE_REQUEST_IDLE_CALLBACK,
   _getScheduleFn,
+  _getWhenRouteIdleScheduleFn,
+  _getWhenRoutePaintedScheduleFn,
   _setCapabilities,
 } from 'ember-app-scheduler/scheduler';
 import { module, test } from 'qunit';
@@ -53,8 +55,10 @@ module('Unit | Scheduler', function(hooks) {
       requestIdleCallbackEnabled: false,
     });
 
-    window.requestAnimationFrame = () =>
+    window.requestAnimationFrame = cb => {
       assert.ok(false, 'requestAnimationFrame was used');
+      cb();
+    };
 
     beginTransition();
 
@@ -133,6 +137,7 @@ module('Unit | Scheduler', function(hooks) {
       requestAnimationFrameEnabled: true,
       requestIdleCallbackEnabled: false,
     });
+
     assert.equal(
       _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
       requestAnimationFrame
@@ -148,5 +153,41 @@ module('Unit | Scheduler', function(hooks) {
     });
 
     assert.equal(_getScheduleFn(), SIMPLE_CALLBACK);
+  });
+
+  test('route idle and route painted schedule functions are correct', function(assert) {
+    assert.expect(2);
+
+    assert.equal(_getWhenRouteIdleScheduleFn(), requestIdleCallback);
+    assert.equal(_getWhenRoutePaintedScheduleFn(), requestAnimationFrame);
+  });
+
+  test('_setCapabilities correctly updates idle / route painted schedule functions', function(assert) {
+    assert.expect(4);
+
+    _setCapabilities({
+      requestAnimationFrameEnabled: true,
+      requestIdleCallbackEnabled: false,
+    });
+
+    assert.equal(_getWhenRoutePaintedScheduleFn(), requestAnimationFrame);
+    assert.equal(_getWhenRouteIdleScheduleFn(), requestAnimationFrame);
+
+    _setCapabilities({
+      requestAnimationFrameEnabled: false,
+      requestIdleCallbackEnabled: false,
+    });
+
+    assert.equal(_getWhenRoutePaintedScheduleFn(), SIMPLE_CALLBACK);
+    assert.equal(_getWhenRouteIdleScheduleFn(), SIMPLE_CALLBACK);
+  });
+
+  test('_setCapabilities by default disables requestIdleCallback in tests', function(assert) {
+    assert.expect(2);
+
+    _setCapabilities();
+
+    assert.equal(_getWhenRouteIdleScheduleFn(), requestAnimationFrame);
+    assert.equal(_getWhenRoutePaintedScheduleFn(), requestAnimationFrame);
   });
 });
