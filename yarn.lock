@@ -4738,22 +4738,12 @@ elliptic@^6.0.0:
     minimalistic-crypto-utils "^1.0.0"
 
 ember-app-scheduler@^1.0.5:
-  version "2.0.0"
-  dependencies:
-    "@types/ember" "^3.1.0"
-    "@types/rsvp" "^4.0.2"
-    ember-cli-babel "^7.1.3"
-    ember-cli-typescript "^2.0.0"
-    ember-compatibility-helpers "^1.1.2"
+  version "0.0.0"
+  uid ""
 
 "ember-app-scheduler@link:./":
-  version "2.0.0"
-  dependencies:
-    "@types/ember" "^3.1.0"
-    "@types/rsvp" "^4.0.2"
-    ember-cli-babel "^7.1.3"
-    ember-cli-typescript "^2.0.0"
-    ember-compatibility-helpers "^1.1.2"
+  version "0.0.0"
+  uid ""
 
 ember-assign-polyfill@^2.5.0, ember-assign-polyfill@^2.6.0:
   version "2.6.0"

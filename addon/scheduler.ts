@@ -151,14 +151,6 @@ export function _setCapabilities(
   _initScheduleFns();
 }
 
-export function _getWhenRoutePaintedScheduleFn(): Function {
-  return _whenRoutePaintedScheduleFn;
-}
-
-export function _getWhenRouteIdleScheduleFn(): Function {
-  return _whenRouteIdleScheduleFn;
-}
-
 function _initScheduleFns(): void {
   _whenRoutePaintedScheduleFn = _getScheduleFn();
   _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
