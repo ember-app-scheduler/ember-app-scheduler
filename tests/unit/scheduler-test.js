@@ -1,18 +1,18 @@
+import { module, test } from 'qunit';
 import {
-  beginTransition,
-  endTransition,
   reset,
-  routeSettled,
   whenRouteIdle,
   whenRoutePainted,
+  routeSettled,
+  beginTransition,
+  endTransition,
 } from 'ember-app-scheduler';
 import {
-  SIMPLE_CALLBACK,
-  USE_REQUEST_IDLE_CALLBACK,
-  _getScheduleFn,
   _setCapabilities,
+  _getScheduleFn,
+  USE_REQUEST_IDLE_CALLBACK,
+  SIMPLE_CALLBACK,
 } from 'ember-app-scheduler/scheduler';
-import { module, test } from 'qunit';
 
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
 const REQUEST_IDLE_CALLBACK = requestIdleCallback;

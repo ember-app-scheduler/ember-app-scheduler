@@ -1,10 +1,10 @@
-import Router from '@ember/routing/router';
-import { run } from '@ember/runloop';
-import { registerWaiter } from '@ember/test';
-import { DEBUG } from '@glimmer/env';
-import Ember from 'ember';
-import { gte } from 'ember-compatibility-helpers';
 import { Promise } from 'rsvp';
+import { run } from '@ember/runloop';
+import Router from '@ember/routing/router';
+import { DEBUG } from '@glimmer/env';
+import { registerWaiter } from '@ember/test';
+import { gte } from 'ember-compatibility-helpers';
+import Ember from 'ember';
 
 interface Deferred {
   isResolved: boolean;
