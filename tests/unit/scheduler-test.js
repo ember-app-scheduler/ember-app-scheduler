@@ -14,12 +14,14 @@ import {
 } from 'ember-app-scheduler/scheduler';
 
 const REQUEST_ANIMATION_FRAME = requestAnimationFrame;
+const REQUEST_IDLE_CALLBACK = requestIdleCallback;
 
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
-    reset();
     _setCapabilities();
+    reset();
     window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
+    window.requestIdleCallback = REQUEST_IDLE_CALLBACK;
   });
 
   test('whenRouteIdle resolves when transition ended', async function(assert) {
@@ -45,8 +47,12 @@ module('Unit | Scheduler', function(hooks) {
       requestAnimationFrameEnabled: false,
       requestIdleCallbackEnabled: false,
     });
+
     window.requestAnimationFrame = () =>
       assert.ok(false, 'requestAnimationFrame was used');
+    window.requestIdleCallback = () =>
+      assert.ok(false, 'requestIdleCallback was used');
+
     beginTransition();
 
     let routeIdle = whenRouteIdle();
@@ -67,8 +73,12 @@ module('Unit | Scheduler', function(hooks) {
       requestAnimationFrameEnabled: true,
       requestIdleCallbackEnabled: false,
     });
+
     window.requestAnimationFrame = () =>
       assert.ok(true, 'requestAnimationFrame was used');
+    window.requestIdleCallback = () =>
+      assert.ok(false, 'requestIdleCallback was used');
+
     beginTransition();
 
     let routeIdle = whenRouteIdle();
