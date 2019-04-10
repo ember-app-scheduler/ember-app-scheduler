@@ -129,6 +129,8 @@ export function _getScheduleFn(
 
 export function _setCapabilities(newCapabilities = CAPABILITIES): void {
   _capabilities = newCapabilities;
+  _whenRoutePaintedScheduleFn = _getScheduleFn();
+  _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 }
 
 _whenRoutePaintedScheduleFn = _getScheduleFn();

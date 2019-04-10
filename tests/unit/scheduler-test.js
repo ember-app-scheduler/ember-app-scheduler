@@ -18,10 +18,10 @@ const REQUEST_IDLE_CALLBACK = requestIdleCallback;
 
 module('Unit | Scheduler', function(hooks) {
   hooks.afterEach(function() {
-    _setCapabilities();
-    reset();
     window.requestAnimationFrame = REQUEST_ANIMATION_FRAME;
     window.requestIdleCallback = REQUEST_IDLE_CALLBACK;
+    _setCapabilities();
+    reset();
   });
 
   test('whenRouteIdle resolves when transition ended', async function(assert) {
@@ -48,10 +48,14 @@ module('Unit | Scheduler', function(hooks) {
       requestIdleCallbackEnabled: false,
     });
 
-    window.requestAnimationFrame = () =>
+    window.requestAnimationFrame = callback => {
       assert.ok(false, 'requestAnimationFrame was used');
-    window.requestIdleCallback = () =>
+      callback();
+    };
+    window.requestIdleCallback = callback => {
       assert.ok(false, 'requestIdleCallback was used');
+      callback();
+    };
 
     beginTransition();
 
@@ -74,10 +78,14 @@ module('Unit | Scheduler', function(hooks) {
       requestIdleCallbackEnabled: false,
     });
 
-    window.requestAnimationFrame = () =>
+    window.requestAnimationFrame = callback => {
       assert.ok(true, 'requestAnimationFrame was used');
-    window.requestIdleCallback = () =>
+      callback();
+    };
+    window.requestIdleCallback = callback => {
       assert.ok(false, 'requestIdleCallback was used');
+      callback();
+    };
 
     beginTransition();
 
