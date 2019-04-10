@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import {
   reset,
+  whenRoutePainted,
   whenRouteIdle,
   routeSettled,
   beginTransition,
@@ -24,6 +25,22 @@ module('Unit | Scheduler', function(hooks) {
     reset();
   });
 
+  test('whenRoutePainted resolves when transition ended', async function(assert) {
+    assert.expect(1);
+
+    beginTransition();
+
+    let routePainted = whenRoutePainted();
+
+    endTransition();
+
+    await routePainted.then(() => {
+      assert.ok(true);
+    });
+
+    await routeSettled();
+  });
+
   test('whenRouteIdle resolves when transition ended', async function(assert) {
     assert.expect(1);
 
@@ -34,6 +51,36 @@ module('Unit | Scheduler', function(hooks) {
     endTransition();
 
     await routeIdle.then(() => {
+      assert.ok(true);
+    });
+
+    await routeSettled();
+  });
+
+  test('whenRoutePainted resolves when transition ended when requestAnimationFrame not available', async function(assert) {
+    assert.expect(1);
+
+    _setCapabilities({
+      requestAnimationFrameEnabled: false,
+      requestIdleCallbackEnabled: false,
+    });
+
+    window.requestAnimationFrame = callback => {
+      assert.ok(false, 'requestAnimationFrame was used');
+      callback();
+    };
+    window.requestIdleCallback = callback => {
+      assert.ok(false, 'requestIdleCallback was used');
+      callback();
+    };
+
+    beginTransition();
+
+    let routePainted = whenRoutePainted();
+
+    endTransition();
+
+    await routePainted.then(() => {
       assert.ok(true);
     });
 
@@ -70,7 +117,37 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
   });
 
-  test('whenRouteIdle resolves using requestAnimationFrame when transition ended when requestIdleCallbackEnabled: not available', async function(assert) {
+  test('whenRoutePainted resolves using requestAnimationFrame when transition ended', async function(assert) {
+    assert.expect(1);
+
+    _setCapabilities({
+      requestAnimationFrameEnabled: true,
+      requestIdleCallbackEnabled: false,
+    });
+
+    window.requestAnimationFrame = callback => {
+      assert.ok(true, 'requestAnimationFrame was used');
+      callback();
+    };
+    window.requestIdleCallback = callback => {
+      assert.ok(false, 'requestIdleCallback was used');
+      callback();
+    };
+
+    beginTransition();
+
+    let routePainted = whenRoutePainted();
+
+    endTransition();
+
+    await routePainted.then(() => {
+      assert.ok(true);
+    });
+
+    await routeSettled();
+  });
+
+  test('whenRouteIdle resolves using requestAnimationFrame when transition ended', async function(assert) {
     assert.expect(1);
 
     _setCapabilities({
@@ -100,6 +177,28 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
   });
 
+  test('whenRoutePainted with transition interupted', async function(assert) {
+    assert.expect(3);
+
+    beginTransition();
+
+    whenRoutePainted().then(() => {
+      assert.step('first whenRoutePainted');
+    });
+
+    beginTransition();
+
+    whenRoutePainted().then(() => {
+      assert.step('second whenRoutePainted');
+    });
+
+    endTransition();
+
+    await routeSettled();
+
+    assert.verifySteps(['first whenRoutePainted', 'second whenRoutePainted']);
+  });
+
   test('whenRouteIdle with transition interupted', async function(assert) {
     assert.expect(3);
 
@@ -120,15 +219,6 @@ module('Unit | Scheduler', function(hooks) {
     await routeSettled();
 
     assert.verifySteps(['first whenRouteIdle', 'second whenRouteIdle']);
-  });
-
-  test('_getScheduleFn returns correct scheduleFn for requestIdleCallbackEnabled:', function(assert) {
-    assert.expect(1);
-
-    assert.equal(
-      _getScheduleFn(USE_REQUEST_IDLE_CALLBACK),
-      requestIdleCallback
-    );
   });
 
   test('_getScheduleFn falls back to requestAnimationFrame if requestIdleCallbackEnabled: not available', function(assert) {
