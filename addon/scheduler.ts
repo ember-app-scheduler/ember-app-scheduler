@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { Promise } from 'rsvp';
 import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
@@ -118,7 +119,9 @@ export function routeSettled(): Promise<any> {
 export function _getScheduleFn(
   useRequestIdleCallback = false
 ): (callback: any) => number {
-  if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
+  if (DEBUG && useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
+    return (callback) => Ember.testing ? requestAnimationFrame(callback) : requestIdleCallback(callback);
+  } else if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
     return requestIdleCallback;
   } else if (_capabilities.requestAnimationFrameEnabled) {
     return requestAnimationFrame;
@@ -129,6 +132,8 @@ export function _getScheduleFn(
 
 export function _setCapabilities(newCapabilities = CAPABILITIES): void {
   _capabilities = newCapabilities;
+  _whenRoutePaintedScheduleFn = _getScheduleFn();
+  _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 }
 
 _whenRoutePaintedScheduleFn = _getScheduleFn();
