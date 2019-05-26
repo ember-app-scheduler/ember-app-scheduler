@@ -4742,22 +4742,12 @@ elliptic@^6.0.0:
     minimalistic-crypto-utils "^1.0.0"
 
 ember-app-scheduler@^1.0.5:
-  version "2.0.0"
-  dependencies:
-    "@types/ember" "^3.1.0"
-    "@types/rsvp" "^4.0.2"
-    ember-cli-babel "^7.1.3"
-    ember-cli-typescript "^2.0.0"
-    ember-compatibility-helpers "^1.1.2"
+  version "0.0.0"
+  uid ""
 
 "ember-app-scheduler@link:./":
-  version "2.0.0"
-  dependencies:
-    "@types/ember" "^3.1.0"
-    "@types/rsvp" "^4.0.2"
-    ember-cli-babel "^7.1.3"
-    ember-cli-typescript "^2.0.0"
-    ember-compatibility-helpers "^1.1.2"
+  version "0.0.0"
+  uid ""
 
 ember-assign-polyfill@^2.5.0, ember-assign-polyfill@^2.6.0:
   version "2.6.0"
@@ -4809,10 +4799,10 @@ ember-cli-addon-docs-yuidoc@^0.2.1:
     lodash "^4.17.5"
     yuidocjs "^0.10.2"
 
-ember-cli-addon-docs@^0.6.7:
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/ember-cli-addon-docs/-/ember-cli-addon-docs-0.6.10.tgz#8a69607e96586826e46e69f6f9878def9af5a07e"
-  integrity sha512-IJSBx/yXHQQ6tmQjKnM7DLbThOoGOTBgzQogGD8kmHh+dZXdkI350uSGqYo1/sD2OJg89vdEY9eW30kOYZUflQ==
+ember-cli-addon-docs@^0.6.12:
+  version "0.6.12"
+  resolved "https://registry.yarnpkg.com/ember-cli-addon-docs/-/ember-cli-addon-docs-0.6.12.tgz#5dcd5c2fd527720e90a43f6aa241c59e2e69568e"
+  integrity sha512-uBGW7b3BvvTrVyZSdHSysFQj8ONjKnN7GL09OpH2DBcpNVv9Pi8NT8M7hb/BdXzPe5tirqMtpjCKHZaRIt6DVA==
   dependencies:
     "@glimmer/syntax" "^0.36.4"
     broccoli-bridge "^1.0.0"
@@ -4845,7 +4835,7 @@ ember-cli-addon-docs@^0.6.7:
     ember-href-to "^1.15.1"
     ember-keyboard "^4.0.0"
     ember-modal-dialog "3.0.0-beta.3"
-    ember-responsive "^3.0.0-beta.1"
+    ember-responsive "^3.0.1"
     ember-router-generator "^1.2.3"
     ember-router-scroll "^1.0.0"
     ember-svg-jar "^1.2.2"
@@ -5619,10 +5609,10 @@ ember-resolver@^5.0.0:
     ember-cli-version-checker "^3.0.0"
     resolve "^1.10.0"
 
-ember-responsive@^3.0.0-beta.1:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ember-responsive/-/ember-responsive-3.0.0.tgz#03791da324299a8c8cb461e541a5e1aeca887881"
-  integrity sha512-5JQ+REBu37M7NNDJOnTjzp5eQzg4cX7VtPcD19V3nBcntRuDwf7N6TndLxmw4Kt3JXuzQL4PkDE2SgVKuNTdWQ==
+ember-responsive@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ember-responsive/-/ember-responsive-3.0.1.tgz#52eac29ff9ab57e4912f65354056aee1f132c63c"
+  integrity sha512-diHQ09KL1SNM0jOwW6iGailh0MhcbdBP5JIQc/jiIijYm/pNe0LRGnnYvM3FK5RQ6XeDg87rLx0shLyCy0HpTg==
   dependencies:
     ember-cli-babel "^6.6.0"
 
