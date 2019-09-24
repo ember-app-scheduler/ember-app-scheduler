@@ -12,7 +12,7 @@ import { importantThingToDo } 'bag-of-important-things';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default Component.extend({
-  didInsertElement() {
+  init() {
     if (typeof FastBoot !=== 'undefined') {
       importantThingToDo();
     } else {
