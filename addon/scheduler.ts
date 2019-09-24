@@ -35,6 +35,7 @@ let _capabilities = CAPABILITIES;
 
 export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
+const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 
 reset();
 
@@ -55,7 +56,7 @@ export function endTransition(): void {
 }
 
 export function setupRouter(router: Router): void {
-  if ((router as any)[APP_SCHEDULER_HAS_SETUP]) {
+  if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
@@ -74,7 +75,11 @@ export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
-  _whenRouteDidChange.resolve();
+
+  if (!IS_FASTBOOT) {
+    _whenRouteDidChange.resolve();
+  }
+
   _activeScheduledTasks = 0;
 }
 
@@ -119,9 +124,19 @@ export function routeSettled(): Promise<any> {
 export function _getScheduleFn(
   useRequestIdleCallback = false
 ): (callback: any) => number {
-  if (DEBUG && useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
-    return (callback) => Ember.testing ? requestAnimationFrame(callback) : requestIdleCallback(callback);
-  } else if (useRequestIdleCallback && _capabilities.requestIdleCallbackEnabled) {
+  if (
+    DEBUG &&
+    useRequestIdleCallback &&
+    _capabilities.requestIdleCallbackEnabled
+  ) {
+    return callback =>
+      Ember.testing
+        ? requestAnimationFrame(callback)
+        : requestIdleCallback(callback);
+  } else if (
+    useRequestIdleCallback &&
+    _capabilities.requestIdleCallbackEnabled
+  ) {
     return requestIdleCallback;
   } else if (_capabilities.requestAnimationFrameEnabled) {
     return requestAnimationFrame;

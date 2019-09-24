@@ -4,11 +4,11 @@ type RequestIdleCallbackOptions = {
 };
 type RequestIdleCallbackDeadline = {
   readonly didTimeout: boolean;
-  timeRemaining: (() => number);
+  timeRemaining: () => number;
 };
 
 declare function requestIdleCallback(
-  callback: ((deadline: RequestIdleCallbackDeadline) => void),
+  callback: (deadline: RequestIdleCallbackDeadline) => void,
   opts?: RequestIdleCallbackOptions
 ): RequestIdleCallbackHandle;
 

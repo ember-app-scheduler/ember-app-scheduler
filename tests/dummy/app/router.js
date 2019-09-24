@@ -17,6 +17,7 @@ Router.map(function() {
   this.route('first-paint');
   this.route('content-paint');
   this.route('aborted-paint');
+  this.route('both-painted');
 
   this.route('not-found', { path: '/*path' });
 });

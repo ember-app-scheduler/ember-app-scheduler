@@ -5,10 +5,10 @@ import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default Component.extend({
   layout,
-  whenRouteIdle: false,
 
   init() {
     this._super(...arguments);
+    this.set('whenRouteIdle', false);
 
     whenRouteIdle().then(() => {
       this.set('whenRouteIdle', true);

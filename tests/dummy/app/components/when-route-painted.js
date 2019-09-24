@@ -4,11 +4,11 @@ import { whenRoutePainted } from 'ember-app-scheduler';
 
 export default Component.extend({
   layout,
-  whenRoutePainted: false,
 
   init() {
     this._super(...arguments);
-
+    this.set('whenRoutePainted', false);
+    debugger;
     whenRoutePainted().then(() => {
       this.set('whenRoutePainted', true);
     });
