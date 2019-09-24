@@ -13,6 +13,7 @@ Router.map(function() {
     this.route('when-route-painted');
     this.route('when-route-idle');
     this.route('testing');
+    this.route('fastboot');
   });
   this.route('first-paint');
   this.route('content-paint');
