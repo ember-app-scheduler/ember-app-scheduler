@@ -8,7 +8,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('whenRoutePainted', false);
-    debugger;
+
     whenRoutePainted().then(() => {
       this.set('whenRoutePainted', true);
     });
