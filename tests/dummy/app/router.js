@@ -13,10 +13,12 @@ Router.map(function() {
     this.route('when-route-painted');
     this.route('when-route-idle');
     this.route('testing');
+    this.route('fastboot');
   });
   this.route('first-paint');
   this.route('content-paint');
   this.route('aborted-paint');
+  this.route('both-painted');
 
   this.route('not-found', { path: '/*path' });
 });
