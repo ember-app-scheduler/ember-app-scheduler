@@ -119,7 +119,7 @@ export function setupRouter(router: Router, options: SchedulerOptions): void {
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
   if (CAPABILITIES.performanceObserverEnabled) {
-    schedulerOptions = assign(DEFAULT_OPTIONS, options);
+    schedulerOptions = assign({}, DEFAULT_OPTIONS, options);
 
     installObserver();
   }
