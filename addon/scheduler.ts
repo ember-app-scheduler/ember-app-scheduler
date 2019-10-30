@@ -1,10 +1,11 @@
 import Ember from 'ember';
 import { Promise } from 'rsvp';
-import { run } from '@ember/runloop';
+import { run, schedule } from '@ember/runloop';
+import { assign } from '@ember/polyfills';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
-import { registerWaiter } from '@ember/test';
 import { gte } from 'ember-compatibility-helpers';
+import { buildWaiter, Token } from 'ember-test-waiters';
 
 interface Deferred {
   isResolved: boolean;
@@ -13,31 +14,78 @@ interface Deferred {
   reject: Function;
 }
 
+interface SchedulerOptions {
+  markName: string;
+  emitMark: boolean;
+}
+
 interface Capabilities {
   requestAnimationFrameEnabled: boolean;
   requestIdleCallbackEnabled: boolean;
+  performanceObserverEnabled: boolean;
 }
 
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
+let PERFORMANCE_OBSERVER_SETUP: boolean = false;
 
 let _whenRouteDidChange: Deferred;
 let _whenRoutePainted: Promise<any>;
 let _whenRoutePaintedScheduleFn: Function;
 let _whenRouteIdle: Promise<any>;
 let _whenRouteIdleScheduleFn: Function;
-let _activeScheduledTasks: number = 0;
 const CAPABILITIES: Capabilities = {
   requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
   requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
+  performanceObserverEnabled: typeof PerformanceObserver === 'function',
 };
+const DEFAULT_OPTIONS: SchedulerOptions = {
+  markName: 'routeIdle',
+  emitMark: true,
+};
+
 let _capabilities = CAPABILITIES;
+let schedulerOptions: SchedulerOptions = DEFAULT_OPTIONS;
 
 export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
+const waiter = buildWaiter('ember-app-scheduler-waiter');
+let _emitMark: Function = emitMark;
 
 reset();
+
+function installObserver() {
+  if (PERFORMANCE_OBSERVER_SETUP) {
+    return;
+  }
+
+  let observer = new PerformanceObserver(list => {
+    let entries = list.getEntriesByName(schedulerOptions.markName);
+
+    if (entries.length > 0) {
+      _whenRouteDidChange.resolve();
+    }
+  });
+  observer.observe({ entryTypes: ['mark'] });
+
+  PERFORMANCE_OBSERVER_SETUP = true;
+}
+
+export function emitMark() {
+  let emitMarkToken: Token = <Token>waiter.beginAsync();
+
+  schedule('afterRender', null, () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        performance.mark(schedulerOptions.markName);
+        _whenRouteDidChange.promise.finally(() =>
+          waiter.endAsync(emitMarkToken)
+        );
+      });
+    });
+  });
+}
 
 export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
@@ -52,15 +100,29 @@ export function beginTransition(): void {
 }
 
 export function endTransition(): void {
-  _whenRouteDidChange.resolve();
+  if (CAPABILITIES.performanceObserverEnabled) {
+    if (!schedulerOptions.emitMark) {
+      return;
+    }
+
+    _emitMark();
+  } else {
+    _whenRouteDidChange.resolve();
+  }
 }
 
-export function setupRouter(router: Router): void {
+export function setupRouter(router: Router, options: SchedulerOptions): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
+
+  if (CAPABILITIES.performanceObserverEnabled) {
+    schedulerOptions = assign({}, DEFAULT_OPTIONS, options);
+
+    installObserver();
+  }
 
   if (gte('3.6.0')) {
     router.on('routeWillChange', beginTransition);
@@ -79,8 +141,6 @@ export function reset(): void {
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
   }
-
-  _activeScheduledTasks = 0;
 }
 
 /**
@@ -146,37 +206,28 @@ export function _getScheduleFn(
 }
 
 export function _setCapabilities(newCapabilities = CAPABILITIES): void {
-  _capabilities = newCapabilities;
+  _capabilities = assign({}, _capabilities, newCapabilities);
   _whenRoutePaintedScheduleFn = _getScheduleFn();
   _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
+}
+
+export function _setEmitMark(overrideEmitMark: Function = emitMark) {
+  _emitMark = overrideEmitMark;
 }
 
 _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
 function _afterNextPaint(scheduleFn: Function): Promise<any> {
-  let promise = new Promise(resolve => {
-    if (DEBUG) {
-      _activeScheduledTasks++;
-    }
+  let nextPaintToken = waiter.beginAsync();
 
+  return new Promise(resolve => {
     scheduleFn(() => {
       run.later(resolve, 0);
     });
+  }).finally(() => {
+    waiter.endAsync(nextPaintToken);
   });
-
-  if (DEBUG) {
-    promise = promise.finally(() => {
-      _activeScheduledTasks--;
-    });
-  }
-
-  return promise;
-}
-
-if (DEBUG) {
-  // wait until no active rafs
-  registerWaiter(() => _activeScheduledTasks === 0);
 }
 
 function _defer(label: string): Deferred {
