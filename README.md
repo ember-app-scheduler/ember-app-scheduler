@@ -10,7 +10,7 @@ Ember batches DOM updates and paints them after every run loop to prevent [layou
 
 As a way to mitigate the need to render all content at once regardless of its visual priority, some work done on the page like ads, analytics tracking, rendering non critical content, rendering content outside viewport etc. can be deferred to achieve a faster FMP. This work can be delayed to run after the FMP and achieve incremental rendering of the page.
 
-This addon provides a way to defer work into different paint phases of the rendering process to get a faster FMP. It also helps to prioritize and coordinate when the paint happens for different parts of the page.
+This addon provides a way to defer work into different phases of the rendering process to get a faster FMP. It also helps to prioritize and coordinate when the paint happens for different parts of the page.
 
 The [documentation website](https://ember-app-scheduler.github.io/ember-app-scheduler/) contains more examples and API information.
 

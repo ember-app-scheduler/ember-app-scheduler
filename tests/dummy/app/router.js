@@ -22,6 +22,7 @@ Router.map(function() {
   this.route('custom-emit-mark');
 
   this.route('not-found', { path: '/*path' });
+  this.route('custom-mark');
 });
 
 export default Router;
