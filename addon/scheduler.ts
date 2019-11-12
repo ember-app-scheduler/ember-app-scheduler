@@ -14,11 +14,6 @@ interface Deferred {
   reject: Function;
 }
 
-interface SchedulerOptions {
-  markName: string;
-  emitMark: boolean;
-}
-
 interface Capabilities {
   requestAnimationFrameEnabled: boolean;
   requestIdleCallbackEnabled: boolean;
@@ -39,13 +34,8 @@ const CAPABILITIES: Capabilities = {
   requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
   performanceObserverEnabled: typeof PerformanceObserver === 'function',
 };
-const DEFAULT_OPTIONS: SchedulerOptions = {
-  markName: 'routeIdle',
-  emitMark: true,
-};
 
 let _capabilities = CAPABILITIES;
-let schedulerOptions: SchedulerOptions = DEFAULT_OPTIONS;
 
 export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
@@ -61,7 +51,7 @@ function installObserver() {
   }
 
   let observer = new PerformanceObserver(list => {
-    let entries = list.getEntriesByName(schedulerOptions.markName);
+    let entries = list.getEntriesByName('routeIdle');
 
     if (entries.length > 0) {
       _whenRouteDidChange.resolve();
@@ -78,7 +68,7 @@ export function emitMark() {
   schedule('afterRender', null, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        performance.mark(schedulerOptions.markName);
+        performance.mark('routeIdle');
         _whenRouteDidChange.promise.finally(() =>
           waiter.endAsync(emitMarkToken)
         );
@@ -101,17 +91,13 @@ export function beginTransition(): void {
 
 export function endTransition(): void {
   if (CAPABILITIES.performanceObserverEnabled) {
-    if (!schedulerOptions.emitMark) {
-      return;
-    }
-
     _emitMark();
   } else {
     _whenRouteDidChange.resolve();
   }
 }
 
-export function setupRouter(router: Router, options: SchedulerOptions): void {
+export function setupRouter(router: Router): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
@@ -119,8 +105,6 @@ export function setupRouter(router: Router, options: SchedulerOptions): void {
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
   if (CAPABILITIES.performanceObserverEnabled) {
-    schedulerOptions = assign({}, DEFAULT_OPTIONS, options);
-
     installObserver();
   }
 
