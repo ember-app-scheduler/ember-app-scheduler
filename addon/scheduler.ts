@@ -36,7 +36,7 @@ let _emitMark: Function = emitMark;
 
 reset();
 
-function installObserver() {
+function _installObserver() {
   if (PERFORMANCE_OBSERVER_SETUP) {
     return;
   }
@@ -91,7 +91,7 @@ export function setupRouter(router: Router): void {
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
   if (CAPABILITIES.performanceObserverEnabled) {
-    installObserver();
+    _installObserver();
   }
 
   if (gte('3.6.0')) {
