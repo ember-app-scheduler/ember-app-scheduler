@@ -14,17 +14,16 @@ interface Deferred {
 }
 
 interface Capabilities {
-  performanceObserverEnabled: boolean;
+  requestAnimationFrameEnabled: boolean;
 }
 
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
-let PERFORMANCE_OBSERVER_SETUP: boolean = false;
 
 let _whenRouteDidChange: Deferred;
 let _whenRouteIdle: Promise<any>;
 const CAPABILITIES: Capabilities = {
-  performanceObserverEnabled: typeof PerformanceObserver === 'function',
+  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
 };
 
 let _capabilities = CAPABILITIES;
@@ -32,37 +31,19 @@ let _capabilities = CAPABILITIES;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 const waiter = buildWaiter('ember-app-scheduler-waiter');
-let _emitMark: Function = emitMark;
 
 reset();
 
-function _installObserver() {
-  if (PERFORMANCE_OBSERVER_SETUP) {
-    return;
-  }
-
-  let observer = new PerformanceObserver(list => {
-    let entries = list.getEntriesByName('routeIdle');
-
-    if (entries.length > 0) {
-      _whenRouteDidChange.resolve();
-    }
-  });
-  observer.observe({ entryTypes: ['mark'] });
-
-  PERFORMANCE_OBSERVER_SETUP = true;
-}
-
-export function emitMark() {
-  let emitMarkToken: Token = <Token>waiter.beginAsync();
+export function beginScheduledWork() {
+  let scheduledWorkToken: Token = <Token>waiter.beginAsync();
 
   schedule('afterRender', null, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        performance.mark('routeIdle');
         _whenRouteDidChange.promise.finally(() =>
-          waiter.endAsync(emitMarkToken)
+          waiter.endAsync(scheduledWorkToken)
         );
+        _whenRouteDidChange.resolve();
       });
     });
   });
@@ -76,8 +57,8 @@ export function beginTransition(): void {
 }
 
 export function endTransition(): void {
-  if (CAPABILITIES.performanceObserverEnabled) {
-    _emitMark();
+  if (CAPABILITIES.requestAnimationFrameEnabled) {
+    beginScheduledWork();
   } else {
     _whenRouteDidChange.resolve();
   }
@@ -89,10 +70,6 @@ export function setupRouter(router: Router): void {
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
-
-  if (CAPABILITIES.performanceObserverEnabled) {
-    _installObserver();
-  }
 
   if (gte('3.6.0')) {
     router.on('routeWillChange', beginTransition);

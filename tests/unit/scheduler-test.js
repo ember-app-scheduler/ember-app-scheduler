@@ -14,11 +14,11 @@ module('Unit | Scheduler', function(hooks) {
     reset();
   });
 
-  module('using PerformanceObserver', function() {
+  module('using requestAnimationFrame', function() {
     test('whenRouteIdle resolves when transition ended', async function(assert) {
       assert.expect(1);
 
-      _setCapabilities({ performanceObserverEnabled: true });
+      _setCapabilities({ requestAnimationFrameEnabled: true });
 
       beginTransition();
 
@@ -36,7 +36,7 @@ module('Unit | Scheduler', function(hooks) {
     test('whenRouteIdle with transition interupted', async function(assert) {
       assert.expect(3);
 
-      _setCapabilities({ performanceObserverEnabled: true });
+      _setCapabilities({ requestAnimationFrameEnabled: true });
 
       beginTransition();
 
@@ -58,11 +58,11 @@ module('Unit | Scheduler', function(hooks) {
     });
   });
 
-  module('not using PerformanceObserver', function() {
+  module('not using requestAnimationFrame', function() {
     test('whenRouteIdle resolves when transition ended', async function(assert) {
       assert.expect(1);
 
-      _setCapabilities({ performanceObserverEnabled: false });
+      _setCapabilities({ requestAnimationFrameEnabled: false });
 
       beginTransition();
 
@@ -80,7 +80,7 @@ module('Unit | Scheduler', function(hooks) {
     test('whenRouteIdle with transition interupted', async function(assert) {
       assert.expect(3);
 
-      _setCapabilities({ performanceObserverEnabled: false });
+      _setCapabilities({ requestAnimationFrameEnabled: false });
 
       beginTransition();
 
