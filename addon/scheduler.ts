@@ -1,7 +1,6 @@
 import { Promise } from 'rsvp';
 import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
-import { assign } from '@ember/polyfills';
 import Router from '@ember/routing/router';
 import { gte } from 'ember-compatibility-helpers';
 import { buildWaiter, Token } from 'ember-test-waiters';
@@ -13,20 +12,11 @@ interface Deferred {
   reject: Function;
 }
 
-interface Capabilities {
-  requestAnimationFrameEnabled: boolean;
-}
-
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
 let _whenRouteDidChange: Deferred;
 let _whenRouteIdle: Promise<any>;
-const CAPABILITIES: Capabilities = {
-  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
-};
-
-let _capabilities = CAPABILITIES;
 
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
@@ -57,11 +47,7 @@ export function beginTransition(): void {
 }
 
 export function endTransition(): void {
-  if (CAPABILITIES.requestAnimationFrameEnabled) {
-    beginScheduledWork();
-  } else {
-    _whenRouteDidChange.resolve();
-  }
+  beginScheduledWork();
 }
 
 export function setupRouter(router: Router): void {
@@ -138,10 +124,6 @@ export function whenRouteIdle(): Promise<any> {
  */
 export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
-}
-
-export function _setCapabilities(newCapabilities = CAPABILITIES): void {
-  _capabilities = assign({}, _capabilities, newCapabilities);
 }
 
 function _defer(label: string): Deferred {
