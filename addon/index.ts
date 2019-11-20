@@ -7,5 +7,4 @@ export {
   didTransition,
   whenRoutePainted,
   whenRouteIdle,
-  beginScheduledWork,
 } from 'ember-app-scheduler/scheduler';

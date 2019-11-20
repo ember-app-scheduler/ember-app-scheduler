@@ -15,8 +15,7 @@ interface Deferred {
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
-let _whenRouteDidChange: Deferred;
-let _whenRouteIdle: Promise<any>;
+let _whenRouteIdle: Deferred;
 
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
@@ -30,19 +29,18 @@ export function beginScheduledWork() {
   schedule('afterRender', null, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        _whenRouteDidChange.promise.finally(() =>
+        _whenRouteIdle.promise.finally(() =>
           waiter.endAsync(scheduledWorkToken)
         );
-        _whenRouteDidChange.resolve();
+        _whenRouteIdle.resolve();
       });
     });
   });
 }
 
 export function beginTransition(): void {
-  if (_whenRouteDidChange.isResolved) {
-    _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
-    _whenRouteIdle = _whenRouteDidChange.promise;
+  if (_whenRouteIdle.isResolved) {
+    _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
   }
 }
 
@@ -67,11 +65,10 @@ export function setupRouter(router: Router): void {
 }
 
 export function reset(): void {
-  _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
-  _whenRouteIdle = _whenRouteDidChange.promise.then();
+  _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
 
   if (!IS_FASTBOOT) {
-    _whenRouteDidChange.resolve();
+    _whenRouteIdle.resolve();
   }
 }
 
@@ -85,9 +82,7 @@ export function reset(): void {
 export function didTransition(): Promise<any> {
   let transitionToken = waiter.beginAsync();
 
-  return _whenRouteDidChange.promise.finally(() =>
-    waiter.endAsync(transitionToken)
-  );
+  return _whenRouteIdle.promise.finally(() => waiter.endAsync(transitionToken));
 }
 
 /**
@@ -107,7 +102,7 @@ export function whenRoutePainted(): Promise<any> {
     }
   );
 
-  return _whenRouteIdle;
+  return _whenRouteIdle.promise;
 }
 
 /**
@@ -116,14 +111,14 @@ export function whenRoutePainted(): Promise<any> {
  * @public
  */
 export function whenRouteIdle(): Promise<any> {
-  return _whenRouteIdle;
+  return _whenRouteIdle.promise;
 }
 
 /**
  * Used for testing
  */
 export function routeSettled(): Promise<any> {
-  return _whenRouteIdle;
+  return _whenRouteIdle.promise;
 }
 
 function _defer(label: string): Deferred {
