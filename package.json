@@ -90,6 +90,7 @@
   "resolutions": {
     "@types/ember__object": "~3.0.6",
     "@types/ember__component": "~3.0.4",
+    "@types/ember__debug": "~3.0.6",
     "@types/ember__routing": "~3.0.6",
     "@types/ember__error": "~3.0.2",
     "**/ember-app-scheduler": "link:./",

@@ -1,9 +1,7 @@
-import Ember from 'ember';
 import { Promise } from 'rsvp';
-import { run, schedule } from '@ember/runloop';
-import { assign } from '@ember/polyfills';
+import { schedule } from '@ember/runloop';
+import { deprecate } from '@ember/debug';
 import Router from '@ember/routing/router';
-import { DEBUG } from '@glimmer/env';
 import { gte } from 'ember-compatibility-helpers';
 import { buildWaiter, Token } from 'ember-test-waiters';
 
@@ -14,87 +12,40 @@ interface Deferred {
   reject: Function;
 }
 
-interface Capabilities {
-  requestAnimationFrameEnabled: boolean;
-  requestIdleCallbackEnabled: boolean;
-  performanceObserverEnabled: boolean;
-}
-
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
-let PERFORMANCE_OBSERVER_SETUP: boolean = false;
 
-let _whenRouteDidChange: Deferred;
-let _whenRoutePainted: Promise<any>;
-let _whenRoutePaintedScheduleFn: Function;
-let _whenRouteIdle: Promise<any>;
-let _whenRouteIdleScheduleFn: Function;
-const CAPABILITIES: Capabilities = {
-  requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
-  requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
-  performanceObserverEnabled: typeof PerformanceObserver === 'function',
-};
+let _whenRouteIdle: Deferred;
 
-let _capabilities = CAPABILITIES;
-
-export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 const waiter = buildWaiter('ember-app-scheduler-waiter');
-let _emitMark: Function = emitMark;
 
 reset();
 
-function installObserver() {
-  if (PERFORMANCE_OBSERVER_SETUP) {
-    return;
-  }
-
-  let observer = new PerformanceObserver(list => {
-    let entries = list.getEntriesByName('routeIdle');
-
-    if (entries.length > 0) {
-      _whenRouteDidChange.resolve();
-    }
-  });
-  observer.observe({ entryTypes: ['mark'] });
-
-  PERFORMANCE_OBSERVER_SETUP = true;
-}
-
-export function emitMark() {
-  let emitMarkToken: Token = <Token>waiter.beginAsync();
+export function beginScheduledWork() {
+  let scheduledWorkToken: Token = <Token>waiter.beginAsync();
 
   schedule('afterRender', null, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        performance.mark('routeIdle');
-        _whenRouteDidChange.promise.finally(() =>
-          waiter.endAsync(emitMarkToken)
+        _whenRouteIdle.promise.finally(() =>
+          waiter.endAsync(scheduledWorkToken)
         );
+        _whenRouteIdle.resolve();
       });
     });
   });
 }
 
 export function beginTransition(): void {
-  if (_whenRouteDidChange.isResolved) {
-    _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
-    _whenRoutePainted = _whenRouteDidChange.promise.then(() =>
-      _afterNextPaint(_whenRoutePaintedScheduleFn)
-    );
-    _whenRouteIdle = _whenRoutePainted.then(() =>
-      _afterNextPaint(_whenRouteIdleScheduleFn)
-    );
+  if (_whenRouteIdle.isResolved) {
+    _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
   }
 }
 
 export function endTransition(): void {
-  if (CAPABILITIES.performanceObserverEnabled) {
-    _emitMark();
-  } else {
-    _whenRouteDidChange.resolve();
-  }
+  beginScheduledWork();
 }
 
 export function setupRouter(router: Router): void {
@@ -103,10 +54,6 @@ export function setupRouter(router: Router): void {
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
-
-  if (CAPABILITIES.performanceObserverEnabled) {
-    installObserver();
-  }
 
   if (gte('3.6.0')) {
     router.on('routeWillChange', beginTransition);
@@ -118,12 +65,10 @@ export function setupRouter(router: Router): void {
 }
 
 export function reset(): void {
-  _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
-  _whenRoutePainted = _whenRouteDidChange.promise.then();
-  _whenRouteIdle = _whenRoutePainted.then();
+  _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
 
   if (!IS_FASTBOOT) {
-    _whenRouteDidChange.resolve();
+    _whenRouteIdle.resolve();
   }
 }
 
@@ -135,7 +80,9 @@ export function reset(): void {
  * @public
  */
 export function didTransition(): Promise<any> {
-  return _whenRouteDidChange.promise;
+  let transitionToken = waiter.beginAsync();
+
+  return _whenRouteIdle.promise.finally(() => waiter.endAsync(transitionToken));
 }
 
 /**
@@ -146,7 +93,16 @@ export function didTransition(): Promise<any> {
  * @public
  */
 export function whenRoutePainted(): Promise<any> {
-  return _whenRoutePainted;
+  deprecate(
+    'The `whenRoutePained` function is deprecated. Please use `whenRouteIdle` instead.',
+    false,
+    {
+      id: 'ember-app-scheduler.whenRoutePainted',
+      until: '4.0.0',
+    }
+  );
+
+  return _whenRouteIdle.promise;
 }
 
 /**
@@ -155,63 +111,14 @@ export function whenRoutePainted(): Promise<any> {
  * @public
  */
 export function whenRouteIdle(): Promise<any> {
-  return _whenRouteIdle;
+  return _whenRouteIdle.promise;
 }
 
 /**
  * Used for testing
  */
 export function routeSettled(): Promise<any> {
-  return _whenRouteIdle;
-}
-
-export function _getScheduleFn(
-  useRequestIdleCallback = false
-): (callback: any) => number {
-  if (
-    DEBUG &&
-    useRequestIdleCallback &&
-    _capabilities.requestIdleCallbackEnabled
-  ) {
-    return callback =>
-      Ember.testing
-        ? requestAnimationFrame(callback)
-        : requestIdleCallback(callback);
-  } else if (
-    useRequestIdleCallback &&
-    _capabilities.requestIdleCallbackEnabled
-  ) {
-    return requestIdleCallback;
-  } else if (_capabilities.requestAnimationFrameEnabled) {
-    return requestAnimationFrame;
-  } else {
-    return SIMPLE_CALLBACK;
-  }
-}
-
-export function _setCapabilities(newCapabilities = CAPABILITIES): void {
-  _capabilities = assign({}, _capabilities, newCapabilities);
-  _whenRoutePaintedScheduleFn = _getScheduleFn();
-  _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
-}
-
-export function _setEmitMark(overrideEmitMark: Function = emitMark) {
-  _emitMark = overrideEmitMark;
-}
-
-_whenRoutePaintedScheduleFn = _getScheduleFn();
-_whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
-
-function _afterNextPaint(scheduleFn: Function): Promise<any> {
-  let nextPaintToken = waiter.beginAsync();
-
-  return new Promise(resolve => {
-    scheduleFn(() => {
-      run.later(resolve, 0);
-    });
-  }).finally(() => {
-    waiter.endAsync(nextPaintToken);
-  });
+  return _whenRouteIdle.promise;
 }
 
 function _defer(label: string): Deferred {
