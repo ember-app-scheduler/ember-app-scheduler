@@ -12,8 +12,6 @@ Because there isn't a concrete mechanism that allows us to determine when the pa
 
 To simply visualize what this looks like in relation to `ember-app-scheduler`'s APIs, this is how we accomplish what's described above:
 
-`schedule('afterRender')` -> `requestAnimationFrame` -> `requestAnimationFrame` -> browser paint -> `whenRoutePainted` promise resolves
-
 `schedule('afterRender')` -> `requestAnimationFrame` -> `requestAnimationFrame` -> browser paint -> `whenRouteIdle` promise resolves
 
 Each of the above are chained together to ensure ordering.
