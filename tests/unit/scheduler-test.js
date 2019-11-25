@@ -33,23 +33,18 @@ module('Unit | Scheduler', function(hooks) {
     assert.expect(3);
 
     beginTransition();
-    console.log('beginning first transition');
 
     whenRoutePainted().then(() => {
       assert.step('first whenRoutePainted');
-      console.log('in whenRoutePainted().then() #1');
     });
 
     beginTransition();
-    console.log('beginning second transition');
 
     whenRoutePainted().then(() => {
       assert.step('second whenRoutePainted');
-      console.log('in whenRoutePainted().then() #2');
     });
 
     endTransition();
-    console.log('ending transition');
 
     await routeSettled();
 
