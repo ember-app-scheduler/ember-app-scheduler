@@ -15,7 +15,8 @@ interface Deferred {
 const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
-let _whenRouteIdle: Deferred;
+let _whenRouteDidChange: Deferred;
+let _whenRouteIdle: Promise<unknown>;
 
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
@@ -23,29 +24,27 @@ const waiter = buildWaiter('ember-app-scheduler-waiter');
 
 reset();
 
-export function beginScheduledWork() {
-  let scheduledWorkToken: Token = <Token>waiter.beginAsync();
+export function beginTransition(): void {
+  if (_whenRouteDidChange.isResolved) {
+    _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+    _whenRouteIdle = _whenRouteDidChange.promise.then(() => {
+      let scheduledWorkToken: Token = <Token>waiter.beginAsync();
 
-  schedule('afterRender', null, () => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        _whenRouteIdle.promise.finally(() =>
-          waiter.endAsync(scheduledWorkToken)
-        );
-        _whenRouteIdle.resolve();
+      return new Promise(resolve => {
+        schedule('afterRender', null, () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(resolve);
+          });
+        });
+      }).finally(() => {
+        waiter.endAsync(scheduledWorkToken);
       });
     });
-  });
-}
-
-export function beginTransition(): void {
-  if (_whenRouteIdle.isResolved) {
-    _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
   }
 }
 
 export function endTransition(): void {
-  beginScheduledWork();
+  _whenRouteDidChange.resolve();
 }
 
 export function setupRouter(router: Router): void {
@@ -65,10 +64,11 @@ export function setupRouter(router: Router): void {
 }
 
 export function reset(): void {
-  _whenRouteIdle = _defer(APP_SCHEDULER_LABEL);
+  _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+  _whenRouteIdle = _whenRouteDidChange.promise.then();
 
   if (!IS_FASTBOOT) {
-    _whenRouteIdle.resolve();
+    _whenRouteDidChange.resolve();
   }
 }
 
@@ -80,9 +80,16 @@ export function reset(): void {
  * @public
  */
 export function didTransition(): Promise<any> {
-  let transitionToken = waiter.beginAsync();
+  deprecate(
+    'The `didTransition` function is deprecated. Please use `whenRouteIdle` instead.',
+    false,
+    {
+      id: 'ember-app-scheduler.didTransition',
+      until: '4.0.0',
+    }
+  );
 
-  return _whenRouteIdle.promise.finally(() => waiter.endAsync(transitionToken));
+  return _whenRouteDidChange.promise;
 }
 
 /**
@@ -102,7 +109,7 @@ export function whenRoutePainted(): Promise<any> {
     }
   );
 
-  return _whenRouteIdle.promise;
+  return _whenRouteIdle;
 }
 
 /**
@@ -111,14 +118,14 @@ export function whenRoutePainted(): Promise<any> {
  * @public
  */
 export function whenRouteIdle(): Promise<any> {
-  return _whenRouteIdle.promise;
+  return _whenRouteIdle;
 }
 
 /**
  * Used for testing
  */
 export function routeSettled(): Promise<any> {
-  return _whenRouteIdle.promise;
+  return _whenRouteIdle;
 }
 
 function _defer(label: string): Deferred {
