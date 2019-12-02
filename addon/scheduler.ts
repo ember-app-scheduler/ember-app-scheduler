@@ -46,13 +46,21 @@ export function beginTransition(): void {
       _afterNextPaint(_whenRoutePaintedScheduleFn)
     );
     _whenRouteIdle = _whenRoutePainted.then(() =>
-      _afterNextPaint(_whenRouteIdleScheduleFn)
+      _afterNextPaint(_whenRouteIdleScheduleFn).finally(() => {
+        performance.mark('appSchedulerEnd');
+        performance.measure(
+          'appScheduler',
+          'appSchedulerStart',
+          'appSchedulerEnd'
+        );
+      })
     );
   }
 }
 
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
+  performance.mark('appSchedulerStart');
 }
 
 export function setupRouter(router: Router): void {
