@@ -38,6 +38,12 @@ export function beginTransition(): void {
         });
       }).finally(() => {
         waiter.endAsync(scheduledWorkToken);
+        performance.mark('appSchedulerEnd');
+        performance.measure(
+          'appScheduler',
+          'appSchedulerStart',
+          'appSchedulerEnd'
+        );
       });
     });
   }
@@ -45,6 +51,7 @@ export function beginTransition(): void {
 
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
+  performance.mark('appSchedulerStart');
 }
 
 export function setupRouter(router: Router): void {
