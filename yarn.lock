@@ -6221,6 +6221,13 @@ ember-test-waiters@^1.0.0:
   dependencies:
     ember-cli-babel "^7.1.2"
 
+ember-test-waiters@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ember-test-waiters/-/ember-test-waiters-1.1.1.tgz#7df6e7a47e0fdca814aa351f7f7f9a006e15fdcd"
+  integrity sha512-ra71ZWTGBGLeDPa308aeAg9+/nYxv2fk4OEzmXdhvbSa5Dtbei94sr5pbLXx2IiK3Re2gDAvDzxg9PVhLy9fig==
+  dependencies:
+    ember-cli-babel "^7.1.2"
+
 ember-tether@^1.0.0-beta.2:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ember-tether/-/ember-tether-1.0.0.tgz#6117ea7351927887cb74fa5d46097dd300280c2d"
