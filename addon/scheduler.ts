@@ -80,7 +80,9 @@ export function reset(): void {
   _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
 
-  (<TestWaiter>waiter).items.clear();
+  if (waiter instanceof TestWaiter) {
+    waiter.items.clear();
+  }
 
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
