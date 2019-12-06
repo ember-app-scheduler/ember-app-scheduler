@@ -4,7 +4,7 @@ import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
 import { gte } from 'ember-compatibility-helpers';
-import { buildWaiter, Token } from 'ember-test-waiters';
+import { buildWaiter, Token, TestWaiter } from 'ember-test-waiters';
 
 interface Deferred {
   isResolved: boolean;
@@ -83,6 +83,8 @@ export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
+
+  (<TestWaiter>waiter).items.clear();
 
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
