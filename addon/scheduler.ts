@@ -70,7 +70,9 @@ export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRouteIdle = _whenRouteDidChange.promise.then();
 
-  (<TestWaiter>waiter).items.clear();
+  if (waiter instanceof TestWaiter) {
+    waiter.items.clear();
+  }
 
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
