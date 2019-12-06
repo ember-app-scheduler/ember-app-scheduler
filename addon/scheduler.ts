@@ -48,11 +48,7 @@ export function beginTransition(): void {
     _whenRouteIdle = _whenRoutePainted.then(() =>
       _afterNextPaint(_whenRouteIdleScheduleFn).finally(() => {
         performance.mark('appSchedulerEnd');
-        performance.measure(
-          'appScheduler',
-          'appSchedulerStart',
-          'appSchedulerEnd'
-        );
+        measure('appScheduler', 'appSchedulerStart', 'appSchedulerEnd');
       })
     );
   }
@@ -205,4 +201,19 @@ function _defer(label: string): Deferred {
       return _isResolved;
     },
   };
+}
+
+function measure(
+  measureName: string,
+  startMark: string | undefined,
+  endMark: string | undefined
+) {
+  try {
+    performance.measure(measureName, startMark, endMark);
+  } catch (ex) {
+    console.warn(
+      'performance.measure could not be executed because of ',
+      ex.message
+    );
+  }
 }
