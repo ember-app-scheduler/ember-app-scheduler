@@ -3,8 +3,8 @@ import { Promise } from 'rsvp';
 import { run } from '@ember/runloop';
 import Router from '@ember/routing/router';
 import { DEBUG } from '@glimmer/env';
-import { registerWaiter } from '@ember/test';
 import { gte } from 'ember-compatibility-helpers';
+import { buildWaiter, Token, TestWaiter } from 'ember-test-waiters';
 
 interface Deferred {
   isResolved: boolean;
@@ -26,7 +26,6 @@ let _whenRoutePainted: Promise<any>;
 let _whenRoutePaintedScheduleFn: Function;
 let _whenRouteIdle: Promise<any>;
 let _whenRouteIdleScheduleFn: Function;
-let _activeScheduledTasks: number = 0;
 const CAPABILITIES: Capabilities = {
   requestAnimationFrameEnabled: typeof requestAnimationFrame === 'function',
   requestIdleCallbackEnabled: typeof requestIdleCallback === 'function',
@@ -36,6 +35,7 @@ let _capabilities = CAPABILITIES;
 export const USE_REQUEST_IDLE_CALLBACK: boolean = true;
 export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
+const waiter = buildWaiter('ember-app-scheduler-waiter');
 
 reset();
 
@@ -84,11 +84,11 @@ export function reset(): void {
   _whenRoutePainted = _whenRouteDidChange.promise.then();
   _whenRouteIdle = _whenRoutePainted.then();
 
+  (<TestWaiter>waiter).items.clear();
+
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
   }
-
-  _activeScheduledTasks = 0;
 }
 
 /**
@@ -163,9 +163,10 @@ _whenRoutePaintedScheduleFn = _getScheduleFn();
 _whenRouteIdleScheduleFn = _getScheduleFn(USE_REQUEST_IDLE_CALLBACK);
 
 function _afterNextPaint(scheduleFn: Function): Promise<any> {
+  let token: Token;
   let promise = new Promise(resolve => {
     if (DEBUG) {
-      _activeScheduledTasks++;
+      token = waiter.beginAsync();
     }
 
     scheduleFn(() => {
@@ -175,16 +176,11 @@ function _afterNextPaint(scheduleFn: Function): Promise<any> {
 
   if (DEBUG) {
     promise = promise.finally(() => {
-      _activeScheduledTasks--;
+      waiter.endAsync(token);
     });
   }
 
   return promise;
-}
-
-if (DEBUG) {
-  // wait until no active rafs
-  registerWaiter(() => _activeScheduledTasks === 0);
 }
 
 function _defer(label: string): Deferred {
