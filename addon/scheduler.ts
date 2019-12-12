@@ -47,7 +47,7 @@ export function beginTransition(): void {
     );
     _whenRouteIdle = _whenRoutePainted.then(() =>
       _afterNextPaint(_whenRouteIdleScheduleFn).finally(() => {
-        performance.mark('appSchedulerEnd');
+        mark('appSchedulerEnd');
         measure('appScheduler', 'appSchedulerStart', 'appSchedulerEnd');
       })
     );
@@ -56,7 +56,7 @@ export function beginTransition(): void {
 
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
-  performance.mark('appSchedulerStart');
+  mark('appSchedulerStart');
 }
 
 export function setupRouter(router: Router): void {
@@ -205,6 +205,16 @@ function _defer(label: string): Deferred {
   };
 }
 
+function mark(markName: string): void {
+  try {
+    performance.mark(markName);
+  } catch (ex) {
+    console.warn(
+      `performance.mark could not be executed because of ${ex.message}`
+    );
+  }
+}
+
 function measure(
   measureName: string,
   startMark: string | undefined,
@@ -214,8 +224,7 @@ function measure(
     performance.measure(measureName, startMark, endMark);
   } catch (ex) {
     console.warn(
-      'performance.measure could not be executed because of ',
-      ex.message
+      `performance.measure could not be executed because of ${ex.message}`
     );
   }
 }
