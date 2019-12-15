@@ -21,6 +21,7 @@
     "lint:js": "eslint .",
     "start": "ember serve",
     "test": "ember test",
+    "test:prod": "ember test --environment=production",
     "test:all": "ember try:each",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
