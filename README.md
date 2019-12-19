@@ -1,6 +1,6 @@
 # ember-app-scheduler
 
-[![Build Status](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler.svg?branch=master)](https://travis-ci.org/ember-app-scheduler/ember-app-scheduler)
+![CI Build](https://github.com/ember-app-scheduler/ember-app-scheduler/workflows/CI%20Build/badge.svg)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-app-scheduler.svg)](https://emberobserver.com/addons/ember-app-scheduler)
 [![npm version](https://badge.fury.io/js/ember-app-scheduler.svg)](https://badge.fury.io/js/ember-app-scheduler)
 [![Monthly Downloads from NPM](https://img.shields.io/npm/dm/ember-app-scheduler.svg?style=flat-square)](https://www.npmjs.com/package/ember-app-scheduler)
