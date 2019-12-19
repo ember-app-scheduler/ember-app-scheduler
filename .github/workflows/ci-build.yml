@@ -31,8 +31,9 @@ jobs:
       - name: install dependencies
         run: yarn install
       - name: lint
-        run: yarn lint:hbs
-        run: yarn lint:js
+        run: |
+          yarn lint:hbs
+          yarn lint:js
       - name: test
         run: yarn test
 
