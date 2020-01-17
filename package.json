@@ -69,7 +69,7 @@
     "ember-cli-inject-live-reload": "^2.0.1",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "^3.0.0",
-    "ember-cli-version-checker": "^3.0.0",
+    "ember-cli-version-checker": "^4.1.0",
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
     "ember-fetch": "^7.0.0",
