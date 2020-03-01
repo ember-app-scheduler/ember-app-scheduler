@@ -3,7 +3,7 @@ import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
 import Router from '@ember/routing/router';
 import { gte } from 'ember-compatibility-helpers';
-import { buildWaiter, Token, TestWaiter } from 'ember-test-waiters';
+import { buildWaiter, Token } from 'ember-test-waiters';
 
 interface Deferred {
   isResolved: boolean;
@@ -70,9 +70,7 @@ export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRouteIdle = _whenRouteDidChange.promise.then();
 
-  if (waiter instanceof TestWaiter) {
-    waiter.items.clear();
-  }
+  waiter.reset();
 
   if (!IS_FASTBOOT) {
     _whenRouteDidChange.resolve();
