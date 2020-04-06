@@ -7309,9 +7309,9 @@ ember-test-waiters@^1.1.1:
     semver "^6.3.0"
 
 ember-test-waiters@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ember-test-waiters/-/ember-test-waiters-2.0.0.tgz#fee43406670a2bd54baa7daf836b8c9acd517fee"
-  integrity sha512-R7H/BgKeAJdmpNA7aropEJkcJZNBMSOXTogz7hF+ZO0tnHSq3cJb/gDpu6Beok3DzLCJIrYYApU3MPbQ0/teXQ==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ember-test-waiters/-/ember-test-waiters-2.0.1.tgz#575220ebc2aef810662cd39f090eeb490a49d0a3"
+  integrity sha512-nvIMuy6+ZS1mvTwl+7sUIFakRFyrNpU++PZbAxZ8brfiwf+hNpgy6LLZPF5k3raPCce86RZAcC8skYpBHpO+oQ==
   dependencies:
     ember-cli-babel "^7.18.0"
     ember-cli-typescript "^3.1.3"
