@@ -72,7 +72,7 @@
     "ember-cli-version-checker": "^5.0.1",
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
-    "ember-fetch": "^7.0.0",
+    "ember-fetch": "^8.0.1",
     "ember-load-initializers": "^2.0.0",
     "ember-maybe-import-regenerator-for-testing": "^1.0.0",
     "ember-qunit": "^4.0.0",
