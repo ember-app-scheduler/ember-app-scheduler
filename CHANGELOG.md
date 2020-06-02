@@ -1,3 +1,12 @@
+## v4.0.2 (2020-06-02)
+
+#### :bug: Bug Fix
+* [#719](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/719) fix a painful typo ([@nlfurniss](https://github.com/nlfurniss))
+
+#### Committers: 2
+- Nathaniel Furniss ([@nlfurniss](https://github.com/nlfurniss))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v4.0.1 (2020-03-01)
 
 #### :boom: Breaking Change
