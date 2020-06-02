@@ -106,7 +106,7 @@ export function didTransition(): Promise<any> {
  */
 export function whenRoutePainted(): Promise<any> {
   deprecate(
-    'The `whenRoutePained` function is deprecated. Please use `whenRouteIdle` instead.',
+    'The `whenRoutePainted` function is deprecated. Please use `whenRouteIdle` instead.',
     false,
     {
       id: 'ember-app-scheduler.whenRoutePainted',
