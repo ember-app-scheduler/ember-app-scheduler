@@ -1,20 +1,20 @@
-{{docs-header}}
+<DocsHeader />
 
-{{#docs-viewer as |viewer|}}
-  {{#viewer.nav as |nav|}}
-    {{nav.section "Usage"}}
-    {{#nav.subnav as |nav|}}
-      {{nav.item "Quickstart" "docs.index"}}
-      {{nav.item "How it works" "docs.how-it-works"}}
-      {{nav.item "whenRoutePainted" "docs.when-route-painted"}}
-      {{nav.item "whenRouteIdle" "docs.when-route-idle"}}
-      {{nav.item "route-idle helper" "docs.route-idle-helper"}}
-      {{nav.item "Testing" "docs.testing"}}
-      {{nav.item "Fastboot" "docs.fastboot"}}
-    {{/nav.subnav}}
-  {{/viewer.nav}}
+<DocsViewer as |Viewer|>
+  <Viewer.nav as |Nav|>
+    {{Nav.section "Usage"}}
+    <Nav.subnav as |Nav|>
+      {{Nav.item "Quickstart" "docs.index"}}
+      {{Nav.item "How it works" "docs.how-it-works"}}
+      {{Nav.item "whenRoutePainted" "docs.when-route-painted"}}
+      {{Nav.item "whenRouteIdle" "docs.when-route-idle"}}
+      {{Nav.item "route-idle helper" "docs.route-idle-helper"}}
+      {{Nav.item "Testing" "docs.testing"}}
+      {{Nav.item "Fastboot" "docs.fastboot"}}
+    </Nav.subnav>
+  </Viewer.nav>
 
-  {{#viewer.main}}
+  <Viewer.main>
     {{outlet}}
-  {{/viewer.main}}
-{{/docs-viewer}}
+  </Viewer.main>
+</DocsViewer>

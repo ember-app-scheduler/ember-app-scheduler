@@ -1,16 +1,15 @@
-import Component from '@ember/component';
-import layout from '../templates/components/when-route-painted';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { whenRoutePainted } from 'ember-app-scheduler';
 
-export default Component.extend({
-  layout,
+export default class WhenRoutePainted extends Component {
+  @tracked routePainted = false;
 
-  init() {
-    this._super(...arguments);
-    this.set('whenRoutePainted', false);
+  constructor() {
+    super(...arguments);
 
     whenRoutePainted().then(() => {
-      this.set('whenRoutePainted', true);
+      this.routePainted = true;
     });
-  },
-});
+  }
+}

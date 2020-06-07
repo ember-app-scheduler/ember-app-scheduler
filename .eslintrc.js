@@ -1,9 +1,14 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
     sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true,
+    },
   },
   plugins: ['ember', 'prettier'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
@@ -11,13 +16,7 @@ module.exports = {
     browser: true,
   },
   rules: {
-    'prettier/prettier': [
-      'error',
-      {
-        singleQuote: true,
-        trailingComma: 'es5',
-      },
-    ],
+    'ember/no-jquery': 'error',
   },
   overrides: [
     // node files
@@ -40,7 +39,6 @@ module.exports = {
       ],
       parserOptions: {
         sourceType: 'script',
-        ecmaVersion: 2015,
       },
       env: {
         browser: false,
@@ -54,6 +52,16 @@ module.exports = {
           // add your custom rules and overrides for node files here
         }
       ),
+    },
+    {
+      // typescript files
+      files: ['**/*.ts'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      rules: {
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'error',
+      },
     },
   ],
 };

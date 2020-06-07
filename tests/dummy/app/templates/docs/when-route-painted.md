@@ -6,14 +6,14 @@ In some cases, you may want to defer work until after the route is painted but _
 import Route from '@ember/routing/route';
 import { whenRoutePainted } from 'ember-app-scheduler';
 
-export default Route.extend({
+export default class PaintedRoute extends Route {
   activate() {
-    this._super(...arguments);
+    super.activate(...arguments);
 
     whenRoutePainted().then(() => {
       // do work that needs to occur between the route being painted
       // and `whenRouteIdle`
     });
-  },
-});
+  }
+}
 ```
