@@ -1,8 +1,9 @@
 import Helper from '@ember/component/helper';
+import { tracked } from '@glimmer/tracking';
 import { whenRouteIdle } from '../scheduler';
 
 export default class RouteIdle extends Helper {
-  isIdle = false;
+  @tracked isIdle = false;
 
   compute() {
     if (this.isIdle) {
@@ -11,7 +12,6 @@ export default class RouteIdle extends Helper {
 
     whenRouteIdle().then(() => {
       this.isIdle = true;
-      this.recompute();
     });
 
     return false;
