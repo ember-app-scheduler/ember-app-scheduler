@@ -12,6 +12,7 @@ Router.map(function() {
     this.route('how-it-works');
     this.route('when-route-painted');
     this.route('when-route-idle');
+    this.route('route-idle-helper');
     this.route('testing');
     this.route('fastboot');
   });
