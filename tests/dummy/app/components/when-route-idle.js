@@ -1,18 +1,17 @@
 // BEGIN-SNIPPET when-route-idle.js
-import Component from '@ember/component';
-import layout from '../templates/components/when-route-idle';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default Component.extend({
-  layout,
+export default class WhenRouteIdle extends Component {
+  @tracked routeIdle = false;
 
-  init() {
-    this._super(...arguments);
-    this.set('whenRouteIdle', false);
+  constructor() {
+    super(...arguments);
 
     whenRouteIdle().then(() => {
-      this.set('whenRouteIdle', true);
+      this.routeIdle = true;
     });
-  },
-});
+  }
+}
 // END-SNIPPET

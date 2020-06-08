@@ -1,8 +1,8 @@
 import Route from '@ember/routing/route';
 
-export default Route.extend({
+export default class AbortedPaintRoute extends Route {
   beforeModel(transition) {
     transition.abort();
     this.transitionTo('first-paint');
-  },
-});
+  }
+}

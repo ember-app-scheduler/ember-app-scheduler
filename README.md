@@ -16,8 +16,7 @@ The [documentation website](https://ember-app-scheduler.github.io/ember-app-sche
 
 ## Compatibility
 
-- Ember.js v3.4 or above
-- Ember CLI v2.13 or above
+- Ember.js v3.16 or above
 
 ## Installation
 
@@ -34,12 +33,12 @@ import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
 import { setupRouter, reset } from 'ember-app-scheduler';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL,
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     setupRouter(this);
   },
@@ -47,15 +46,13 @@ const Router = EmberRouter.extend({
   destroy() {
     reset();
 
-    this._super(...arguments);
-  },
-});
+    super.destroy(...arguments);
+  }
+}
 
 Router.map(function() {
   // ...
 });
-
-export default Router;
 ```
 
 You can then use one of the provided APIs to defer work.
@@ -70,15 +67,15 @@ In most cases, the `whenRouteIdle` function is all you need to defer work, thoug
 import Route from '@ember/routing/route';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default Route.extend({
+export default class IdleRoute extends Route {
   activate() {
-    this._super(...arguments);
+    super.activate(...arguments);
 
     whenRouteIdle().then(() => {
       // do non-critical work
     });
-  },
-});
+  }
+}
 ```
 
 ## Contributing

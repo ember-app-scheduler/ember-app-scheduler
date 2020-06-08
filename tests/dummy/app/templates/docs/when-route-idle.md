@@ -8,13 +8,13 @@ In most cases, the `whenRouteIdle` function is all you need to defer work, thoug
 import Route from '@ember/routing/route';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default Route.extend({
+export default class IdleRoute extends Route {
   activate() {
-    this._super(...arguments);
+    super.activate(...arguments);
 
     whenRouteIdle().then(() => {
       // do non-critical work
     });
-  },
-});
+  }
+}
 ```

@@ -16,16 +16,18 @@ Because, in test mode, we create a test waiter that ensures we wait for `ember-a
 
 ```javascript
 // component-with-deferred-stuff.js
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default Component.extend({
-  didInsertElement() {
+export default class ComponentWithDeferredStuff extends Component {
+  constructor() {
+    super(...arguments);
+
     whenRouteIdle().then(() => {
-      this.set('showHiddenContent', true);
+      this.showHiddenContent = true;
     });
-  },
-});
+  }
+}
 ```
 
 ```handlebars
@@ -51,9 +53,9 @@ module('Integration | Component | component-with-deferred-stuff', function(
     assert.expect(1);
 
     await render(hbs`
-      {{#component-with-deferred-stuff}}
+      <ComponentWithDeferredStuff>
         <div class="hidden-content">Hidden</div>
-      {{/component-with-deferred-stuff}}
+      </ComponentWithDeferredStuff>
     `);
 
     let hiddenContent = find('.hidden-content');
@@ -79,22 +81,23 @@ For example, given a component that renders only when the route is idle (aptly n
 
 ```javascript
 // when-route-idle.js
-import Ember from 'ember';
-import layout from '../templates/components/when-route-idle';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { whenRoutePainted } from 'ember-app-scheduler';
 
-export default Ember.Component.extend({
-  layout,
-  whenRouteIdle: false,
+export default WhenRouteIdle extends Component {
+  @tracked whenRouteIdle;
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
+
+    this.whenRouteIdle = false;
 
     whenRoutePainted().then(() => {
-      this.set('whenRouteIdle', true);
+      this.whenRouteIdle = true;
     });
-  },
-});
+  }
+}
 ```
 
 ```handlebars
@@ -106,9 +109,9 @@ export default Ember.Component.extend({
 
 ```handlebars
 {{! my-route.hbs }}
-{{#when-route-idle}}
+<WhenRouteIdle>
   <span class="only-when-route-idle">When Route Idle</span>
-{{/when-route-idle}}
+</WhenRouteIdle>
 ```
 
 ```javascript

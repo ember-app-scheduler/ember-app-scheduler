@@ -1,16 +1,12 @@
-{{docs-header}}
+<DocsHeader />
 
-{{docs-hero
-  logo="ember"
-  slimHeading="Ember"
-  strongHeading="App Scheduler"
-  byline="An Ember addon to schedule work at different phases of app life cycle"}}
+<DocsHero @logo="ember" @slimHeading="Ember" @strongHeading="App Scheduler" @byline="An Ember addon to schedule work at different phases of app life cycle" />
 
 <div class="docs-ml-20 docs-mt-8 docs-text-center">
   Looking for the <strong>Quickstart</strong>? {{docs-link "It's here" "docs.index"}}.
 </div>
-{{#docs-demo class="docs-m-20" as |demo|}}
-  {{#demo.example name="when-route-idle"}}
+<DocsDemo @class="docs-m-20" as |demo|>
+  <demo.example @name="when-route-idle">
     <p class="docs-mb-8">
       This addon provides a way to defer work into different paint phases of the rendering process to
       get a faster <a href="https://docs.google.com/document/d/1BR94tJdZLsin5poeet0XoTW60M0SjvOJQttKT-JK8HI/view">First Meaningful Paint</a> (FMP). It also helps to prioritize and coordinate when the paint happens for different
@@ -23,6 +19,6 @@
       `whenRouteIdle` can be seen below.
     </p>
     {{demo.snippet "when-route-idle.js"}}
-  {{/demo.example}}
-{{/docs-demo}}
+  </demo.example>
+</DocsDemo>
 <div class="docs-ml-20 docs-mb-8">To learn more, please {{docs-link "read the docs" "docs.index"}}</div>

@@ -1,7 +1,7 @@
 <div class="content-paint-route">
-  {{#when-route-idle}}
+  <WhenRouteIdle>
     <span class="only-when-route-idle">When Route Idle</span>
-  {{/when-route-idle}}
+  </WhenRouteIdle>
 
-  {{#link-to "both-painted"}}Go to both painted{{/link-to}}
+  <LinkTo @route="both-painted">Go to both painted</LinkTo>
 </div>
