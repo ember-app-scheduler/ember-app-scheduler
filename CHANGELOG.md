@@ -1,3 +1,12 @@
+## v4.1.0 (2020-06-08)
+
+#### :rocket: Enhancement
+* [#728](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/728) Adding route-idle helper ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 2
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v4.0.2 (2020-06-02)
 
 #### :bug: Bug Fix
