@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, waitFor, settled } from '@ember/test-helpers';
@@ -19,28 +20,24 @@ module('Integration | Component | when rendered in component', function(hooks) {
 
     this.owner.register(
       name,
-      Component.extend({
-        showFoo: false,
-        showBar: false,
+      class DeferredComponent extends Component {
+        @tracked showFoo = false;
+        @tracked showBar = false;
 
-        init() {
-          this._super(...arguments);
+        constructor() {
+          super(...arguments);
+
           testContext.componentInstance = this;
-        },
-        destroy() {
-          this._super(...arguments);
-        },
 
-        didInsertElement() {
           whenRoutePainted().then(() => {
-            this.set('showFoo', true);
+            this.showFoo = true;
           });
 
           whenRouteIdle().then(() => {
-            this.set('showBar', true);
+            this.showBar = true;
           });
-        },
-      })
+        }
+      }
     );
 
     this.Component = this.owner.factoryFor
