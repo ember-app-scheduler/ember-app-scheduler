@@ -61,6 +61,18 @@ module.exports = {
       rules: {
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': 'error',
+        'valid-jsdoc': [
+          'error',
+          {
+            prefer: {
+              method: 'do-not-use-redundant-method-tag',
+            },
+            preferType: {
+              String: 'string',
+            },
+            requireReturn: false,
+          },
+        ],
       },
     },
   ],

@@ -24,13 +24,16 @@ const waiter = buildWaiter('ember-app-scheduler-waiter');
 
 reset();
 
+/**
+ * Initializes the top level promise that initiates the post-render work.
+ */
 export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
     _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
     _whenRouteIdle = _whenRouteDidChange.promise.then(() => {
       let scheduledWorkToken: Token = <Token>waiter.beginAsync();
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         schedule('afterRender', null, () => {
           requestAnimationFrame(() => {
             requestAnimationFrame(resolve);
@@ -45,11 +48,20 @@ export function beginTransition(): void {
   }
 }
 
+/**
+ * Initiates the post-render work.
+ */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
   mark('appSchedulerStart');
 }
 
+/**
+ * Correct connects the router's transition events to
+ * app scheduler's work.
+ *
+ * @param {Router} router An instance of an Ember router.
+ */
 export function setupRouter(router: Router): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
@@ -66,6 +78,9 @@ export function setupRouter(router: Router): void {
   }
 }
 
+/**
+ * Resets the state of app scheduler's top-level scheduled work promise.
+ */
 export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
   _whenRouteIdle = _whenRouteDidChange.promise.then();
@@ -83,6 +98,7 @@ export function reset(): void {
  * them together to approximate when painting has occurred.
  *
  * @public
+ * @return {Promise} The top-level scheduled work promise.
  */
 export function didTransition(): Promise<any> {
   deprecate(
@@ -103,6 +119,7 @@ export function didTransition(): Promise<any> {
  * work (content outside of the viewport, rendering non-critical content).
  *
  * @public
+ * @return {Promise} The scheduled work promise.
  */
 export function whenRoutePainted(): Promise<any> {
   deprecate(
@@ -121,13 +138,17 @@ export function whenRoutePainted(): Promise<any> {
  * This promise, when resolved, approximates after content is painted.
  *
  * @public
+ * @return {Promise} The scheduled work promise.
  */
 export function whenRouteIdle(): Promise<any> {
   return _whenRouteIdle;
 }
 
 /**
- * Used for testing
+ * Allows for tests to pause until the scheduled work
+ * promise is completed.
+ *
+ * @return {Promise} The scheduled work promise.
  */
 export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
