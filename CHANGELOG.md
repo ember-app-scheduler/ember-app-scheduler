@@ -1,3 +1,12 @@
+## v5.0.0 (2020-06-09)
+
+#### :boom: Breaking Change
+* [#726](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/726) Updates code to use Octane idioms for tests and docs. ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 2
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v4.1.0 (2020-06-08)
 
 #### :rocket: Enhancement
