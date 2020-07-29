@@ -1,7 +1,10 @@
 import { Promise } from 'rsvp';
 import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
-import Router from '@ember/routing/router';
+import type Router from '@ember/routing/router';
+import type RouterService from '@ember/routing/router-service';
+import Service from '@ember/service';
+import { addListener } from '@ember/object/events';
 import { gte } from 'ember-compatibility-helpers';
 import { buildWaiter, Token } from 'ember-test-waiters';
 
@@ -60,21 +63,23 @@ export function endTransition(): void {
  * Correct connects the router's transition events to
  * app scheduler's work.
  *
- * @param {Router} router An instance of an Ember router.
+ * @param {RouterService|Router} router An instance of a RouterService or an Ember Router.
  */
-export function setupRouter(router: Router): void {
+export function setupRouter(router: RouterService | Router): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
-  if (gte('3.6.0')) {
-    router.on('routeWillChange', beginTransition);
-    router.on('routeDidChange', endTransition);
+  if (gte('3.6.0') || router instanceof Service) {
+    // @ts-ignore
+    addListener(router, 'routeWillChange', beginTransition);
+    // @ts-ignore
+    addListener(router, 'routeDidChange', endTransition);
   } else {
-    router.on('willTransition', beginTransition);
-    router.on('didTransition', endTransition);
+    addListener(router, 'willTransition', beginTransition);
+    addListener(router, 'didTransition', endTransition);
   }
 }
 
