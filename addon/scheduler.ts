@@ -3,7 +3,7 @@ import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
 import Router from '@ember/routing/router';
 import { gte } from 'ember-compatibility-helpers';
-import { buildWaiter, Token } from 'ember-test-waiters';
+import { buildWaiter, Token } from '@ember/test-waiters';
 
 interface Deferred {
   isResolved: boolean;

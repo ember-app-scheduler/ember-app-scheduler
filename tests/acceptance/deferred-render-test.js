@@ -7,6 +7,7 @@ module('Acceptance | when rendered tests', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
+    // eslint-disable-next-line ember/no-private-routing-service
     this.router = this.owner.lookup('router:main');
 
     setupRouter(this.router);

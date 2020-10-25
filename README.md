@@ -1,4 +1,5 @@
 # ember-app-scheduler
+==============================================================================
 
 ![CI Build](https://github.com/ember-app-scheduler/ember-app-scheduler/workflows/CI%20Build/badge.svg)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-app-scheduler.svg)](https://emberobserver.com/addons/ember-app-scheduler)
@@ -14,15 +15,25 @@ This addon provides a way to defer work into different paint phases of the rende
 
 The [documentation website](https://ember-app-scheduler.github.io/ember-app-scheduler/) contains more examples and API information.
 
-## Compatibility
 
-- Ember.js v3.16 or above
+Compatibility
+------------------------------------------------------------------------------
 
-## Installation
+* Ember.js v3.16 or above
+* Ember CLI v2.13 or above
+* Node.js v10 or above
 
-    ember install ember-app-scheduler
 
-## Usage
+Installation
+------------------------------------------------------------------------------
+
+```
+ember install ember-app-scheduler
+```
+
+
+Usage
+------------------------------------------------------------------------------
 
 The `ember-app-scheduler` addon connects its functionality via the application's router. By connecting to the router's `routeWillChange`/`routeDidChange` hooks (`willTransition`/`didTransition` in Ember < 3.6), it ensures that the timing of its API is in sync with the application's timings.
 
@@ -41,7 +52,7 @@ export default class Router extends EmberRouter {
     super(...arguments);
 
     setupRouter(this);
-  },
+  }
 
   destroy() {
     reset();
@@ -78,6 +89,13 @@ export default class IdleRoute extends Route {
 }
 ```
 
-## Contributing
+Contributing
+------------------------------------------------------------------------------
 
 See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+License
+------------------------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).

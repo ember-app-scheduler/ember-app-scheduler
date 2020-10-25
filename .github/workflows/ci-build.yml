@@ -49,12 +49,14 @@ jobs:
       matrix:
         ember-try-scenario:
           - ember-lts-3.16
+          - ember-lts-3.20
           - ember-release
           - ember-beta
           - ember-canary
           - ember-default
           - ember-default-with-jquery
           - ember-classic
+          - embroider-tests
 
     steps:
       - uses: actions/checkout@v1
