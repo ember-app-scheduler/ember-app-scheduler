@@ -20,6 +20,7 @@ jobs:
 
     steps:
       - if: matrix.os == 'macOS-latest'
+        name: install browsers
         # MacOS resp. homebrew needs workarounds to make it less unstable.
         # See https://github.com/actions/virtual-environments/issues/1811#issuecomment-708480190
         run: |
@@ -59,7 +60,6 @@ jobs:
           - ember-release
           - ember-beta
           - ember-canary
-          - ember-default
           - ember-default-with-jquery
           - ember-classic
           - embroider-tests
