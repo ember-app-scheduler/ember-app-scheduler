@@ -20,7 +20,8 @@ module.exports = function(defaults) {
         staticAddonTestSupportTrees: true,
         staticAddonTrees: true,
         staticHelpers: true,
-        staticComponents: true,
+        // Due to dynamic modalDialogComponentName used by ember-modal-dialog
+        staticComponents: false,
       });
   }
 
