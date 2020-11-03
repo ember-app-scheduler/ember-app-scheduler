@@ -1,6 +1,7 @@
 import { Promise } from 'rsvp';
 import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
+import { registerDestructor } from '@ember/destroyable';
 import Router from '@ember/routing/router';
 import type RouterService from '@ember/routing/router-service';
 import Service from '@ember/service';
@@ -90,6 +91,8 @@ export function setupRouter(router: RouterService | Router): void {
     addListener(router, 'willTransition', beginTransition);
     addListener(router, 'didTransition', endTransition);
   }
+
+  registerDestructor(router, reset);
 }
 
 /**

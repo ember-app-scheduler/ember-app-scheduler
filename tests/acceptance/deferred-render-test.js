@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, currentRouteName, click } from '@ember/test-helpers';
-import { setupRouter, reset } from 'ember-app-scheduler';
+import { setupRouter } from 'ember-app-scheduler';
 
 ['router:main',
 'service:router'].forEach((dependencyKey) => {
@@ -12,10 +12,6 @@ import { setupRouter, reset } from 'ember-app-scheduler';
       this.router = this.owner.lookup(dependencyKey);
 
       setupRouter(this.router);
-    });
-
-    hooks.afterEach(function() {
-      reset();
     });
 
     test('visiting route renders deferred content via whenRoutePainted', async function(assert) {
