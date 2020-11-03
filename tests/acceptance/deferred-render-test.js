@@ -3,8 +3,10 @@ import { setupApplicationTest } from 'ember-qunit';
 import { visit, currentRouteName, click } from '@ember/test-helpers';
 import { setupRouter } from 'ember-app-scheduler';
 
-['router:main',
-'service:router'].forEach((dependencyKey) => {
+[
+  'router:main',
+  'service:router'
+].forEach((dependencyKey) => {
   module(`Acceptance | when rendered tests with ${dependencyKey}`, function(hooks) {
     setupApplicationTest(hooks);
 
