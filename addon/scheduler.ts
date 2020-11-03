@@ -1,7 +1,7 @@
 import { Promise } from 'rsvp';
 import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
-import type Router from '@ember/routing/router';
+import Router from '@ember/routing/router';
 import type RouterService from '@ember/routing/router-service';
 import Service from '@ember/service';
 import { addListener } from '@ember/object/events';
@@ -69,6 +69,15 @@ export function setupRouter(router: RouterService | Router): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
+
+  deprecate(
+    'The use of Ember.Router in setupRouter is deprecated. Please use the router service.',
+    router instanceof Router,
+    {
+      id: 'ember-app-scheduler.setupRouter',
+      until: '6.0.0',
+    }
+  );
 
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 

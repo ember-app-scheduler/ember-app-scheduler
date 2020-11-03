@@ -10,7 +10,7 @@ import { setupRouter, reset } from 'ember-app-scheduler';
 
     hooks.beforeEach(function() {
       this.router = this.owner.lookup(dependencyKey);
-
+debugger;
       setupRouter(this.router);
     });
 
