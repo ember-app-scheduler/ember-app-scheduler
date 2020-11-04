@@ -7,7 +7,7 @@ import type RouterService from '@ember/routing/router-service';
 import Service from '@ember/service';
 import { addListener } from '@ember/object/events';
 import { gte } from 'ember-compatibility-helpers';
-import { buildWaiter, Token } from 'ember-test-waiters';
+import { buildWaiter, Token } from '@ember/test-waiters';
 
 interface Deferred {
   isResolved: boolean;
