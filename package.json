@@ -40,9 +40,10 @@
   "dependencies": {
     "@types/ember": "^3.1.0",
     "@types/rsvp": "^4.0.2",
-    "ember-cli-babel": "^7.19.0",
+    "ember-cli-babel": "^7.23.0",
     "ember-cli-typescript": "^3.1.4",
     "ember-compatibility-helpers": "^1.1.2",
+    "ember-destroyable-polyfill": "^2.0.2",
     "ember-test-waiters": "^2.0.0"
   },
   "devDependencies": {

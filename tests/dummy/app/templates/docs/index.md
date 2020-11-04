@@ -8,7 +8,7 @@
 
 The `ember-app-scheduler` addon connects its functionality via the application's router. By connecting to the router's `routeWillChange`/`routeDidChange` hooks , or `willTransition`/`didTransition` before version 3.6, it ensures that the timing of its API is in sync with the application's timings.
 
-To connect to your router, import `setupRouter` and `reset` from `ember-app-scheduler` and invoke them:
+To connect to your router, import `setupRouter` from `ember-app-scheduler` and invoke it:
 
 ```javascript
 import EmberRouter from '@ember/routing/router';
@@ -24,12 +24,6 @@ export default class Router extends EmberRouter {
 
     setupRouter(this);
   },
-
-  destroy() {
-    reset();
-
-    super.destroy(...arguments);
-  }
 }
 
 Router.map(function() {

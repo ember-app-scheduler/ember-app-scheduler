@@ -12,18 +12,9 @@ on:
 jobs:
   test:
     name: Tests
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest]
+    runs-on: ubuntu-latest
 
     steps:
-      - if: matrix.os == 'macOS-latest'
-        run: |
-          brew update
-          brew cask install google-chrome
-          brew cask install firefox
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
