@@ -1,3 +1,17 @@
+## v5.1.0 (2020-11-05)
+
+#### :rocket: Enhancement
+* [#773](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773) refactor: use `RouterService` and auto-destroy ([@buschtoens](https://github.com/buschtoens))
+
+#### :house: Internal
+* [#874](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/874) Updating release-it ([@scalvert](https://github.com/scalvert))
+* [#770](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/770) Upgrades ember-test-waiters to ^2.3.0 ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 3
+- Jan Buschtöns ([@buschtoens](https://github.com/buschtoens))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v5.0.1 (2020-06-09)
 
 ## v5.0.0 (2020-06-09)
