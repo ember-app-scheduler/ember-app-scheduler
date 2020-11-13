@@ -1,8 +1,8 @@
-import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { beginTransition, endTransition } from 'ember-app-scheduler';
+import { setupRenderingTest } from 'ember-qunit';
+import hbs from 'htmlbars-inline-precompile';
+import { module, test } from 'qunit';
 
 module('Integration | Helper | route-idle', function (hooks) {
   setupRenderingTest(hooks);
@@ -58,7 +58,8 @@ module('Integration | Helper | route-idle', function (hooks) {
     await settled();
     // FIRST TRANSITION: END
 
-    // SECOND TRANSITION: START
+    // SIMULATE SECOND TRANSITION: START
+    this.owner.lookup('service:router').trigger('routeWillChange');
     beginTransition();
 
     await settled();
@@ -78,6 +79,6 @@ module('Integration | Helper | route-idle', function (hooks) {
       .exists('deferred content is rendered after second transition finishes');
 
     await settled();
-    // SECOND TRANSITION: END
+    // SIMULATE SECOND TRANSITION: END
   });
 });
