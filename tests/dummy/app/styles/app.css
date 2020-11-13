@@ -1,1 +1,4 @@
 
+.only-when-route-not-idle {
+  color: green;
+}
