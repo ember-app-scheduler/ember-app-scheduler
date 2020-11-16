@@ -1,13 +1,14 @@
-import { Promise } from 'rsvp';
-import { schedule } from '@ember/runloop';
 import { deprecate } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
+import { addListener } from '@ember/object/events';
 import Router from '@ember/routing/router';
 import type RouterService from '@ember/routing/router-service';
+import { schedule } from '@ember/runloop';
 import Service from '@ember/service';
-import { addListener } from '@ember/object/events';
-import { gte } from 'ember-compatibility-helpers';
 import { buildWaiter, Token } from '@ember/test-waiters';
+import { tracked } from '@glimmer/tracking';
+import { gte } from 'ember-compatibility-helpers';
+import { Promise } from 'rsvp';
 
 interface Deferred {
   isResolved: boolean;
@@ -26,6 +27,12 @@ const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 const waiter = buildWaiter('ember-app-scheduler-waiter');
 
 reset();
+
+class Scheduler {
+  @tracked isIdle = false;
+}
+const scheduler = new Scheduler();
+export default scheduler;
 
 /**
  * Initializes the top level promise that initiates the post-render work.
@@ -48,6 +55,7 @@ export function beginTransition(): void {
         measure('appScheduler', 'appSchedulerStart', 'appSchedulerEnd');
       });
     });
+    scheduler.isIdle = false;
   }
 }
 
@@ -56,6 +64,7 @@ export function beginTransition(): void {
  */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
+  scheduler.isIdle = true;
   mark('appSchedulerStart');
 }
 
