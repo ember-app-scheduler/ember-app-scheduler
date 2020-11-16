@@ -22,7 +22,6 @@ const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 let _whenRouteDidChange: Deferred;
 let _whenRouteIdle: Promise<unknown>;
 
-export const SIMPLE_CALLBACK = (callback: Function) => callback();
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 const waiter = buildWaiter('ember-app-scheduler-waiter');
 
