@@ -7,8 +7,8 @@ const Router = AddonDocsRouter.extend(RouterScroll, {
   rootURL: config.rootURL,
 });
 
-Router.map(function() {
-  docsRoute(this, function() {
+Router.map(function () {
+  docsRoute(this, function () {
     this.route('how-it-works');
     this.route('when-route-painted');
     this.route('when-route-idle');
@@ -20,6 +20,7 @@ Router.map(function() {
   this.route('content-paint');
   this.route('aborted-paint');
   this.route('both-painted');
+  this.route('route-idle-helper');
 
   this.route('not-found', { path: '/*path' });
 });

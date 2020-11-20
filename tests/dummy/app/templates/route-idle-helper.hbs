@@ -1,0 +1,9 @@
+<div>
+  {{#if (route-idle)}}
+    <span class="only-when-route-idle">When Route Idle</span>
+  {{else}}
+    <span class="only-when-route-not-idle">When Route Not Idle</span>
+  {{/if}}
+
+  <button class="refresh-button" type="button" {{on "click" this.updateRefreshQP}}>Refresh</button>
+</div>
