@@ -1,3 +1,12 @@
+## v5.1.1 (2020-11-20)
+
+#### :bug: Bug Fix
+* [#899](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/899) Recompute route-idle helper on transition change ([@nickeidler](https://github.com/nickeidler))
+
+#### Committers: 2
+- Nicholas Eidler ([@nickeidler](https://github.com/nickeidler))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v5.1.0 (2020-11-05)
 
 #### :rocket: Enhancement
