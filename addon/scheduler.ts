@@ -81,7 +81,7 @@ export function setupRouter(router: RouterService | Router): void {
 
   deprecate(
     'The use of Ember.Router in setupRouter is deprecated. Please use the router service.',
-    router instanceof Router,
+    !(router instanceof Router),
     {
       id: 'ember-app-scheduler.setupRouter',
       until: '6.0.0',
