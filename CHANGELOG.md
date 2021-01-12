@@ -1,3 +1,16 @@
+Version 9 of Highlight.js has reached EOL and is no longer supported.
+Please upgrade or ask whatever dependency you are using to upgrade.
+https://github.com/highlightjs/highlight.js/issues/2877
+
+## v5.1.2 (2021-01-12)
+
+#### :bug: Bug Fix
+* [#962](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/962) fix: invert `setupRouter` deprecation warning ([@buschtoens](https://github.com/buschtoens))
+
+#### Committers: 2
+- Jan Buschtöns ([@buschtoens](https://github.com/buschtoens))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v5.1.1 (2020-11-20)
 
 #### :bug: Bug Fix
