@@ -7996,9 +7996,9 @@ ember-router-scroll@^1.3.3:
     ember-compatibility-helpers "^1.1.2"
 
 ember-router-scroll@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ember-router-scroll/-/ember-router-scroll-4.0.0.tgz#c8f42de8fad9a08aa948481de6492f2e28c0daeb"
-  integrity sha512-XJ0NF5L/9Tz5RfrgJVivT8DistoOuT8DLFqdK20LuBCQfKB9ybJ09xdZhPkBLgkjjV9f6wY+siRHZZLU+/hI+A==
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ember-router-scroll/-/ember-router-scroll-4.0.1.tgz#90fd32b592972ad9abb56a6537b54d07ddbd1501"
+  integrity sha512-x5PYqexkMsgibqoz4gQ19kbjIGseEyIdxoBtJBzl6nsntY+HLO3V0MbFA+r6vHjH5v6c7g/XMT2LRm2UMObxqA==
   dependencies:
     ember-app-scheduler "^5.1.1"
     ember-cli-babel "^7.11.1"
