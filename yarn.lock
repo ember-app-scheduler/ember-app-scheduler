@@ -1632,9 +1632,9 @@
     ember-test-waiters "^1.1.1"
 
 "@ember/test-waiters@^2.3.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@ember/test-waiters/-/test-waiters-2.4.0.tgz#af92324d03a8840eff7a9ea3e9015138e0c477ed"
-  integrity sha512-P1c0dmbNx7I+wM37nCs3lRiDoGYvcg0s2L3Y/75izj48iYT1/7Vxr3eFkZ7AShuCa7SBMRoH2mHOVsqLDBJ3hA==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@ember/test-waiters/-/test-waiters-2.4.1.tgz#e46bd7f1d28ff9a779c89acbbd2cc2df81235ca1"
+  integrity sha512-tad4/nKcQHrBZ50kPlZy9xkTpmPpQUaAKegb7lHBfxC+5GcHSGbc6wYM2I8bT9Vf96diWZgNT0a5jbpLSQwRRA==
   dependencies:
     calculate-cache-key-for-tree "^2.0.0"
     ember-cli-babel "^7.21.0"
