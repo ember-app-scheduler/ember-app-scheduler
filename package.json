@@ -84,7 +84,7 @@
     "ember-router-scroll": "^4.0.0",
     "ember-source": "3.25.0",
     "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^2.6.0",
+    "ember-template-lint": "^3.0.1",
     "ember-try": "^1.4.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^8.0.0",
