@@ -84,6 +84,10 @@ export function setupRouter(router: RouterService | Router): void {
     !(router instanceof Router),
     {
       id: 'ember-app-scheduler.setupRouter',
+      for: 'ember-app-scheduler',
+      since: {
+        enabled: '5.1.0',
+      },
       until: '6.0.0',
     }
   );
