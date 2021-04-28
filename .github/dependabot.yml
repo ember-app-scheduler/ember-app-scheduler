@@ -1,0 +1,35 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "07:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: eslint-plugin-ember
+    versions:
+    - 10.1.2
+    - 10.2.0
+    - 10.3.0
+    - 10.4.1
+  - dependency-name: ember-template-lint
+    versions:
+    - 2.20.0
+    - 3.0.0
+  - dependency-name: ember-cli-htmlbars
+    versions:
+    - 5.3.2
+    - 5.6.0
+  - dependency-name: ember-cli-typescript
+    versions:
+    - 4.0.0
+  - dependency-name: "@ember/test-waiters"
+    versions:
+    - 2.3.2
+  - dependency-name: lint-staged
+    versions:
+    - 10.5.3
+  - dependency-name: ember-cli-babel
+    versions:
+    - 7.26.2
