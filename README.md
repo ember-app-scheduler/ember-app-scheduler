@@ -30,23 +30,20 @@ To connect to your router, import `setupRouter` and `reset` from `ember-app-sche
 
 ```javascript
 import EmberRouter from '@ember/routing/router';
-import config from './config/environment';
+import { inject as service } from '@ember/service';
 import { setupRouter, reset } from 'ember-app-scheduler';
+import config from './config/environment';
 
 export default class Router extends EmberRouter {
   location = config.locationType;
   rootURL = config.rootURL;
 
+  @service router;
+
   constructor() {
     super(...arguments);
 
-    setupRouter(this);
-  },
-
-  destroy() {
-    reset();
-
-    super.destroy(...arguments);
+    setupRouter(this.router);
   }
 }
 
@@ -54,6 +51,8 @@ Router.map(function() {
   // ...
 });
 ```
+
+**Note:** There is a bug in Ember.js < 3.26 which may result in `Uncaught RangeError: Maximum call stack size exceeded` and you may need to use `setupRouter(this)` instead and deal with deprecation message until you are able to upgrade to 3.26. For more info see [emberjs/ember.js#17791](https://github.com/emberjs/ember.js/issues/17791)
 
 You can then use one of the provided APIs to defer work.
 
