@@ -37,6 +37,7 @@ export default scheduler;
 /**
  * Initializes the top level promise that initiates the post-render work.
  *
+ * @public
  * @function
  */
 export function beginTransition(): void {
@@ -63,6 +64,9 @@ export function beginTransition(): void {
 
 /**
  * Initiates the post-render work.
+ *
+ * @public
+ * @function
  */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
@@ -71,8 +75,11 @@ export function endTransition(): void {
 }
 
 /**
- * Correct connects the router's transition events to
+ * Connects the router's transition events to
  * app scheduler's work.
+ *
+ * @public
+ * @function
  *
  * @param {RouterService|Router} router An instance of a RouterService or an Ember Router.
  */
@@ -112,6 +119,9 @@ export function setupRouter(router: RouterService | Router): void {
 
 /**
  * Resets the state of app scheduler's top-level scheduled work promise.
+ *
+ * @public
+ * @function
  */
 export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
@@ -128,6 +138,7 @@ export function reset(): void {
  * This promise, when resolved, approximates after content is painted.
  *
  * @public
+ * @function
  * @return {Promise} The scheduled work promise.
  */
 export function whenRouteIdle(): Promise<any> {
@@ -138,6 +149,8 @@ export function whenRouteIdle(): Promise<any> {
  * Allows for tests to pause until the scheduled work
  * promise is completed.
  *
+ * @public
+ * @function
  * @return {Promise} The scheduled work promise.
  */
 export function routeSettled(): Promise<any> {
