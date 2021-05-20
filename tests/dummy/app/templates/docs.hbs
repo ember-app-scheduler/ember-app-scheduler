@@ -2,14 +2,14 @@
 
 <DocsViewer as |Viewer|>
   <Viewer.nav as |Nav|>
-    {{Nav.section "Usage"}}
+    <Nav.section @label="Usage" />
     <Nav.subnav as |Nav|>
-      {{Nav.item "Quickstart" "docs.index"}}
-      {{Nav.item "How it works" "docs.how-it-works"}}
-      {{Nav.item "whenRouteIdle" "docs.when-route-idle"}}
-      {{Nav.item "route-idle helper" "docs.route-idle-helper"}}
-      {{Nav.item "Testing" "docs.testing"}}
-      {{Nav.item "Fastboot" "docs.fastboot"}}
+      <Nav.item @label="Quickstart" @route="docs.index" />
+      <Nav.item @label="How it works" @route="docs.how-it-works" />
+      <Nav.item @label="whenRouteIdle" @route="docs.when-route-idle" />
+      <Nav.item @label="route-idle helper" @route="docs.route-idle-helper" />
+      <Nav.item @label="Testing" @route="docs.testing" />
+      <Nav.item @label="Fastboot" @route="docs.fastboot" />
     </Nav.subnav>
   </Viewer.nav>
 
