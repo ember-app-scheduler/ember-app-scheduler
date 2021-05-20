@@ -16,10 +16,8 @@ Router.map(function () {
     this.route('testing');
     this.route('fastboot');
   });
-  this.route('first-paint');
   this.route('content-paint');
   this.route('aborted-paint');
-  this.route('both-painted');
   this.route('route-idle-helper');
 
   this.route('not-found', { path: '/*path' });

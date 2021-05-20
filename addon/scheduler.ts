@@ -36,6 +36,9 @@ export default scheduler;
 
 /**
  * Initializes the top level promise that initiates the post-render work.
+ *
+ * @public
+ * @function
  */
 export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
@@ -61,6 +64,9 @@ export function beginTransition(): void {
 
 /**
  * Initiates the post-render work.
+ *
+ * @public
+ * @function
  */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
@@ -69,8 +75,11 @@ export function endTransition(): void {
 }
 
 /**
- * Correct connects the router's transition events to
+ * Connects the router's transition events to
  * app scheduler's work.
+ *
+ * @public
+ * @function
  *
  * @param {RouterService|Router} router An instance of a RouterService or an Ember Router.
  */
@@ -84,6 +93,7 @@ export function setupRouter(router: RouterService | Router): void {
     !(router instanceof Router),
     {
       id: 'ember-app-scheduler.setupRouter',
+      // @ts-ignore
       for: 'ember-app-scheduler',
       since: {
         enabled: '5.1.0',
@@ -109,6 +119,9 @@ export function setupRouter(router: RouterService | Router): void {
 
 /**
  * Resets the state of app scheduler's top-level scheduled work promise.
+ *
+ * @public
+ * @function
  */
 export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
@@ -122,51 +135,10 @@ export function reset(): void {
 }
 
 /**
- * Top level promise that represents the entry point for deferred work.
- * Subsequent promises are chained off this promise, successively composing
- * them together to approximate when painting has occurred.
- *
- * @public
- * @return {Promise} The top-level scheduled work promise.
- */
-export function didTransition(): Promise<any> {
-  deprecate(
-    'The `didTransition` function is deprecated. Please use `whenRouteIdle` instead.',
-    false,
-    {
-      id: 'ember-app-scheduler.didTransition',
-      until: '4.0.0',
-    }
-  );
-
-  return _whenRouteDidChange.promise;
-}
-
-/**
- * This promise, when resolved, approximates after the route is first painted.
- * This can be used to schedule work to occur that is lower priority than initial
- * work (content outside of the viewport, rendering non-critical content).
- *
- * @public
- * @return {Promise} The scheduled work promise.
- */
-export function whenRoutePainted(): Promise<any> {
-  deprecate(
-    'The `whenRoutePainted` function is deprecated. Please use `whenRouteIdle` instead.',
-    false,
-    {
-      id: 'ember-app-scheduler.whenRoutePainted',
-      until: '4.0.0',
-    }
-  );
-
-  return _whenRouteIdle;
-}
-
-/**
  * This promise, when resolved, approximates after content is painted.
  *
  * @public
+ * @function
  * @return {Promise} The scheduled work promise.
  */
 export function whenRouteIdle(): Promise<any> {
@@ -177,6 +149,8 @@ export function whenRouteIdle(): Promise<any> {
  * Allows for tests to pause until the scheduled work
  * promise is completed.
  *
+ * @public
+ * @function
  * @return {Promise} The scheduled work promise.
  */
 export function routeSettled(): Promise<any> {

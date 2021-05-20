@@ -44,27 +44,28 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | component-with-deferred-stuff', function(
-  hooks
-) {
-  setupRenderingTest(hooks);
+module(
+  'Integration | Component | component-with-deferred-stuff',
+  function (hooks) {
+    setupRenderingTest(hooks);
 
-  test('hidden content is rendered when route idle', async function(assert) {
-    assert.expect(1);
+    test('hidden content is rendered when route idle', async function (assert) {
+      assert.expect(1);
 
-    await render(hbs`
+      await render(hbs`
       <ComponentWithDeferredStuff>
         <div class="hidden-content">Hidden</div>
       </ComponentWithDeferredStuff>
     `);
 
-    let hiddenContent = find('.hidden-content');
+      let hiddenContent = find('.hidden-content');
 
-    assert.ok(hiddenContent, 'hidden content is shown');
+      assert.ok(hiddenContent, 'hidden content is shown');
 
-    await settled();
-  });
-});
+      await settled();
+    });
+  }
+);
 ```
 
 ### Testing the intermediate states of your promise chain
@@ -83,7 +84,7 @@ For example, given a component that renders only when the route is idle (aptly n
 // when-route-idle.js
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { whenRoutePainted } from 'ember-app-scheduler';
+import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default WhenRouteIdle extends Component {
   @tracked whenRouteIdle;
@@ -93,7 +94,7 @@ export default WhenRouteIdle extends Component {
 
     this.whenRouteIdle = false;
 
-    whenRoutePainted().then(() => {
+    whenRouteIdle().then(() => {
       this.whenRouteIdle = true;
     });
   }
@@ -121,10 +122,10 @@ import { setupApplicationTest } from 'ember-qunit';
 import { visit, currentRouteName } from '@ember/test-helpers';
 import { setupRouter, reset } from 'ember-app-scheduler';
 
-module('Acceptance | when rendered tests', function(hooks) {
+module('Acceptance | when rendered tests', function (hooks) {
   setupApplicationTest(hooks);
 
-  test('visiting route renders deferred content via whenRouteIdle', async function(assert) {
+  test('visiting route renders deferred content via whenRouteIdle', async function (assert) {
     assert.expect(1);
 
     await visit('/my-route');
