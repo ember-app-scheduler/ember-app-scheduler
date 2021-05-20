@@ -2,6 +2,20 @@ Version 9 of Highlight.js has reached EOL and is no longer supported.
 Please upgrade or ask whatever dependency you are using to upgrade.
 https://github.com/highlightjs/highlight.js/issues/2877
 
+## v6.0.0 (2021-05-20)
+
+#### :boom: Breaking Change
+* [#1101](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1101) Removes deprecated APIs (which were targeted for removal in 4.0.0) ([@scalvert](https://github.com/scalvert))
+
+#### :memo: Documentation
+* [#1116](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1116) Convert last few curlies to angle brackets ([@scalvert](https://github.com/scalvert))
+* [#1097](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1097) Update setupRouter example to use RouterService ([@SergeAstapov](https://github.com/SergeAstapov))
+
+#### Committers: 3
+- Sergey Astapov ([@SergeAstapov](https://github.com/SergeAstapov))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v5.1.2 (2021-01-12)
 
 #### :bug: Bug Fix
