@@ -1,11 +1,10 @@
 import AddonDocsRouter, { docsRoute } from 'ember-cli-addon-docs/router';
-import RouterScroll from 'ember-router-scroll';
-import config from './config/environment';
+import config from 'dummy/config/environment';
 
-const Router = AddonDocsRouter.extend(RouterScroll, {
-  location: config.locationType,
-  rootURL: config.rootURL,
-});
+export default class Router extends AddonDocsRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function () {
   docsRoute(this, function () {
@@ -18,9 +17,8 @@ Router.map(function () {
   });
   this.route('content-paint');
   this.route('aborted-paint');
+  // eslint-disable-next-line ember/no-shadow-route-definition
   this.route('route-idle-helper');
 
   this.route('not-found', { path: '/*path' });
 });
-
-export default Router;
