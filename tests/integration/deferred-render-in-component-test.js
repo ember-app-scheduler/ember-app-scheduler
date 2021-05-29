@@ -46,7 +46,7 @@ module(
 
       this.owner.register(
         'template:components/deferred-render',
-        hbs`{{#if showFoo}}<span class="foo">I can haz visibility</span>{{/if}}`
+        hbs`{{#if this.showFoo}}<span class="foo">I can haz visibility</span>{{/if}}`
       );
 
       beginTransition();

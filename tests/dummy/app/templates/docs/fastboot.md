@@ -8,12 +8,12 @@ In practical terms, if you need the code that was originally deferred to be run 
 
 ```js
 import Component from '@glimmer/component';
-import { importantThingToDo } 'bag-of-important-things';
+import { importantThingToDo } from 'bag-of-important-things';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
 export default class ImportantComponent extends Component {
   constructor() {
-    if (typeof FastBoot !=== 'undefined') {
+    if (typeof FastBoot !== 'undefined') {
       importantThingToDo();
     } else {
       whenRouteIdle().then(() => {
