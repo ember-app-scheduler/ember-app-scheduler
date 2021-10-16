@@ -32,7 +32,7 @@ export default class ComponentWithDeferredStuff extends Component {
 
 ```handlebars
 {{! component-with-deferred-stuff.hbs }}
-{{#if showHiddenContent}}
+{{#if this.showHiddenContent}}
   {{yield}}
 {{/if}}
 ```
@@ -86,7 +86,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { whenRouteIdle } from 'ember-app-scheduler';
 
-export default WhenRouteIdle extends Component {
+export default class WhenRouteIdle extends Component {
   @tracked whenRouteIdle;
 
   constructor() {
@@ -103,7 +103,7 @@ export default WhenRouteIdle extends Component {
 
 ```handlebars
 {{! when-route-idle.hbs }}
-{{#if whenRouteIdle}}
+{{#if this.whenRouteIdle}}
   {{yield}}
 {{/if}}
 ```
