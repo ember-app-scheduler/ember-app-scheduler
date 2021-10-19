@@ -1,15 +1,11 @@
 /** @documenter yuidoc */
 
-import { deprecate } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import { addListener } from '@ember/object/events';
-import Router from '@ember/routing/router';
 import type RouterService from '@ember/routing/router-service';
 import { schedule } from '@ember/runloop';
-import Service from '@ember/service';
 import { buildWaiter, Token } from '@ember/test-waiters';
 import { tracked } from '@glimmer/tracking';
-import { gte } from 'ember-compatibility-helpers';
 import { Promise } from 'rsvp';
 
 interface Deferred {
@@ -87,36 +83,17 @@ export function endTransition(): void {
  * @param {RouterService|Router} router An instance of a RouterService or an Ember Router.
  * @return {void}
  */
-export function setupRouter(router: RouterService | Router): void {
+export function setupRouter(router: RouterService): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
-  deprecate(
-    'The use of Ember.Router in setupRouter is deprecated. Please use the router service.',
-    !(router instanceof Router),
-    {
-      id: 'ember-app-scheduler.setupRouter',
-      // @ts-ignore
-      for: 'ember-app-scheduler',
-      since: {
-        enabled: '5.1.0',
-      },
-      until: '6.0.0',
-    }
-  );
-
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
-  if (gte('3.6.0') || router instanceof Service) {
-    // @ts-ignore
-    addListener(router, 'routeWillChange', beginTransition);
-    // @ts-ignore
-    addListener(router, 'routeDidChange', endTransition);
-  } else {
-    addListener(router, 'willTransition', beginTransition);
-    addListener(router, 'didTransition', endTransition);
-  }
+  // @ts-ignore
+  addListener(router, 'routeWillChange', beginTransition);
+  // @ts-ignore
+  addListener(router, 'routeDidChange', endTransition);
 
   registerDestructor(router, reset);
 }
