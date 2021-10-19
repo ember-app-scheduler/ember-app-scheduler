@@ -1,6 +1,6 @@
 {
   "name": "ember-app-scheduler",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "Ember addon to schedule work at different phases of app life cycle.",
   "keywords": [
     "ember-addon"

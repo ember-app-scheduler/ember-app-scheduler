@@ -2,6 +2,23 @@ Version 9 of Highlight.js has reached EOL and is no longer supported.
 Please upgrade or ask whatever dependency you are using to upgrade.
 https://github.com/highlightjs/highlight.js/issues/2877
 
+## v7.0.0 (2021-10-19)
+
+#### :boom: Breaking Change
+* [#1162](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1162) Removes Router deprecation warning ([@scalvert](https://github.com/scalvert))
+* [#1119](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1119) Drop Node.js 10 support ([@SergeAstapov](https://github.com/SergeAstapov))
+
+#### :memo: Documentation
+* [#1121](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1121) Fix few documentation typos and ensure examples use `this` ([@SergeAstapov](https://github.com/SergeAstapov))
+
+#### :house: Internal
+* [#1161](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1161) Upgrading ember-cli-addon-docs ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 3
+- Bert De Block ([@bertdeblock](https://github.com/bertdeblock))
+- Sergey Astapov ([@SergeAstapov](https://github.com/SergeAstapov))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
 ## v6.0.0 (2021-05-20)
 
 #### :boom: Breaking Change
