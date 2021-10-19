@@ -1,3 +1,5 @@
+/** @documenter yuidoc */
+
 import { deprecate } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import { addListener } from '@ember/object/events';
@@ -38,7 +40,8 @@ export default scheduler;
  * Initializes the top level promise that initiates the post-render work.
  *
  * @public
- * @function
+ * @function beginTransition
+ * @return {void}
  */
 export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
@@ -66,7 +69,8 @@ export function beginTransition(): void {
  * Initiates the post-render work.
  *
  * @public
- * @function
+ * @function endTransition
+ * @return {void}
  */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
@@ -79,9 +83,9 @@ export function endTransition(): void {
  * app scheduler's work.
  *
  * @public
- * @function
- *
+ * @function setupRouter
  * @param {RouterService|Router} router An instance of a RouterService or an Ember Router.
+ * @return {void}
  */
 export function setupRouter(router: RouterService | Router): void {
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
@@ -121,7 +125,8 @@ export function setupRouter(router: RouterService | Router): void {
  * Resets the state of app scheduler's top-level scheduled work promise.
  *
  * @public
- * @function
+ * @function reset
+ * @return {void}
  */
 export function reset(): void {
   _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
@@ -138,8 +143,8 @@ export function reset(): void {
  * This promise, when resolved, approximates after content is painted.
  *
  * @public
- * @function
- * @return {Promise} The scheduled work promise.
+ * @function whenRouteIdle
+ * @return {Promise<any>} The scheduled work promise.
  */
 export function whenRouteIdle(): Promise<any> {
   return _whenRouteIdle;
@@ -150,8 +155,8 @@ export function whenRouteIdle(): Promise<any> {
  * promise is completed.
  *
  * @public
- * @function
- * @return {Promise} The scheduled work promise.
+ * @function routeSettled
+ * @return {Promise<any>} The scheduled work promise.
  */
 export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
