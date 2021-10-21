@@ -1,1 +1,1 @@
-export { default, routeIdle } from 'ember-app-scheduler/helpers/route-idle';
+export { default, RouteIdle } from 'ember-app-scheduler/helpers/route-idle';

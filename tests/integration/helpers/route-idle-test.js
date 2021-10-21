@@ -1,7 +1,7 @@
 import { render, settled } from '@ember/test-helpers';
 import { beginTransition, endTransition } from 'ember-app-scheduler';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 module('Integration | Helper | route-idle', function (hooks) {
