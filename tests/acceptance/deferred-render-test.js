@@ -20,7 +20,7 @@ import { setupRouter } from 'ember-app-scheduler';
 
         await visit('/content-paint');
 
-        assert.equal(currentRouteName(), 'content-paint');
+        assert.strictEqual(currentRouteName(), 'content-paint');
         assert.dom('.only-when-route-idle').exists();
       });
 
@@ -29,7 +29,7 @@ import { setupRouter } from 'ember-app-scheduler';
 
         await visit('/aborted-paint');
 
-        assert.equal(currentRouteName(), 'content-paint');
+        assert.strictEqual(currentRouteName(), 'content-paint');
         assert.dom('.only-when-route-idle').exists();
       });
 
@@ -40,7 +40,7 @@ import { setupRouter } from 'ember-app-scheduler';
 
         await click('a');
 
-        assert.equal(currentRouteName(), 'content-paint');
+        assert.strictEqual(currentRouteName(), 'content-paint');
         assert.dom('.only-when-route-idle').exists();
       });
     }
