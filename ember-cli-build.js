@@ -7,12 +7,20 @@ module.exports = function(defaults) {
     // Add options here
   });
 
-  /*
-    This build file specifies the options for the dummy test app of this
-    addon, located in `/tests/dummy`
-    This build file does *not* influence how the addon or the app using it
-    behave. You most likely want to be modifying `./index.js` or app's build file
-  */
-
-  return app.toTree();
+  // Build with embroider when embroider is installed
+  if ('@embroider/webpack' in app.dependencies()) {
+    const {
+      Webpack
+    } = require('@embroider/webpack'); // eslint-disable-line node/no-missing-require
+    return require('@embroider/compat') // eslint-disable-line node/no-missing-require
+      .compatBuild(app, Webpack, {
+        packagerOptions: {
+          webpackConfig: {
+            devtool: false,
+          },
+        },
+      });
+  } else {
+    return app.toTree();
+  }
 };
