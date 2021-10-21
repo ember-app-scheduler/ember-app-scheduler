@@ -21,5 +21,17 @@ module.exports = function (defaults) {
         package: 'qunit',
       },
     ],
+    // Support tests with dynamic component registration in Embroider.
+    // See https://github.com/embroider-build/embroider/issues/522
+    packageRules: [
+      {
+        package: 'dummy',
+        components: {
+          '{{deferred-render}}': {
+            safeToIgnore: true,
+          },
+        },
+      },
+    ],
   });
 };
