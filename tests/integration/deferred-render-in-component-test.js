@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, waitFor, settled } from '@ember/test-helpers';
 import {
