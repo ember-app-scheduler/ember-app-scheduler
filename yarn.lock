@@ -7077,10 +7077,6 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-ember-app-scheduler@^5.1.2:
-  version "0.0.0"
-  uid ""
-
 "ember-app-scheduler@^5.1.2 || ^6.0.0 || ^7.0.0":
   version "0.0.0"
   uid ""
@@ -7335,7 +7331,7 @@ ember-cli-babel@^6.11.0, ember-cli-babel@^6.6.0:
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.0.0, ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.2, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.1, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.18.0, ember-cli-babel@^7.19.0, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.3, ember-cli-babel@^7.26.5, ember-cli-babel@^7.26.6, ember-cli-babel@^7.7.3:
+ember-cli-babel@^7.0.0, ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.2, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.18.0, ember-cli-babel@^7.19.0, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.3, ember-cli-babel@^7.26.5, ember-cli-babel@^7.26.6, ember-cli-babel@^7.7.3:
   version "7.26.6"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.26.6.tgz#322fbbd3baad9dd99e3276ff05bc6faef5e54b39"
   integrity sha512-040svtfj2RC35j/WMwdWJFusZaXmNoytLAMyBDGLMSlRvznudTxZjGlPV6UupmtTBApy58cEF8Fq4a+COWoEmQ==
@@ -8075,15 +8071,6 @@ ember-router-generator@^2.0.0:
     "@babel/parser" "^7.4.5"
     "@babel/traverse" "^7.4.5"
     recast "^0.18.1"
-
-ember-router-scroll@^4.0.0:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/ember-router-scroll/-/ember-router-scroll-4.0.3.tgz#9a280c34e6cef0a78f5c795008a49f77681d60a8"
-  integrity sha512-DawiVxYUrD6aJ2Tod+KIbGruiLfQxxqjBGmYmyMrscROeDmrz6+8XMhnfMziAAnwr5HV+d6dlxyA43s5IDVebw==
-  dependencies:
-    ember-app-scheduler "^5.1.2"
-    ember-cli-babel "^7.11.1"
-    ember-compatibility-helpers "^1.1.2"
 
 ember-router-scroll@^4.1.2:
   version "4.1.2"
