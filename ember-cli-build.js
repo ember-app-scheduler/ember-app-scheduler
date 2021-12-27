@@ -2,7 +2,7 @@
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   let app = new EmberAddon(defaults, {
     // Add options here
   });
@@ -14,5 +14,24 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
-  return app.toTree();
+  const { maybeEmbroider } = require('@embroider/test-setup');
+  return maybeEmbroider(app, {
+    skipBabel: [
+      {
+        package: 'qunit',
+      },
+    ],
+    // Support tests with dynamic component registration in Embroider.
+    // See https://github.com/embroider-build/embroider/issues/522
+    packageRules: [
+      {
+        package: 'dummy',
+        components: {
+          '{{deferred-render}}': {
+            safeToIgnore: true,
+          },
+        },
+      },
+    ],
+  });
 };
