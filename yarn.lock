@@ -7563,7 +7563,7 @@ ember-cli-fastboot@^3.2.0-beta.4:
     recast "^0.19.1"
     silent-error "^1.1.0"
 
-ember-cli-favicon@^2.0.0:
+ember-cli-favicon@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-favicon/-/ember-cli-favicon-2.2.0.tgz#35ece16e5455d5f9a5c38a5baa00e7a44fc54807"
   integrity sha512-RHiNb1vOu1MhtGuBorW/thM5BpxSGCJK1DZHj15JuZBZ7g4FngJMvtLGCBl+GmbChzWIMyEEZIUbIQrKUSiibQ==
@@ -8112,7 +8112,7 @@ ember-maybe-import-regenerator-for-testing@^1.0.0:
     ember-cli-babel "^6.6.0"
     regenerator-runtime "^0.9.5"
 
-"ember-modal-dialog@github:yapplabs/ember-modal-dialog#76b74f1c4b791fed5b084836c3b1c8c54836ac71":
+ember-modal-dialog@yapplabs/ember-modal-dialog#76b74f1c4b791fed5b084836c3b1c8c54836ac71:
   version "4.0.0-alpha.1"
   resolved "https://codeload.github.com/yapplabs/ember-modal-dialog/tar.gz/76b74f1c4b791fed5b084836c3b1c8c54836ac71"
   dependencies:
