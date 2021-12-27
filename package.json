@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
-    "@ember/test-helpers": "^2.5.0",
+    "@ember/test-helpers": "^2.6.0",
     "@embroider/test-setup": "^0.42.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/env": "^0.1.7",
