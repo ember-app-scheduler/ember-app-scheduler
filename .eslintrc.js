@@ -45,6 +45,11 @@ module.exports = {
       extends: ['plugin:node/recommended'],
     },
     {
+      // Test files:
+      files: ['tests/**/*-test.{js,ts}'],
+      extends: ['plugin:qunit/recommended'],
+    },
+    {
       // typescript files
       files: ['**/*.ts'],
       parser: '@typescript-eslint/parser',
