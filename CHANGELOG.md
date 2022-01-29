@@ -2,6 +2,23 @@ Version 9 of Highlight.js has reached EOL and is no longer supported.
 Please upgrade or ask whatever dependency you are using to upgrade.
 https://github.com/highlightjs/highlight.js/issues/2877
 
+## v7.0.1 (2022-01-29)
+
+#### :bug: Bug Fix
+* [#1165](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1165) Use RouterService for transitionTo() fix deprecation ([@SergeAstapov](https://github.com/SergeAstapov))
+
+#### :house: Internal
+* [#1164](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1164) Cache dependencies in GitHub Actions CI workflow ([@SergeAstapov](https://github.com/SergeAstapov))
+* [#1185](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1185) Add .d.ts files to eslint and prettier ignore files ([@scalvert](https://github.com/scalvert))
+* [#1166](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1166) Replace use of htmlbars-inline-precompile with ember-cli-htmlbars ([@SergeAstapov](https://github.com/SergeAstapov))
+* [#1168](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1168) Add eslint-plugin-qunit per latest addon blueprint ([@SergeAstapov](https://github.com/SergeAstapov))
+* [#1169](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1169) Run ember-cli-update to v3.28.3 and enable embroider-safe scenario ([@SergeAstapov](https://github.com/SergeAstapov))
+* [#1167](https://github.com/ember-app-scheduler/ember-app-scheduler/pull/1167) Update npmignore file ([@SergeAstapov](https://github.com/SergeAstapov))
+
+#### Committers: 2
+- Sergey Astapov ([@SergeAstapov](https://github.com/SergeAstapov))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
 ## v7.0.0 (2021-10-19)
 
 #### :boom: Breaking Change
