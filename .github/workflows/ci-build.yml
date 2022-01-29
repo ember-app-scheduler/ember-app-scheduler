@@ -3,11 +3,16 @@ name: CI Build
 on:
   push:
     branches:
+      - main
       - master
       - 'v*'
   pull_request: {}
   schedule:
     - cron: '0 3 * * *' # daily, at 3am
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -24,11 +29,9 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Lint
-        run: |
-          yarn lint:hbs
-          yarn lint:js
+        run: yarn lint
       - name: Run Tests
-        run: yarn test
+        run: yarn test:ember
 
   floating:
     name: "Floating Dependencies"
@@ -57,10 +60,10 @@ jobs:
           - ember-lts-3.16
           - ember-lts-3.20
           - ember-lts-3.24
+          - ember-lts-3.28
           - ember-release
           - ember-beta
           - ember-canary
-          - ember-default-with-jquery
           - ember-classic
           - embroider-safe
           #- embroider-optimized
