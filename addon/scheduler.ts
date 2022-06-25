@@ -55,6 +55,7 @@ export function beginTransition(): void {
         waiter.endAsync(scheduledWorkToken);
         mark('appSchedulerEnd');
         measure('appScheduler', 'appSchedulerStart', 'appSchedulerEnd');
+        scheduler.isIdle = true;
       });
     });
     scheduler.isIdle = false;
@@ -70,7 +71,6 @@ export function beginTransition(): void {
  */
 export function endTransition(): void {
   _whenRouteDidChange.resolve();
-  scheduler.isIdle = true;
   mark('appSchedulerStart');
 }
 
