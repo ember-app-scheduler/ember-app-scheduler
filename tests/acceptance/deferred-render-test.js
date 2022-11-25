@@ -1,7 +1,17 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit, currentRouteName, click } from '@ember/test-helpers';
-import { setupRouter } from 'ember-app-scheduler';
+import {
+  visit,
+  currentRouteName,
+  click,
+  settled,
+  waitFor,
+} from '@ember/test-helpers';
+import {
+  beginTransition,
+  endTransition,
+  setupRouter,
+} from 'ember-app-scheduler';
 
 ['router:main', 'service:router'].forEach((dependencyKey) => {
   module(
@@ -42,6 +52,47 @@ import { setupRouter } from 'ember-app-scheduler';
 
         assert.strictEqual(currentRouteName(), 'content-paint');
         assert.dom('.only-when-route-idle').exists();
+      });
+
+      module('Helper | route-idle', function () {
+        test('visiting route renders deferred content via route-idle helper', async function (assert) {
+          assert.expect(3);
+
+          await visit('/route-idle-helper');
+
+          beginTransition();
+          await waitFor('.only-when-route-not-idle');
+          assert.dom('.only-when-route-not-idle').exists();
+          endTransition();
+          await settled();
+
+          assert.strictEqual(currentRouteName(), 'route-idle-helper');
+
+          await waitFor('.only-when-route-idle');
+
+          assert.dom('.only-when-route-idle').exists();
+        });
+
+        test('visiting route and refresh renders deferred content via route-idle helper', async function (assert) {
+          assert.expect(5);
+
+          const controller = this.owner.lookup('controller:route-idle-helper');
+
+          await visit('/route-idle-helper');
+
+          await waitFor('.only-when-route-idle');
+          assert.dom('.only-when-route-idle').exists();
+
+          assert.strictEqual(controller.refresh, 0);
+
+          await click('.refresh-button');
+          assert.strictEqual(currentRouteName(), 'route-idle-helper');
+
+          assert.strictEqual(controller.refresh, 1);
+
+          await waitFor('.only-when-route-idle');
+          assert.dom('.only-when-route-idle').exists();
+        });
       });
     }
   );

@@ -1,4 +1,4 @@
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, waitFor } from '@ember/test-helpers';
 import { beginTransition, endTransition } from 'ember-app-scheduler';
 import { setupRenderingTest } from 'ember-qunit';
 import { hbs } from 'ember-cli-htmlbars';
@@ -23,6 +23,8 @@ module('Integration | Helper | route-idle', function (hooks) {
     endTransition();
 
     await settled();
+
+    await waitFor('#i-exist');
 
     assert.dom('#i-exist').exists();
 
@@ -51,6 +53,8 @@ module('Integration | Helper | route-idle', function (hooks) {
 
     await settled();
 
+    await waitFor('#i-exist');
+
     assert
       .dom('#i-exist')
       .exists('deferred content is rendered after initial transition finishes');
@@ -73,6 +77,8 @@ module('Integration | Helper | route-idle', function (hooks) {
     endTransition();
 
     await settled();
+
+    await waitFor('#i-exist');
 
     assert
       .dom('#i-exist')
