@@ -7081,11 +7081,9 @@ elliptic@^6.5.3:
 
 "ember-app-scheduler@^5.1.2 || ^6.0.0 || ^7.0.0":
   version "0.0.0"
-  uid ""
 
 "ember-app-scheduler@link:./":
   version "0.0.0"
-  uid ""
 
 ember-auto-import@^1.11.3, ember-auto-import@^1.2.19:
   version "1.12.0"
@@ -14089,9 +14087,9 @@ prettier-linter-helpers@^1.0.0:
     fast-diff "^1.1.2"
 
 prettier@^2.3.2:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
-  integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
+  version "2.8.4"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
+  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
 
 pretty-hrtime@^1.0.3:
   version "1.0.3"
